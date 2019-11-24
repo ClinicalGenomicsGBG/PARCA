@@ -1,0 +1,18 @@
+__default__:
+  shell: "/bin/bash"
+  cores: "mpi 1"
+  queue: "production.q" #"batch.q"
+  excl: "excl=1"
+  jobname: "{rule}"
+  workdir: "cwd"
+
+# mergeLanes:
+#   shell: "/bin/bash"
+#   cores:  "mpi 8"
+#   queue:  "batch.q"
+#   excl: "excl=1"
+#   workdir: "cwd"
+
+#snakemake -nrp -s interleave.smk --cluster-config cluster.yaml --cluster "qsub -S {cluster.shell} -pe {cluster.cores} -q {cluster.queue} -l {cluster.excl} -{cluster.workdir} -N {cluster.jobname}" --jobs 999 --latency-wait 60
+
+#snakemake -nrp -s interleave.smk --cluster-config cluster.yaml --cluster-sync "qsub -sync yes -S {cluster.shell} -pe {cluster.cores} -q {cluster.queue} -l {cluster.excl} -N {cluster.jobname} -{cluster.workdir} " --jobs 999 --latency-wait 60 --rerun-incomplete
