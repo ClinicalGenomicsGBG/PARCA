@@ -9,11 +9,13 @@ library(openxlsx)
 #outfile_name="~/Desktop/output.txt"
 
 
-specification_file ="~/pathfinder_runs/140_samples/controls_cases.xlsx"
+#specification_file ="~/pathfinder_runs/140_samples/controls_cases.xlsx"
+specification_file = "/apps/bio/repos/pathfinder_python/references/controls_cases.xlsx"
 all_samples_path="/medstore/Development/Metagenomics/projects/140_cervix_samples_pathfinder/interleaved_samples"
-index_name="index_cervix_samples.html"
+index_name="index_cervix_samples_v3.html"
 illumina="yes"
-outfile_name="~/pathfinder_runs/140_samples/runvalidate_140_research_samples2.pl"
+#outfile_name="~/pathfinder_runs/140_samples/runvalidate_140_research_samples2.pl"
+outfile_name = "/apps/bio/repos/pathfinder_python/runvalidate_140_research_samples_v3.pl"
 
 specification <- read.xlsx(specification_file)
 
@@ -63,7 +65,7 @@ settings %>%
   map_df(~{replace_na(.x,"")}) %>% 
   transmute(launch = paste(sample_out,Cases_path, Control_path, sep=" ")) %>%
   map_df(~{.x %>% as.character() %>% str_trim(side = "both")}) %>%
-  mutate(launch = paste0("\'./launch.sh ", launch, " ILLUMINA=", illumina, " WEBPATH=",index_name,"\'")) %>% 
+  mutate(launch = paste0("\'./launch_v2.sh ", launch, " ILLUMINA=", illumina, " WEBPATH=",index_name,"\'")) %>% 
   pull(launch) %>% paste(collapse = ",\n") %>% 
   paste("@array=(",.,");\n\n foreach (@array){\n$time=localtime();\n print \"$time\";\n print \"$_\";\n system(\"$_\");\n}",collapse = "",sep="") %>% 
   write_lines(path = outfile_name,sep = "\n")
