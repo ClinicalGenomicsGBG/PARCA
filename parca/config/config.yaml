@@ -3,10 +3,13 @@
 ## Input
 sampledir: 
   "/apps/bio/dev_repos/parca/demo"
-sample: 
+adapters:
+- "None"
+sample: #set this to "search" if you want to use all fastq-files in a sample directory
 - "S04_S5_02_22_41_KV16-8204OM-L_180530.fastq"
 - "a.fastq.gz"
 - "l.fq"
+
 
 ## Output
 #output_folder_date: "" # if empty, a date will be generated in the format yyyy_mm_dd for the output folder
@@ -15,11 +18,15 @@ outdir:
 
 ## Singularity
 singularity_image:
-  "/apps/bio/dev_repos/parca/parca/workflows/containers/parca_v1.sif"
+  "/apps/bio/dev_repos/parca/parca/workflows/containers/image_parca_v1.sif"
+
+## Conda environment
+conda_environment:
+  "/apps/bio/dev_repos/parca/parca/workflows/conda/parca_container_env.yml"
 
 
 # Programs
-fiona_path: 
-  "/apps/bio/software/fiona/0.2.9/bin/fiona"
 pollux_path: 
   "/apps/bio/apps/pollux/1.0.2/bin/pollux"
+fiona_path: 
+  "/apps/bio/software/fiona/0.2.9/bin/fiona"

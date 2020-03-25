@@ -1,0 +1,10 @@
+name: parca
+channels:
+  - defaults
+  - bioconda
+  - conda-forge
+dependencies:
+  - bbmap=38.79=h516909a_0
+  - fastqc=0.11.9=0
+  - pigz=2.4=h84994c4_0
+

@@ -1,30 +1,45 @@
-# snakemake -rp -s main.smk --use-singularity --cores 23 --latency-wait 60
+#  snakemake -nrp -s main.smk --use-singularity --use-conda --cores 23 --latency-wait 60
 # not necessary with snakemake version 5.5.4: --singularity-args "-H /home/xerpey"
+# #shell.prefix('PATH=$PATH;')
+import glob
+from workflows.utils.setup import SetUp
+
 configfile: "config/config.yaml"
 singularity: config['singularity_image']
 
-shell.prefix('PATH=$PATH')
 
-
-# def detect_gz_samples():
-#     zipped_files=[]
-#     return
-
+run = SetUp(raw_sample_dir=config['sampledir'], filenames=config['sample'])
+sample = run.detect_samples()
 
 rule all:
     input:
-        # Quality control 
-        expand("{outdir}/snakemake_results_{sample}/stage1/qc/{sample}_fastqc.html", 
-                    outdir=config['outdir'],
-                    sample=config['sample']),
-        expand("{outdir}/snakemake_results_{sample}/stage1/qc/{sample}_fastqc.zip", 
-                    outdir=config['outdir'],
-                    sample=config['sample'])
+        expand("{outdir}/snakemake_results_{sample}/stage1/pollux/trimmed_reads.corrected.fq",
+                outdir=config['outdir'], 
+                sample=sample)
+        ##FASTQC
+        # expand("{outdir}/snakemake_results_{sample}/stage1/qc/{sample}_fastqc.{fmt}", 
+        #     outdir=config['outdir'], 
+        #     sample=sample, fmt=["zip","html"])
+        ##TRIMMING
+        # expand("{outdir}/snakemake_results_{sample}/stage1/trimming/trimmed_reads.fq", 
+        #         outdir=config['outdir'], 
+        #         sample=sample),
+        # expand("{outdir}/snakemake_results_{sample}/stats/stage1/trimming/bbduk_stats.txt",
+        #         outdir=config['outdir'], 
+        #         sample=sample)
+
+include:
+    "workflows/snakemake_rules/stage1_qc_trim_ec/unzip/unzip.smk"
 
 include:
     "workflows/snakemake_rules/stage1_qc_trim_ec/quality_control/fastqc.smk"
 
-# pigz -p 23 -dc a.fastq.gz > l.fq
+include:
+    "workflows/snakemake_rules/stage1_qc_trim_ec/trimming/bbduk_trimming.smk"
+
+
+#Negative control script
+
 
 # rule create_output_folder:
 #     output:
