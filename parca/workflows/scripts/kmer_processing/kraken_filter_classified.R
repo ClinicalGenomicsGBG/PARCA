@@ -25,14 +25,15 @@ read_and_filter_kraken_file <- function(file_name, kmer_len) {
 }
 
 kraken_files %>%
-  map_dfr(~{read_and_filter_kraken_file(.x,kmer_len)}) %T>%  
-  print() %>% 
+  map_dfr(~{read_and_filter_kraken_file(.x,kmer_len)}) %>%
+  group_by(seq_id) %>% arrange(desc(matches)) %>% slice(1) %>% ungroup() %>% 
   write_tsv(path = output_file) %>% 
-  group_by(type) %>% 
+  #print() %>%
+  group_by(type) %>%
   summarise(count=n()) %>% 
-  print() %>%
+  bind_rows(summarise_all(., funs(ifelse(is.numeric(.),sum(.),"Total")))) %>% 
+  #print() %>% 
   write_tsv(path = classified_count_file)
-
 
 
 # kraken_files <- "/Users/pernillaericsson/Documents/medair1/apps/bio/dev_repos/parca/demo/kraken_filtered_viruses.txt"
@@ -42,3 +43,4 @@ kraken_files %>%
 # 
 # kraken_es <- "/Users/pernillaericsson/Documents/medair1/apps/bio/dev_repos/parca/demo/kraken_filtered_cows.txt"
 # kraken_files <- c(kraken_files, kraken_es)
+
