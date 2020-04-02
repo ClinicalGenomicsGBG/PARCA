@@ -35,6 +35,22 @@ def settings(RNA="", raw_sample_dir="", samples="", suffix_fwd=".fastq", suffix_
 
     return nucleotide, sample_type, sample_ids
 
+def kraken_kaiju_settings(nucleotide):
+    if nucleotide == "DNA":
+        kraken_db_list = config['krakendb_DNA']
+        kraken_limits_list = config['krakendblimits_DNA']
+        kaiju_db_list = config['kaijudb_DNA']
+        kaiju_score_list = config['kaijuscore_DNA']
+        kaiju_matches_list = config['kaijumatches_DNA']
+        kaiju_errors_list  = config['kaijuerrors_DNA']
+    elif nucleotide == "RNA":
+        kraken_db_list = config['krakendb_RNA']
+        kraken_limits_list = config['krakendblimits_RNA']
+        kaiju_db_list = config['kaijudb_RNA']
+        kaiju_score_list = config['kaijuscore_RNA']
+        kaiju_matches_list = config['kaijumatches_RNA']
+        kaiju_errors_list  = config['kaijuerrors_RNA']
+    return kraken_db_list, kraken_limits_list, kaiju_db_list, kaiju_score_list, kaiju_matches_list, kaiju_errors_list
 
 RNA = config['RNA']
 raw_sample_dir=config['sampledir']
@@ -49,19 +65,21 @@ nucleotide, sample_type, sample_ids = settings(
             suffix_fwd, 
             suffix_rev)
 
+# kraken_db_list, kraken_limits_list, kaiju_db_list, kaiju_score_list, kaiju_matches_list, kaiju_errors_list = kraken_kaiju_settings(nucleotide)
+
 rule all:
     input: 
-        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
+        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_filtered_classified.txt",
             outdir=config['outdir'],
             sample=sample_ids,
             sample_type=sample_type,
-            nucleotide=nucleotide),
-        expand("{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage2/kmer_input/count_kmer_input.txt",
-            outdir=config['outdir'],
-            sample=sample_ids,
-            sample_type=sample_type,
-            nucleotide=nucleotide)     
-
+            nucleotide=nucleotide)
+        # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.txt",
+        #     outdir=config['outdir'],
+        #     sample=sample_ids,
+        #     sample_type=sample_type,
+        #     nucleotide=nucleotide,
+        #     kraken_db=config['krakendb_RNA'][0]),
 
 
 # rule all:
@@ -119,8 +137,8 @@ include:
     "workflows/snakemake_rules/stage2_assembly/merge_contigs_unmapped/merge_contigs_unmapped.smk"
 include:
     "workflows/snakemake_rules/stage3_kraken_kaiju/kraken_rules/kraken.smk"
-include:
-    "workflows/snakemake_rules/stage3_kraken_kaiju/kaiju_rules/kaiju.smk"
+# include:
+#     "workflows/snakemake_rules/stage3_kraken_kaiju/kaiju_rules/kaiju.smk"
 
 
 # rule add_negative_control:

@@ -9,4 +9,6 @@ dependencies:
   - pigz=2.4=h84994c4_0
   - megahit=1.1.3
   - bc=1.07.1
+  #- kraken2=2.0.8_beta
+  - kaiju=1.7.3
 

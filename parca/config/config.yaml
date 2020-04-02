@@ -30,8 +30,48 @@ conda_environment:
   "/apps/bio/dev_repos/parca/parca/workflows/conda/parca_container_env.yml"
 
 
-# Programs
+# PROGRAMS
 pollux_path: 
   "/apps/bio/apps/pollux/1.0.2/bin/pollux"
 fiona_path: 
   "/apps/bio/software/fiona/0.2.9/bin/fiona"
+kraken_path: 
+  "/apps/CLC_ExternalApps/kraken2"
+#kaiju_path: 
+# ""
+
+## Kraken settings
+kraken_db_base_path: "/medstore/External_References/krakdb_hll"
+
+krakendb_RNA: ["eukaryotes_cds","viruses","bacteria_progenomes_cds_total"]
+krakendblimits_RNA: ["0.15","0.05","0.05"]
+
+krakendb_DNA: ["eukaryotes_768","viruses","bacteria_progenomes_total_768"]
+krakendblimits_DNA: ["0.15","0.05","0.05"]
+
+## Kaiju settings
+kaiju_db_base_path: "/tmp/pathfinder_dbs" #cp -r /medstore/Development/Metagenomics/PathFinder43b/databases/* /tmp/pathfinder_dbs
+kaiju_names: /tmp/pathfinder_dbs/nodes.dmp"
+
+kaijudb_RNA: ["progenomes_complete","genbank_eukaryotes_171014_kaiju_db","genbank_viruses_171017_kaiju_db"]
+kaijuscore_RNA: ["80", "85","75"]
+kaijumatches_RNA: ["18","20","15"]
+kaijuerrors_RNA: ["2","2","3"]
+
+kaijudb_DNA: ["progenomes_complete","genbank_eukaryotes_171014_kaiju_db","genbank_viruses_171017_kaiju_db"]
+kaijuscore_DNA: ["80", "85","75"]
+kaijumatches_DNA: ["18","20","15"]
+kaijuerrors_DNA: ["2","2","3"]
+
+#RNA
+# @kaijudb=("progenomes_complete","genbank_eukaryotes_171014_kaiju_db","genbank_viruses_171017_kaiju_db");
+# @kaijuscore=("80", "85","75");
+# @kaijumatches=("18","20","15");
+# @kaijuerrors=("2","2","3");
+#DNA
+# @kaijudb=("progenomes_complete","genbank_eukaryotes_171014_kaiju_db","genbank_viruses_171017_kaiju_db");
+# @kaijuscore=("80", "85","75");
+# @kaijumatches=("18","20","15");
+# @kaijuerrors=("2","2","3");
+
+
