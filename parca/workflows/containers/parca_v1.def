@@ -1,0 +1,43 @@
+BootStrap: library
+From: ubuntu:18.04
+
+%help
+	making an image for fun a sunday evening
+
+%labels
+	DESCRIPTION PARCA singularity image
+	AUTHOR Pernilla Ericsson
+
+# RUN instruction (e.g. download files, install software)
+%post
+	apt-get -y update
+	apt-get install -y --no-install-recommends bzip2 ca-certificates curl build-essential 
+	apt-get clean
+
+	#install conda
+	curl https://repo.continuum.io/miniconda/Miniconda3-4.6.14-Linux-x86_64.sh -O
+	bash Miniconda3-4.6.14-Linux-x86_64.sh -bf -p /usr/miniconda3/
+	rm Miniconda3-4.6.14-Linux-x86_64.sh
+	export PATH=/usr/miniconda3/bin:$PATH 
+
+    conda config --add channels defaults
+	conda config --add channels bioconda
+	conda config --add channels conda-forge
+
+	conda clean --all
+
+%test
+    export PATH=/usr/miniconda3/bin:$PATH
+	conda --version
+
+#%files
+#	lolcow_latest.sif
+
+# ENVIRONMENT (set environment variables)
+%environment 
+	export LC_ALL=C
+	export PATH=/usr/miniconda3/bin:$PATH
+
+# similar to docker CMD (Default command executed when running the container)
+%runscript
+    $@

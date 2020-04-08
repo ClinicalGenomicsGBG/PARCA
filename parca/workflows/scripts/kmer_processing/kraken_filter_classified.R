@@ -24,14 +24,19 @@ read_and_filter_kraken_file <- function(file_name, kmer_len) {
     select(seq_id, tax_id, matches, classified, type)
 }
 
-kraken_files %>%
+best_classifications <- 
+  kraken_files %>%
   map_dfr(~{read_and_filter_kraken_file(.x,kmer_len)}) %>%
   group_by(seq_id) %>% arrange(desc(matches)) %>% slice(1) %>% ungroup() %>% 
   write_tsv(path = output_file) %>% 
   #print() %>%
   group_by(type) %>%
-  summarise(count=n()) %>% 
-  bind_rows(summarise_all(., funs(ifelse(is.numeric(.),sum(.),"Total")))) %>% 
+  summarise(count=n()) 
+
+best_classifications %>% 
+  summarize("count"=sum(count))  %>% 
+  mutate(type="Total") %>% 
+  bind_rows(best_classifications,.) %>% 
   #print() %>% 
   write_tsv(path = classified_count_file)
 

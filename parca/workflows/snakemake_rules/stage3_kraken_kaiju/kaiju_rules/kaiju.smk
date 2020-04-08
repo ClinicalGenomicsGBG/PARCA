@@ -6,7 +6,7 @@ rule kaiju:
     params:
         #kaiju_path=config['kaiju_path'],
         kaiju_db_base_path=config['kaiju_db_base_path'],
-        kaijunames=config['kaijunames']
+        kaijunames=config['kaiju_names']
     threads: 110
     conda: config['conda_environment']
     shell:
@@ -23,3 +23,21 @@ rule kaiju:
             -a greedy \
             -o {output.kaiju};
         """
+
+# rule 
+# $kaijuacceptedreads, $kaijuhashref
+
+# rule kaiju_run_RNA:
+#     """
+#     Filter best classified read.
+#     """
+#     input:
+#         krakenfile=expand("{{outdir}}/snakemake_results_{{sample}}/{{sample_type}}_DNA/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt", 
+#             zip,
+#             kraken_db=config['krakendb_DNA'], 
+#             db_limits=config['krakendblimits_DNA'])
+#     output:
+#         kraken_classified_filtered="{outdir}/snakemake_results_{sample}/{sample_type}_DNA/stage3/kraken/kraken_filtered_classified.txt",
+#         read_count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_DNA/stage3/kraken/count_kraken_filtered_classified.txt"
+
+#     conda: config['conda_environment']

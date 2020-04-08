@@ -3,12 +3,18 @@ channels:
   - defaults
   - bioconda
   - conda-forge
+  - r
 dependencies:
   - bbmap=38.79=h516909a_0
   - fastqc=0.11.9=0
   - pigz=2.4=h84994c4_0
   - megahit=1.1.3
   - bc=1.07.1
-  #- kraken2=2.0.8_beta
+  - kraken2=2.0.8_beta
   - kaiju=1.7.3
+  - r-base=3.6.1
+  - r-magrittr=1.5
+  - r-tidyverse=1.2.1
+  - r-data.table=1.12.2
+
 
