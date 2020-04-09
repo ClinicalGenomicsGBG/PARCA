@@ -22,7 +22,7 @@ rule kraken:
             &>{log}; 
         """
 
-rule kraken_filter:
+rule kraken_filter_score:
     input: 
         kraken="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.txt"
     output:  
@@ -30,9 +30,7 @@ rule kraken_filter:
     params:
         kraken_path=config['kraken_path'],
         kraken_db_base_path=config['kraken_db_base_path']
-    #threads: 110
     conda: config['conda_environment']
-
     shell:
         """
         {params.kraken_path}/kraken-filter \
@@ -42,41 +40,38 @@ rule kraken_filter:
             > {output.filtered};
         """
 
-rule filter_kraken_classified_RNA:
+rule kraken_filter_classified_RNA:
     input:
-        krakenfile=expand("{{outdir}}/snakemake_results_{{sample}}/{{sample_type}}_RNA/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt", 
+        files=expand("{{outdir}}/snakemake_results_{{sample}}/{{sample_type}}_RNA/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt", 
             zip,
             kraken_db=config['krakendb_RNA'], 
             db_limits=config['krakendblimits_RNA'])
     output:
-        kraken_classified_filtered="{outdir}/snakemake_results_{sample}/{sample_type}_RNA/stage3/kraken/kraken_filtered_classified.txt",
+        classified_filtered="{outdir}/snakemake_results_{sample}/{sample_type}_RNA/stage3/kraken/kraken_filtered_classified.txt",
         read_count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_RNA/stage3/kraken/count_kraken_filtered_classified.txt"
     params:
-        kmer_len=30
+        program="kraken"
     conda: config['conda_environment']
     script:
-        "../../../scripts/kmer_processing/kraken_filter_classified.R"
+        "../../../scripts/kmer_processing/filter_classified.R"
 
-rule filter_kraken_classified_DNA:
+rule kraken_filter_classified_DNA:
     """
     Filter best classified read.
     """
     input:
-        krakenfile=expand("{{outdir}}/snakemake_results_{{sample}}/{{sample_type}}_DNA/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt", 
+        files=expand("{{outdir}}/snakemake_results_{{sample}}/{{sample_type}}_DNA/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt", 
             zip,
             kraken_db=config['krakendb_DNA'], 
             db_limits=config['krakendblimits_DNA'])
     output:
-        kraken_classified_filtered="{outdir}/snakemake_results_{sample}/{sample_type}_DNA/stage3/kraken/kraken_filtered_classified.txt",
+        classified_filtered="{outdir}/snakemake_results_{sample}/{sample_type}_DNA/stage3/kraken/kraken_filtered_classified.txt",
         read_count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_DNA/stage3/kraken/count_kraken_filtered_classified.txt"
     params:
-        kmer_len=30
+        program="kraken"
     conda: config['conda_environment']
     script:
-        "../../../scripts/kmer_processing/kraken_filter_classified.R"
-
-
-
+        "../../../scripts/kmer_processing/filter_classified.R"
 
 rule kraken2_SE:
     input: 
@@ -99,4 +94,4 @@ rule kraken2_SE:
             --output {output.kraken} \
             --report {output.report} \
             &>{log}; 
-        """ #--preload \
+        """ 
