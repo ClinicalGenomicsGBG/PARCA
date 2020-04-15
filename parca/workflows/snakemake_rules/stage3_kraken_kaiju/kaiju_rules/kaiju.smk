@@ -4,7 +4,6 @@ rule kaiju:
     output:
         kaiju="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.txt"
     params:
-        #kaiju_path=config['kaiju_path'],
         kaiju_db_base_path=config['kaiju_db_base_path'],
         kaijunames=config['kaiju_names']
     threads: 110
@@ -26,31 +25,19 @@ rule kaiju:
 
 rule kaiju_filter_classified_RNA:
     input:
-        ""
+        files=expand("{{outdir}}/snakemake_results_{{sample}}/{{sample_type}}_RNA/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.txt",
+            zip,
+            kaiju_db=config['kaijudb_RNA'], 
+            kaiju_score=config['kaijuscore_RNA'],
+            kaiju_matches=config['kaijumatches_RNA'] ) 
     output:
-        ""
+        classified_filtered="{outdir}/snakemake_results_{sample}/{sample_type}_RNA/stage3/kaiju/kaiju_filtered_classified.txt",
+        read_count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_RNA/stage3/kaiju/count_kaiju_filtered_classified.txt"
+    params:
+        program="kaiju"
+    conda: config['conda_environment']
     script:
             "../../../scripts/kmer_processing/filter_classified.R"
-
-
-# rule 
-# $kaijuacceptedreads, $kaijuhashref
-
-# rule kaiju_run_RNA:
-#     """
-#     Filter best classified read.
-#     """
-#     input:
-#         krakenfile=expand("{{outdir}}/snakemake_results_{{sample}}/{{sample_type}}_DNA/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt", 
-#             zip,
-#             kraken_db=config['krakendb_DNA'], 
-#             db_limits=config['krakendblimits_DNA'])
-#     output:
-#         kraken_classified_filtered="{outdir}/snakemake_results_{sample}/{sample_type}_DNA/stage3/kraken/kraken_filtered_classified.txt",
-#         read_count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_DNA/stage3/kraken/count_kraken_filtered_classified.txt"
-
-#     conda: config['conda_environment']
-
 
 # Kaiju 1.5.0
 # Copyright 2015-2017 Peter Menzel, Anders Krogh
