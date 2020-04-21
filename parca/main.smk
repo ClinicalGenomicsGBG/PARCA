@@ -50,82 +50,24 @@ nucleotide, sample_type, sample_ids = settings(
 
 rule all:
     input: 
-        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju_names_unfiltered.txt",
+        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names.txt",
             outdir=config['outdir'],
             sample=sample_ids,
             sample_type=sample_type,
             nucleotide=nucleotide
             )
-        # expand("{outdir}/snakemake_results_{sample}/{sample_type}_RNA/stage3/{program}/{program}_filtered_classified.txt",
+        # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_added_SGF_empty_lineage.txt",
         #     outdir=config['outdir'],
         #     sample=sample_ids,
         #     sample_type=sample_type,
-        #     program=['kraken','kaiju']),
-        # expand("{outdir}/snakemake_results_{sample}/stats_{sample_type}_RNA/stage3/{program}/count_{program}_filtered_classified.txt",
+        #     nucleotide=nucleotide
+        #     )
+        # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju_names_unfiltered.txt",
         #     outdir=config['outdir'],
         #     sample=sample_ids,
         #     sample_type=sample_type,
-        #     program=['kraken','kaiju'])
-        # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken2/kraken_out_{kraken_db}_{db_limits}.txt",
-        #     outdir=config['outdir'],
-        #     sample=sample_ids,
-        #     sample_type=sample_type,
-        #     nucleotide=nucleotide,
-        #     kraken_db=config['kraken2_mini_db'],
-        #     db_limits=config['kraken2_limits'])
-        # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_filtered_classified.txt",
-        #     outdir=config['outdir'],
-        #     sample=sample_ids,
-        #     sample_type=sample_type,
-        #     nucleotide=nucleotide)
-        # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.txt",
-        #     outdir=config['outdir'],
-        #     sample=sample_ids,
-        #     sample_type=sample_type,
-        #     nucleotide=nucleotide,
-        #     kaiju_db=config['kaijudb_RNA'],
-        #     kaiju_score=config['kaijuscore_RNA'],
-        #     kaiju_matches=config['kaijumatches_RNA'])
-        # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.txt",
-        #     outdir=config['outdir'],
-        #     sample=sample_ids,
-        #     sample_type=sample_type,
-        #     nucleotide=nucleotide,
-        #     kraken_db=config['krakendb_RNA'][0]),
-
-
-# rule all:
-#     input:
-#         expand("{outdir}/snakemake_results_{sample}/stage2/pileup/bbmap_cov.txt",
-#                 outdir=config['outdir'], 
-#                 sample=sample)
-
-        # expand("{outdir}/snakemake_results_{sample}/stage2/megahit",
-        #         outdir=config['outdir'], 
-        #         sample=sample),
-        # expand("{outdir}/snakemake_results_{sample}/stats/stage2/megahit/assembled_contig_count.txt",
-        #         outdir=config['outdir'], 
-        #         sample=sample)
-    
-        ##FASTQC
-        # expand("{outdir}/snakemake_results_{sample}/stage1/qc/{sample}_fastqc.{fmt}", 
-        #     outdir=config['outdir'], 
-        #     sample=sample, fmt=["zip","html"])
-        ##TRIMMING
-        # expand("{outdir}/snakemake_results_{sample}/stage1/trimming/trimmed_reads.fq", 
-        #         outdir=config['outdir'], 
-        #         sample=sample),
-        # expand("{outdir}/snakemake_results_{sample}/stats/stage1/trimming/bbduk_stats.txt",
-        #         outdir=config['outdir'], 
-        #         sample=sample)
-        ##POLLUX
-        # expand("{outdir}/snakemake_results_{sample}/stage1/pollux/trimmed_reads.corrected.fq",
-        #         outdir=config['outdir'], 
-        #         sample=sample)
-        ##FIONA
-        # expand("{outdir}/snakemake_results_{sample}/stage1/fiona/trimmed_reads_fiona.fq",
-        #         outdir=config['outdir'], 
-        #         sample=sample)
+        #     nucleotide=nucleotide
+        #     ),
 
 
 ##STAGE 1
@@ -156,7 +98,8 @@ include:
 ##STAGE 4
 include:
     "workflows/snakemake_rules/stage4_parse_hits/parse_hits.smk"
-
+include:
+    "workflows/snakemake_rules/stage4_parse_hits/taxonomy_processing.smk"
 
 
 # rule add_negative_control:

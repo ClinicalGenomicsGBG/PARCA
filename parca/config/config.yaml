@@ -67,6 +67,6 @@ kaijumatches_DNA: ["18","20","15"]
 #kaijuerrors_DNA: ["2","2","3"]
 
 ## Nodes and names file
-nodes: "/medstore/Development/Metagenomics/PathFinder43b/databases/nodes.dmp"
-names: "/medstore/Development/Metagenomics/PathFinder43b/databases/names.dmp"
-
+#nodes: "/medstore/Development/Metagenomics/PathFinder43b/databases/nodes.dmp"
+#names: "/medstore/Development/Metagenomics/PathFinder43b/databases/names.dmp"
+names_nodes_dmp_dir: "/apps/bio/dev_repos/parca/demo/ref/names_and_nodes" #"/medstore/Development/Metagenomics/PathFinder43b/databases"
