@@ -50,7 +50,7 @@ nucleotide, sample_type, sample_ids = settings(
 
 rule all:
     input: 
-        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names.txt",
+        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt",
             outdir=config['outdir'],
             sample=sample_ids,
             sample_type=sample_type,

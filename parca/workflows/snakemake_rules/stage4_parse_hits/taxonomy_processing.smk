@@ -7,6 +7,26 @@
 #     conda: config['conda_environment']
 #     script:
 #         "../../scripts/taxonomy_processing/create_taxonomy_db.R"
+rule add_taxon_names_doublets:
+    input:
+        combined="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju.txt"
+    output:
+        named="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju_names_unfiltered.txt"
+    params:
+        names_nodes_dmp_dir=config['names_nodes_dmp_dir']
+        #nodes=config['nodes'],
+        #names=config['names']
+    conda: config['conda_environment']
+    shell:
+        """
+        kaiju-addTaxonNames \
+        -t {params.names_nodes_dmp_dir}/nodes.dmp \
+        -n {params.names_nodes_dmp_dir}/names.dmp \
+        -i {input.combined} \
+        -o {output.named} \
+        -r superkingdom,class,order,family,genus,species;
+        """
+
 
 rule filter_SGF_empty:
     input: 
@@ -73,15 +93,23 @@ rule add_taxon_names_singletons:
         -r superkingdom,class,order,family,genus,species;
         """
 
-rule name:
+rule reformat_singletons:
     input: 
+        singletons_genus_names="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names.txt"
     output: 
+        singletons_genus_names_reformat="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names_reformat.txt"
+    conda: config['conda_environment']
     script:
-        "" 
-        # df_clean <- 
-        #     df %>% 
-        #     separate(col=tax_names_lineage, 
-        #                     into=c("superkingdom","class","order","family","genus","species","other"),
-        #                     sep=";",
-        #                     extra = "merge") %>% select(-other) %>% 
-        #     mutate_if(is.character, str_trim) %>% mutate_all(na_if,"NA") 
+        "../../scripts/taxonomy_processing/reformat_taxonomy.R"  
+
+rule merge_combined_with_singletons:
+    input: 
+        singletons_genus_names_reformat="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names_reformat.txt",
+        combined_SGF_empty_filter="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_kraken_kaiju_names.txt"
+    output: 
+        combined_doublets_singletons="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt"
+    shell: 
+        """
+        cat {input.singletons_genus_names_reformat} > {output.combined_doublets_singletons}
+        awk '$1!="classified"' {input.combined_SGF_empty_filter} >> {output.combined_doublets_singletons}
+        """

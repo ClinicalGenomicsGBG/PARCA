@@ -36,22 +36,4 @@ rule merge_doublets:
         """
 #"mergeOutputs -i $outdir/kaiju_compare.txt -j $outdir/kraken_compare.txt -o $outdir/combined_kraken_kaiju.txt -v -c lowest -t /tmp/pathfinder_dbs/nodes.dmp";
 
-rule add_taxon_names_doublets:
-    input:
-        combined="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju.txt"
-    output:
-        named="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju_names_unfiltered.txt"
-    params:
-        names_nodes_dmp_dir=config['names_nodes_dmp_dir']
-        #nodes=config['nodes'],
-        #names=config['names']
-    conda: config['conda_environment']
-    shell:
-        """
-        kaiju-addTaxonNames \
-        -t {params.names_nodes_dmp_dir}/nodes.dmp \
-        -n {params.names_nodes_dmp_dir}/names.dmp \
-        -i {input.combined} \
-        -o {output.named} \
-        -r superkingdom,class,order,family,genus,species;
-        """
+

@@ -35,6 +35,7 @@ lineage_df <-
 
 singletons_tax <- left_join(df,lineage_df, by="tax_id")
 
+reassigned=c()
 
 singletons_tax_genus <- 
   singletons_tax %>% 
@@ -42,17 +43,28 @@ singletons_tax_genus <-
   mutate(
     final_tax_id = ifelse(
       str_detect(rank, "species")|!is.na(species),
-      paste(tax_id, kingdom, phylum, class, order, family, genus, sep="__") %>% str_remove_all(pattern = "NA__|__NA|NA") %>% str_remove("\\w+__") ,
-      ifelse(is.na(genus), tax_id, genus )
+      paste(tax_id, kingdom, phylum, class, order, family, genus, sep="__") %>% str_remove_all(pattern = "NA__|__NA|NA") %>% str_remove("\\w+__"),
+      ifelse(is.na(genus), tax_id, genus)
     )
   ) %>% 
-  select(classified, seq_id, genus, final_tax_id)
+  select(classified, seq_id, rank,species, genus, final_tax_id)
+
+total <- singletons_tax_genus %>% 
+  count() %>% 
+  rename("count"=n) %>% 
+  bind_cols(reclassified="total",.)
 
 singletons_tax_genus %>% 
-  filter(genus==final_tax_id) %>% 
-  count() %>%
-  rename("count"=n) %>% 
-  bind_cols(type="genus",.) %>% 
+  mutate(
+    reclassified = ifelse(
+      str_detect(rank, "species")|!is.na(species), 
+      "yes", 
+      ifelse(is.na(genus), "no", "yes") 
+    )
+  ) %>% 
+  group_by(reclassified) %>% 
+  summarise(count=n()) %>% 
+  bind_rows(total) %>% 
   write_tsv(singletons_genus_stats_file)
 
 singletons_tax_genus %>% 
