@@ -73,25 +73,25 @@ rule kraken_filter_classified_DNA:
     script:
         "../../../scripts/kmer_processing/filter_classified.R"
 
-rule kraken2_SE:
-    input: 
-        kmer_input="{outdir}/snakemake_results_{sample}/SE_{nucleotide}/stage2/kmer_input/kmer_input.fasta"
-    output:  
-        kraken="{outdir}/snakemake_results_{sample}/SE_{nucleotide}/stage3/kraken2/kraken_out_{kraken_db}_{db_limits}.txt",
-        report="{outdir}/snakemake_results_{sample}/SE_{nucleotide}/stage3/kraken2/kraken_report_{kraken_db}_{db_limits}.txt"
-    params:
-        kraken2_db_base_path=config['kraken2_db_base_path']
-    threads: 110
-    conda: config['conda_environment']
-    log:"{outdir}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage3/kraken2/kraken_log_{kraken_db}_{db_limits}.log"
-    shell:
-        """
-        kraken2 \
-            --confidence {wildcards.db_limits} \
-            --db {params.kraken2_db_base_path}/{wildcards.kraken_db} \
-            --threads {threads} \
-            --fasta-input {input.kmer_input} \
-            --output {output.kraken} \
-            --report {output.report} \
-            &>{log}; 
-        """ 
+# rule kraken2_SE:
+#     input: 
+#         kmer_input="{outdir}/snakemake_results_{sample}/SE_{nucleotide}/stage2/kmer_input/kmer_input.fasta"
+#     output:  
+#         kraken="{outdir}/snakemake_results_{sample}/SE_{nucleotide}/stage3/kraken2/kraken_out_{kraken_db}_{db_limits}.txt",
+#         report="{outdir}/snakemake_results_{sample}/SE_{nucleotide}/stage3/kraken2/kraken_report_{kraken_db}_{db_limits}.txt"
+#     params:
+#         kraken2_db_base_path=config['kraken2_db_base_path']
+#     threads: 110
+#     conda: config['conda_environment']
+#     log:"{outdir}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage3/kraken2/kraken_log_{kraken_db}_{db_limits}.log"
+#     shell:
+#         """
+#         kraken2 \
+#             --confidence {wildcards.db_limits} \
+#             --db {params.kraken2_db_base_path}/{wildcards.kraken_db} \
+#             --threads {threads} \
+#             --fasta-input {input.kmer_input} \
+#             --output {output.kraken} \
+#             --report {output.report} \
+#             &>{log}; 
+#         """ 

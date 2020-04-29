@@ -113,3 +113,13 @@ rule merge_combined_with_singletons:
         cat {input.singletons_genus_names_reformat} > {output.combined_doublets_singletons}
         awk '$1!="classified"' {input.combined_SGF_empty_filter} >> {output.combined_doublets_singletons}
         """
+
+rule genus_species_split:
+    input: 
+        combined_doublets_singletons="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt"
+    output:
+        species="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/species_classed.txt",
+        higher="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/above_species_classed.txt",
+        read_count = "{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_species_genus_higher.txt"
+    conda: config['conda_environment']
+    script: "../../scripts/taxonomy_processing/genus_species_split.R" 

@@ -41,7 +41,8 @@ rule bbduk_trimming_SE:
                 ref={params.adapters} \
                 {params.adaptertrimcommand} &> {log}; \
         fi; \
-        echo $(cat {output.reads}|wc -l)/4|bc  > {output.trimmed_read_count}
+        echo count > {output.trimmed_read_count}
+        echo $(cat {output.reads}|wc -l)/4|bc  >> {output.trimmed_read_count}
         """
 
 # in=<file>           Main input. in=stdin.fq will pipe from stdin.

@@ -8,8 +8,8 @@ sampledir:
 adapters:
 - "None"
 samples: #leave empty if you want to use all fastq-files in a sample directory
-#- "S04_S5_02_22_41_KV16-8204OM-L_180530"
 - "a"
+#- "S04_S5_02_22_41_KV16-8204OM-L_180530"
 #- "l"
 #- SRR1761912
 

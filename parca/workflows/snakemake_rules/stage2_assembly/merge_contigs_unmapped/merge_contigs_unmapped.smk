@@ -9,5 +9,6 @@ rule create_kmer_classifier_input_SE_RNA:
     shell:
         """
         cat {input.contigs} {input.unmapped_reads} > {output.kmer_input};
-        echo $(cat {output.kmer_input}|wc -l)/4|bc  > {output.read_count};
+        echo count > {output.read_count};
+        echo $(cat {output.kmer_input}|wc -l)/4|bc  >> {output.read_count};
         """
