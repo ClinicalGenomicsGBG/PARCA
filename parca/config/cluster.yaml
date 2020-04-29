@@ -1,0 +1,9 @@
+__default__:
+  cores: 10
+  queue: cgg_short.q@yavin.medair.lcl
+
+#$ -cwd
+#$ -S /bin/bash
+#$ -pe mpi 120
+#$ -q wgs.q@kuat.medair.lcl
+#$ -l excl=1

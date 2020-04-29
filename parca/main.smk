@@ -1,4 +1,5 @@
 #  snakemake -nrp -s main.smk --use-singularity --use-conda --cores 23 --latency-wait 60
+##snakemake -nrp -s main.smk --use-singularity --use-conda --cluster-config cluster.yaml --drmaa "qsub -S /bin/bash -pe mpi {cluster.cores} -q {cluster.queue} -N {rule} -l excl=1 -S /bin/bash" --jobs 999 --latency-wait 60
 # not necessary with snakemake version 5.5.4: --singularity-args "-H /home/xerpey"
 # snakemake --rulegraph a_b.txt | dot -Tpng > rulegraph.png
 # #shell.prefix('PATH=$PATH;')
@@ -50,12 +51,27 @@ nucleotide, sample_type, sample_ids = settings(
 
 rule all:
     input: 
-        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt",
+        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/species_classed.txt",
             outdir=config['outdir'],
             sample=sample_ids,
             sample_type=sample_type,
-            nucleotide=nucleotide
-            )
+            nucleotide=nucleotide),
+        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/above_species_classed.txt",
+            outdir=config['outdir'],
+            sample=sample_ids,
+            sample_type=sample_type,
+            nucleotide=nucleotide),
+        expand("{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_species_genus_higher.txt",
+            outdir=config['outdir'],
+            sample=sample_ids,
+            sample_type=sample_type,
+            nucleotide=nucleotide)
+        #expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt",
+            # outdir=config['outdir'],
+            # sample=sample_ids,
+            # sample_type=sample_type,
+            # nucleotide=nucleotide
+            # )
         # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_added_SGF_empty_lineage.txt",
         #     outdir=config['outdir'],
         #     sample=sample_ids,
@@ -95,11 +111,14 @@ include:
     "workflows/snakemake_rules/stage3_kraken_kaiju/kraken_rules/kraken.smk"
 include:
     "workflows/snakemake_rules/stage3_kraken_kaiju/kaiju_rules/kaiju.smk"
+
 ##STAGE 4
 include:
     "workflows/snakemake_rules/stage4_parse_hits/parse_hits.smk"
 include:
     "workflows/snakemake_rules/stage4_parse_hits/taxonomy_processing.smk"
+
+##STAGE 5
 
 
 # rule add_negative_control:
