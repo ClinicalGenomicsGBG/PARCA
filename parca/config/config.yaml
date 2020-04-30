@@ -9,6 +9,7 @@ adapters:
 - "None"
 samples: #leave empty if you want to use all fastq-files in a sample directory
 - "a"
+#- "b"
 #- "S04_S5_02_22_41_KV16-8204OM-L_180530"
 #- "l"
 #- SRR1761912
@@ -70,3 +71,7 @@ kaijumatches_DNA: ["18","20","15"]
 #nodes: "/medstore/Development/Metagenomics/PathFinder43b/databases/nodes.dmp"
 #names: "/medstore/Development/Metagenomics/PathFinder43b/databases/names.dmp"
 names_nodes_dmp_dir: "/apps/bio/dev_repos/parca/demo/ref/names_and_nodes" #"/medstore/Development/Metagenomics/PathFinder43b/databases"
+
+
+# BLAST
+existing_slice_path: "/medstore/Development/Metagenomics/PathFinder43b/databases/gislices"

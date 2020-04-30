@@ -51,39 +51,19 @@ nucleotide, sample_type, sample_ids = settings(
 
 rule all:
     input: 
-        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/species_classed.txt",
+        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/{which}_slices",
             outdir=config['outdir'],
             sample=sample_ids,
             sample_type=sample_type,
-            nucleotide=nucleotide),
-        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/above_species_classed.txt",
-            outdir=config['outdir'],
-            sample=sample_ids,
-            sample_type=sample_type,
-            nucleotide=nucleotide),
-        expand("{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_species_genus_higher.txt",
-            outdir=config['outdir'],
-            sample=sample_ids,
-            sample_type=sample_type,
-            nucleotide=nucleotide)
+            nucleotide=nucleotide,
+            which=["existing", "downloaded"]
+            )
         #expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt",
             # outdir=config['outdir'],
             # sample=sample_ids,
             # sample_type=sample_type,
             # nucleotide=nucleotide
             # )
-        # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_added_SGF_empty_lineage.txt",
-        #     outdir=config['outdir'],
-        #     sample=sample_ids,
-        #     sample_type=sample_type,
-        #     nucleotide=nucleotide
-        #     )
-        # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju_names_unfiltered.txt",
-        #     outdir=config['outdir'],
-        #     sample=sample_ids,
-        #     sample_type=sample_type,
-        #     nucleotide=nucleotide
-        #     ),
 
 
 ##STAGE 1
@@ -119,7 +99,8 @@ include:
     "workflows/snakemake_rules/stage4_parse_hits/taxonomy_processing.smk"
 
 ##STAGE 5
-
+include:
+    "workflows/snakemake_rules/stage5_blast_processing/blast_processing.smk"
 
 # rule add_negative_control:
 #     input: ""
