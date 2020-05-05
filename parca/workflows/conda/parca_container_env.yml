@@ -18,5 +18,7 @@ dependencies:
   - r-data.table=1.12.2
   #- r-taxonomizr=0.5.3
   - taxonkit=0.5.0
+  - r-xml=3.98_1.19 #stage5_blast_processing/blast_processing.smk (merge_downloaded_slices.R)
+  - blast=2.9.0 #Stage5_blast_processing/blast_processing.smk (rule create_blastdb_alias)
 
 

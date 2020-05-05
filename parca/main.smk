@@ -43,20 +43,19 @@ suffix_fwd = config['suffix_fwd']
 suffix_rev = config['suffix_rev']
 
 nucleotide, sample_type, sample_ids = settings(
-            RNA,
-            raw_sample_dir, 
-            samples, 
-            suffix_fwd, 
-            suffix_rev)
+    RNA,
+    raw_sample_dir, 
+    samples, 
+    suffix_fwd, 
+    suffix_rev)
 
 rule all:
     input: 
-        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/{which}_slices",
+        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/alias_done",
             outdir=config['outdir'],
             sample=sample_ids,
             sample_type=sample_type,
-            nucleotide=nucleotide,
-            which=["existing", "downloaded"]
+            nucleotide=nucleotide
             )
         #expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt",
             # outdir=config['outdir'],
@@ -64,7 +63,6 @@ rule all:
             # sample_type=sample_type,
             # nucleotide=nucleotide
             # )
-
 
 ##STAGE 1
 include:
@@ -96,11 +94,11 @@ include:
 include:
     "workflows/snakemake_rules/stage4_parse_hits/parse_hits.smk"
 include:
-    "workflows/snakemake_rules/stage4_parse_hits/taxonomy_processing.smk"
+    "workflows/snakemake_rules/stage4_parse_hits/taxonomy_processing.smk" 
 
 ##STAGE 5
 include:
-    "workflows/snakemake_rules/stage5_blast_processing/blast_processing.smk"
+    "workflows/snakemake_rules/stage5_blast_processing/blast_processing.smk" 
 
 # rule add_negative_control:
 #     input: ""
