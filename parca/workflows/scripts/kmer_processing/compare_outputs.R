@@ -1,5 +1,6 @@
-#
-#
+# Script for writing classified read ids to singletons if only kaiju or kraken classified the read and to a kraken or kaiju doublets file if both classified the reads. 
+# Author: Pernilla Ericsson (pernilla.ericsson@gu.se)
+# Date: 2020-05
 
 suppressPackageStartupMessages({
   library(tidyverse)
@@ -35,13 +36,22 @@ merged_df <- kmer_files %>%
   write_tsv(path=merged_file, col_names = FALSE) 
   #print()
 
+if (nrow(merged_df) == 0) {
+  write_tsv(tibble(type="Doublets", count=0), path = doublet_count_file)
+  write_tsv(tibble(), path=kraken_doublets_file, col_names = FALSE)
+  write_tsv(tibble(), path=kaiju_doublets_file, col_names = FALSE)
+  write_tsv(tibble(), path=singletons_file, col_names = FALSE)
+  write_tsv(tibble(type="Singletons", count=0), path = singletons_count_file)
+  quit(save = "no", status = 0)
+}
+
 doublet <-
   merged_df %>% 
   group_by(seq_id) %>% 
   summarise(hits=n()) %>% 
   filter(hits==2) %>%
   pull(seq_id)
-write_tsv(tibble("Doublets", length(doublet)), path = doublet_count_file, col_names = FALSE)
+write_tsv(tibble(type="Doublets", count=length(doublet)), path = doublet_count_file)
 
 
 merged_df_doublets <- 

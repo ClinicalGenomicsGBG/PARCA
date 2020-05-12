@@ -15,7 +15,7 @@ rule bbduk_trimming_SE:
     benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_SE_{nucleotide}/stage1/trimming.txt"
     shell:
         """
-        adapter={params.adapters}
+        adapter={params.adapters};
         if [[ -z ${{adapter/None/}} ]]; then
             bbduk.sh \
                 in={input} \
@@ -41,8 +41,8 @@ rule bbduk_trimming_SE:
                 ref={params.adapters} \
                 {params.adaptertrimcommand} &> {log}; \
         fi; \
-        echo count > {output.trimmed_read_count}
-        echo $(cat {output.reads}|wc -l)/4|bc  >> {output.trimmed_read_count}
+        echo count > {output.trimmed_read_count};
+        echo $(cat {output.reads}|wc -l)/4|bc  >> {output.trimmed_read_count};
         """
 
 # in=<file>           Main input. in=stdin.fq will pipe from stdin.

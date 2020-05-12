@@ -14,5 +14,5 @@ rule quality_control_raw:
         """
         fastqc -o {params.dir} \
                -t {threads} \
-               {input}
+               {input};
         """

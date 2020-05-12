@@ -1,5 +1,9 @@
-#
-#
+# Script for creating files with accessions of a tax id, called after each taxid.
+# Author: Pernilla Ericsson (pernilla.ericsson@gu.se)
+# Date: 2020-05
+# Input: File containing the taxids of downloaded slices.
+# Params: Directory with dmp-files containing accession, accession.version, taxid and gi.
+# Output: Files called after a taxid containing all accessions for that taxid.
 
 suppressPackageStartupMessages({
   library(tidyverse)

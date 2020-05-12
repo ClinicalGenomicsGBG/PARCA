@@ -51,15 +51,16 @@ rule add_taxonomic_lineage_singletons:
         dmp_dir=config['names_nodes_dmp_dir']
     shell:
         """
+        [ ! -s {input.singletons_added_SGF_empty} ] && touch {output.tax_id_lineage} || \
         cut -f 3 {input.singletons_added_SGF_empty} | \
-        awk '$1!="tax_id"' | sort | uniq |
+        awk '$1!="tax_id"' | sort | uniq | \
         taxonkit lineage \
             --data-dir {params.dmp_dir} \
-            --threads 2 --show-rank | \
+            --show-rank | \
         taxonkit reformat \
             --data-dir {params.dmp_dir} \
             --show-lineage-taxids | \
-        cut -f 1,3,5 > {output.tax_id_lineage}
+        cut -f 1,3,5 > {output.tax_id_lineage};
         """ 
 
 rule singletons_species_to_genus:
@@ -110,8 +111,8 @@ rule merge_combined_with_singletons:
         combined_doublets_singletons="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt"
     shell: 
         """
-        cat {input.singletons_genus_names_reformat} > {output.combined_doublets_singletons}
-        awk '$1!="classified"' {input.combined_SGF_empty_filter} >> {output.combined_doublets_singletons}
+        cat {input.singletons_genus_names_reformat} > {output.combined_doublets_singletons};
+        awk '$1!="classified"' {input.combined_SGF_empty_filter} >> {output.combined_doublets_singletons};
         """
 
 rule genus_species_split:

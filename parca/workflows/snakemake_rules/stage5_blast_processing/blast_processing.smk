@@ -91,7 +91,6 @@ checkpoint all_gislices:
         fi;
         """
 
-
 rule create_blastdb_alias:
     input:
         "{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/all_gislices/{gi_slice}"
@@ -107,7 +106,7 @@ rule create_blastdb_alias:
         """
 
 
-def aggregate_input(wildcards):
+def aggregate_blast_slices(wildcards):
     checkpoint_output = checkpoints.all_gislices.get(**wildcards).output[0]
     return expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}.nal",
            outdir=wildcards.outdir,
@@ -118,18 +117,24 @@ def aggregate_input(wildcards):
 
 
 # an aggregation over all produced clusters
-rule aggregate:
+rule call_create_blastdb_alias:
     input:
-        aggregate_input
+        aggregate_blast_slices
     output:
         "{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/alias_done"
     shell:
         "touch {output}"
 
 
-rule prepare_blast_input:
-    input: 
-        kmer_input="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
-        higher="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/above_species_classed.txt"
-    output: 
-    run: 
+# checkpoint prepare_blast_input:
+#     input: 
+#         kmer_input="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
+#         higher="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/above_species_classed.txt"
+#     output: 
+#         blast_infiles=directory("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/sliceblastin"),
+#         count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_printedfiles_assembledreadlengths.txt"
+#     params: 
+#         chunk_size=6000
+#     conda: config['conda_environment'] 
+#     script:
+#         "../../scripts/blast_processing/create_sliceblast_input.py"

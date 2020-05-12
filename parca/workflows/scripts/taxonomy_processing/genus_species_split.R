@@ -1,5 +1,8 @@
 #
 #
+# Author: Pernilla Ericsson (pernilla.ericsson@gu.se)
+# Date: 2020-05
+
 suppressPackageStartupMessages({
   library(tidyverse)
   library(magrittr)
@@ -24,6 +27,13 @@ df <- data.table::fread(file = combined_doublets_singletons_file,
                         sep = "\t",
                         header=TRUE) %>% 
   as_tibble() 
+
+if(nrow(df)==0) {
+  write_tsv(tibble(), species_file)
+  write_tsv(tibble(), higher_file)
+  write_tsv(tibble(type="Total", count=0), read_count_file)
+  quit(save = "no", status = 0)
+}
 
 df %<>% 
   filter(

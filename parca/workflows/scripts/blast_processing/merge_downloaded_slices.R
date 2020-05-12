@@ -1,4 +1,6 @@
-
+# Script for creating a file with all downloaded taxids with their accessions.
+# Author: Pernilla Ericsson (pernilla.ericsson@gu.se)
+# Date: 2020-05
 
 suppressPackageStartupMessages({
   library(tidyverse)

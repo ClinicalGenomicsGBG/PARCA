@@ -1,5 +1,8 @@
 #
-#Script for separating unclassed species, genus or family, i.e SGF, from combined kaiju and kraken result. The reads with unclassed SGF are placed in the singletons file.
+# Script for separating unclassed species, genus or family, i.e SGF, from combined kaiju and kraken result. The reads with unclassed SGF are placed in the singletons file.
+# Author: Pernilla Ericsson (pernilla.ericsson@gu.se)
+# Date: 2020-05
+
 suppressPackageStartupMessages({
   library(tidyverse)
   library(magrittr)
@@ -21,28 +24,35 @@ df <- data.table::fread(file = unfiltered_file,
   as_tibble() %>% 
   setNames(c("classified", "seq_id", "tax_id", "tax_names_lineage") )
 
-df_clean <- 
-  df %>% 
-  separate(col=tax_names_lineage, 
-                into=c("superkingdom","class","order","family","genus","species","other"),
-                sep=";",
-                extra = "merge") %>% select(-other) %>% 
-  mutate_if(is.character, str_trim) %>% mutate_all(na_if,"NA")
-
-df_SGF_empty_only <- 
-  df_clean %>% 
-  filter(
-    is.na(species),
-    is.na(genus),
-    is.na(family) )
-
-df_SGF_empty_removed <- 
-  df_clean %>% 
-  filter(
-    !is.na(species),
-    !is.na(genus),
-    !is.na(family)
-  ) %>% write_tsv(filtered_SGF_empty_removed_file)
+if (nrow(df)==0) {
+  write_tsv(tibble(),filtered_SGF_empty_removed_file)
+  df_SGF_empty_only <- tibble()
+  
+} else {
+  
+  df_clean <- 
+    df %>% 
+    separate(col=tax_names_lineage, 
+                  into=c("superkingdom","class","order","family","genus","species","other"),
+                  sep=";",
+                  extra = "merge") %>% select(-other) %>% 
+    mutate_if(is.character, str_trim) %>% mutate_all(na_if,"NA")
+  
+  df_SGF_empty_only <- 
+    df_clean %>% 
+    filter(
+      is.na(species),
+      is.na(genus),
+      is.na(family) )
+  
+  df_SGF_empty_removed <- 
+    df_clean %>% 
+    filter(
+      !is.na(species),
+      !is.na(genus),
+      !is.na(family)
+    ) %>% write_tsv(filtered_SGF_empty_removed_file)
+}
 
 ## Add reads with no names for species, genus and family to singletons file
 read_files <- function(file_name) {
@@ -58,22 +68,38 @@ df_doublets <- c(kraken_doublets_file,kaiju_doublets_file) %>%
   map_dfr(~{read_files(.x)})
 
 df_singletons <- 
-  read_files(singletons_file) %>% 
-  mutate(tax_id=as.character(tax_id) )
+  read_files(singletons_file) 
 
-vec_SGF_empty_only <- df_SGF_empty_only %>% pull(seq_id)
 
-df_SGF_empty_best_singletons <-
-  df_doublets %>%
-  filter(seq_id %in% vec_SGF_empty_only ) %>%
-  arrange(seq_id, desc(matches)) %>%
-  group_by(seq_id) %>%
-  slice(1) %>% ungroup() %>% 
-  mutate(tax_id=as.character(tax_id))
+if (nrow(df_singletons)==0) {
+  df_singletons <- tibble()
+} else{
+  df_singletons %<>% 
+    mutate(tax_id=as.character(tax_id) )
+}
 
-df_singletons_SGF_empty <- 
-  bind_rows(df_SGF_empty_best_singletons, df_singletons) %>% 
-  write_tsv(singletons_SGF_empty_file)
+
+if (nrow(df_SGF_empty_only)==0) {
+  vec_SGF_empty_only <- c()
+} else {
+  vec_SGF_empty_only <- df_SGF_empty_only %>% pull(seq_id)
+}
+
+if (nrow(df_doublets)==0) {
+  write_tsv(tibble(),singletons_SGF_empty_file)
+} else {
+  df_SGF_empty_best_singletons <-
+    df_doublets %>%
+    filter(seq_id %in% vec_SGF_empty_only ) %>%
+    arrange(seq_id, desc(matches)) %>%
+    group_by(seq_id) %>%
+    slice(1) %>% ungroup() %>% 
+    mutate(tax_id=as.character(tax_id))
+  
+  df_singletons_SGF_empty <- 
+    bind_rows(df_SGF_empty_best_singletons, df_singletons) %>% 
+    write_tsv(singletons_SGF_empty_file)
+}
 
 
 # unfiltered_file <-"/Users/pernillaericsson/Documents/medair1/apps/bio/dev_repos/parca/demo/snakemake_results_a/SE_RNA/stage4/comparison/combined_kraken_kaiju_names_unfiltered.txt"

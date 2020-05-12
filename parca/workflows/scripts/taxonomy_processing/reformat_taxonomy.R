@@ -1,5 +1,7 @@
 #
 #
+# Author: Pernilla Ericsson (pernilla.ericsson@gu.se)
+# Date: 2020-05
 
 suppressPackageStartupMessages({
   library(tidyverse)
@@ -19,6 +21,10 @@ df <- data.table::fread(file = singletons_genus_names,
   as_tibble() %>% 
   setNames(c("classified", "seq_id", "tax_id", "tax_names_lineage") )
 
+if (nrow(df)==0) {
+  write_tsv(tibble(), singletons_genus_names_reformat)
+  quit(save = "no", status = 0)
+}
 
 df_clean <- 
   df %>% 

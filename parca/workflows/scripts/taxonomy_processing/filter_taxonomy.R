@@ -1,5 +1,8 @@
 #
-#Script for setting ranks below genus to genus.
+# Script for setting ranks below genus to genus.
+# Author: Pernilla Ericsson (pernilla.ericsson@gu.se)
+# Date: 2020-05
+
 suppressPackageStartupMessages({
   library(tidyverse)
   library(magrittr)
@@ -27,6 +30,12 @@ lineage_df_raw <- data.table::fread(file = lineage_file,
   as_tibble() %>% 
   setNames(c("tax_id","rank", "taxonomy") )
 
+if (nrow(df)==0 | nrow(lineage_df_raw)==0) {
+  write_tsv(tibble(),singletons_genus_file)
+  write_tsv(tibble(),singletons_genus_stats_file)
+  quit(save = "no", status = 0)
+}
+
 lineage_df <- 
   lineage_df_raw %>% 
   separate(col = taxonomy,into = c("kingdom", "phylum", "class", "order", "family", "genus","species"), sep = ";") %>% 
@@ -40,6 +49,7 @@ reassigned=c()
 singletons_tax_genus <- 
   singletons_tax %>% 
   #bind_rows(tibble(classified= "C", seq_id="aaa", tax_id=564608, matches=as.double(84), kmer_counter="kaiju", type="kaijuresults_genbank_eukaryotes_171014_kaiju_db_85_20", rank="no", kingdom="2759", phylum="3041", class="1035538", order="13792", family="41873", genus=NA, species=NA),.) %>% 
+  replace_na(list(rank = "no rank")) %>% 
   mutate(
     final_tax_id = ifelse(
       str_detect(rank, "species")|!is.na(species),

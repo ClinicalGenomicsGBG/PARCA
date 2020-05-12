@@ -1,4 +1,6 @@
-
+# Script for detecting which files with accessions that are already downloaded and which files with taxids below a certain taxid that needs to be downloaded.
+# Author: Pernilla Ericsson (pernilla.ericsson@gu.se)
+# Date: 2020-05
 
 suppressPackageStartupMessages({
   library(tidyverse)
@@ -22,6 +24,14 @@ count_file <- snakemake@output[["count"]]
 
 existing_slice_list <- list.files(path=existing_slice_path)
 df_rank_kingdom_genus_species <- read_tsv(higher_file) 
+
+if (nrow(df_rank_kingdom_genus_species)==0) {
+  write_tsv(tibble(),detected_slice_file)
+  write_tsv(tibble(),missing_slice_file)
+  write_tsv(tibble(type="total",count=0), count_file)
+  
+  quit(save = "no", status = 0)
+}
 
 detected <- 
   df_rank_kingdom_genus_species %>% 
