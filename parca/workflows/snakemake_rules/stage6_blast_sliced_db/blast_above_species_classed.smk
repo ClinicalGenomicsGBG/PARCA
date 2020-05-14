@@ -10,7 +10,7 @@ checkpoint prepare_blast_input:
         chunk_size=6000
     conda: config['conda_environment'] 
     script:
-        "../../scripts/blast_processing/create_sliceblast_input.py"
+        "../../scripts/blast_processing/blast_preprocessing/create_sliceblast_input.py"
 
 
 rule blast_slices:
@@ -69,7 +69,7 @@ rule merge_slice_blast_result:
         best_blast="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast.txt"
     conda: config['conda_environment'] 
     script:
-        "../../scripts/blast_postprocessing/merge_slice_blast_result.R"
+        "../../scripts/blast_processing/blast_postprocessing/merge_slice_blast_result.R"
 
 rule taxonomic_lineage_best_blast:
     """
@@ -131,7 +131,7 @@ rule reformat_blast_taxids:
         blast_type="SubsetBLAST",
         primates_file=config['primates_file']
     script:
-        "../../scripts/blast_postprocessing/add_lineage_species_and_above.R"
+        "../../scripts/blast_processing/blast_postprocessing/add_lineage_species_and_above.R"
 
 rule merge_kmer_classed_and_blast_classed:
     input: 
@@ -147,3 +147,4 @@ rule merge_kmer_classed_and_blast_classed:
         count=$(awk '$1!="seq_id"' {output.kmer_blast} | wc -l|cut -d " " -f 1);
         echo "type\tcount\nreads\t$count" > {output.count_kmer_blast};
         """
+

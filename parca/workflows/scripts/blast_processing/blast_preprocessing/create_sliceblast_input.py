@@ -17,6 +17,8 @@ Output:
 import os
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
+from create_blast_input import ExtractRead
+
 
 classed_path = snakemake.input['higher']
 fasta_path = snakemake.input['kmer_input']
@@ -26,44 +28,9 @@ chunk_size = snakemake.params['chunk_size']
 out_dir= snakemake.output['blast_infiles']
 stats_file=snakemake.output['count']
 
+
 os.system(f"if [ ! -d {out_dir} ]; then mkdir {out_dir};fi;") 
 
-class ExtractRead:
-    def __init__(self, classed_path, fasta_path):
-        self.classed_path = classed_path
-        self.fasta_path = fasta_path
-
-    def read_classed_file(self):
-        with open(self.classed_path, 'r') as open_file:
-            classed = [line.strip().split() for line in open_file.readlines() if not line.strip().startswith("seq_id")]
-        return(classed)
-
-    def create_classed_dict(self, classed_list):
-        above_dict={}
-        for classed_read in classed_list:
-            try:
-                    tmp_list=above_dict[classed_read[1]]
-            except:
-                    tmp_list=[]
-
-            tmp_list.append(classed_read[0])
-            above_dict[classed_read[1]]=tmp_list
-        return(above_dict)
-
-    def create_fasta_dict(self):
-        fastas = {}
-        for fasta in SeqIO.parse(self.fasta_path, 'fasta'):
-            fastas[fasta.id] = fasta.seq
-        return fastas
-
-    def create_seq_record(self, seq_obj,seq_id):
-        sequence_record = SeqRecord(seq_obj, id=seq_id,description= "")
-        return(sequence_record)
-
-    def write_to_fasta(self, fasta_list, out_name):
-        with open(out_name, "w") as output_handle:
-            SeqIO.write(fasta_list, output_handle, "fasta")
-    
 def main():
     ER=ExtractRead(classed_path, fasta_path)
 

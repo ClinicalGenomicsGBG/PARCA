@@ -10,7 +10,7 @@ rule existing_slices_split:
         existing_slice_path=config['existing_slice_path'],
         min_tax_id_count=2
     conda: config['conda_environment']
-    script: "../../scripts/blast_processing/existing_slices_split.R" 
+    script: "../../scripts/blast_processing/blast_preprocessing/existing_slices_split.R" 
 
 def create_file_list(file_name):
     with open(file_name, 'r') as slice_file:
@@ -52,7 +52,7 @@ rule all_downloaded_slices:
         all_downloaded=temp("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices.txt")
     conda: config['conda_environment']
     benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/download_slices_merged.txt"
-    script: "../../scripts/blast_processing/merge_downloaded_slices.R" 
+    script: "../../scripts/blast_processing/blast_preprocessing/merge_downloaded_slices.R" 
 
 rule create_tax_id_accession_slice_files:
     """
@@ -67,7 +67,7 @@ rule create_tax_id_accession_slice_files:
         splitaccdump_dir=config['splitaccdump_dir']
     conda: config['conda_environment'] 
     benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/downloaded_slices_acc.txt"
-    script:  "../../scripts/blast_processing/create_slice_files_downloaded.R"
+    script:  "../../scripts/blast_processing/blast_preprocessing/create_slice_files_downloaded.R"
 
 checkpoint all_gislices:
     input: 
@@ -137,4 +137,4 @@ rule call_create_blastdb_alias:
 #         chunk_size=6000
 #     conda: config['conda_environment'] 
 #     script:
-#         "../../scripts/blast_processing/create_sliceblast_input.py"
+#         "../../scripts/blast_processing/blast_preprocessing/create_sliceblast_input.py"

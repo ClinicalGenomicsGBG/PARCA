@@ -53,7 +53,7 @@ nucleotide, sample_type, sample_ids = settings(
 #a,b,=glob_wildcards(os.path.join("/apps/bio/dev_repos/parca/demo/snakemake_results_a/SE_RNA/stage5/blastslices/{a, \d+}.{b}") )
 rule all:
     input: 
-        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/kmer_species_subsetblast_classed.txt",
+        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
             outdir=config['outdir'],
             sample=sample_ids,
             sample_type=sample_type,
@@ -107,6 +107,13 @@ include:
 include:
    "workflows/snakemake_rules/stage6_blast_sliced_db/blast_above_species_classed.smk"
 
+##STAGE 7 
+include:
+   "workflows/snakemake_rules/stage7_blast_remaining_reads/blast_remaining.smk"
+
+##STAGE 8
+include:
+    "workflows/snakemake_rules/stage8_format_results/format_results.smk"
 
 # rule add_negative_control:
 #     input: ""
