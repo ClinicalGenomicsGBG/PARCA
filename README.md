@@ -28,13 +28,8 @@
 snakemake \
     -rp \
     -s main.smk \
-    --use-singularity \
-    --use-conda \
-    --cluster-config cluster.yaml \
-    --drmaa "qsub -S /bin/bash -pe mpi {cluster.cores} -q {cluster.queue} -N {rule} -l excl=1 -S /bin/bash" \
-    --jobs 999 \
-    --latency-wait 60
+    --cluster-config config/cluster.yaml \
+    --profile qsub_profile
 ```
 
 ### To-Do
-- Add qsub_profile
