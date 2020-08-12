@@ -1,0 +1,6 @@
+cluster: "qsub -S /bin/bash -pe mpi {cluster.threads} -q {cluster.queue} -S /bin/bash -N {rule} -V -cwd -j y -o cluster_logs/{rule}.log -l excl=1"
+jobs: 999
+latency-wait: 60
+use-conda: True
+use-singularity: True
+#keep-going: True
