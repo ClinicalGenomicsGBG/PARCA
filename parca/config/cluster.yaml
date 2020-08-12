@@ -1,5 +1,5 @@
 __default__:
-  cores: 10
+  threads: 10
   queue: cgg_short.q@yavin.medair.lcl
 
 #$ -cwd
