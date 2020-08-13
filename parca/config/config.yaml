@@ -1,18 +1,26 @@
 # RUN CONFIGURATION
 #illumina:  False #set to true or false or leave empty
-RNA: True #set to true or false or leave empty
+runinfo: "runinfo.yaml"
 
-## Input
-sampledir: 
-  "/apps/bio/dev_repos/parca/demo/raw_samples"
+#RNA: True #set to true or false or leave empty
 
-suffix_fwd: ".fastq.gz" #"_1.fastq.gz" #".fastq.gz"
-suffix_rev: #"_2.fastq.gz" # Leave empty if single end
+## The directory containing the raw fastq files
+#sampledir: 
+#  "/apps/bio/dev_repos/parca/demo/raw_samples"
 
-adapters:
-- "None"
-samples: #leave empty if you want to use all fastq-files in a sample directory
-- "a"
+## The suffix of the samplenames eg. "_1.fastq.gz" .
+### Leave suffix_rev empty if single end reads.
+### The suffix is necessary for generating a sample id that is the same for e.g. forward and reverse read if the extension was removed.
+#suffix_fwd: ".fastq.gz" #"_1.fastq.gz" #".fastq.gz"
+#suffix_rev: #"_2.fastq.gz" # Leave empty if single end
+#suffix_regex: '(.fq.gz$)|(.fastq.gz$)|(.fastq$)|(.fq$)'
+
+# adapters:
+# - "None"
+
+## Certain sample names can be specified here. If left empty, the sampledir will be search for sample names using the suffix_fwd
+#samples: #leave empty if you want to use all fastq-files in a sample directory
+#- "a"
 #- "b"
 #- "S04_S5_02_22_41_KV16-8204OM-L_180530"
 #- "l"

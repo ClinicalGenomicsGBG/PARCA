@@ -1,3 +1,4 @@
+
 rule unzip_rename_SE:
     input:
         lambda wildcards: "{sampledir}/{sample}{suffix_fwd}".format(

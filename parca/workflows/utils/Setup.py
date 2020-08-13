@@ -6,78 +6,120 @@ import glob
 import re
 import sys
 import os
+from SampleSettings import SampleSettings
+#from FileProcessing import ProcessFiles
 
 """
 Class for determining the run setup parameters.
 """
 
 class Setup:
-    def __init__(self,RNA="", raw_sample_dir="", samples="", suffix_fwd=".fastq", suffix_rev=""):
+    def __init__(self, sample_dictionary={}, RNA="", get_sample_id=True, suffix_regex='(.fq.gz$)|(.fastq.gz$)|(.fastq$)|(.fq$)'):
         """
-        Parameters:
-            self.RNA - The parameter for selecting RNA or not.
-            self.raw_sample_dir - The directory name containing the raw samples.
-            self.samples - The sample names.
-            self.suffix_fwd - The suffix of the sample name in the forward read.
-            self.suffix_rev - The suffix of the sample name in the reverse read.
+        suffix regex is only used if get_sample_id is true
         """
+        self.sample_dictionary=sample_dictionary
         self.RNA=RNA
-        self.raw_sample_dir = raw_sample_dir
-        self.samples = samples
-        self.suffix_fwd=suffix_fwd
-        self.suffix_rev=suffix_rev
+        self.get_sample_id=get_sample_id
+        self.suffix_regex=suffix_regex
     
-    def findSamples(self):
-        """ 
-        Purpose: Generate a sample list.
-        Parameters: 
-            self.raw_sample_dir - The directory name containing the raw samples.
-            self.samples - The sample names.
-            self.suffix_fwd - The suffix of the sample name in the forward read.
-        Returns: 
-            A list of samplenames (only basename without extension).
-             - If self.samplenames is empty it searches the self.raw_sample_dir with the specified suffix.
-        Comments: 
-            Only uses suffix_fwd for determining. The suffix_rev is not needed for determining the samplenames.
-        """ 
-        if self.samples == "" or self.samples == None:
-            SAMPLENAMES, = glob_wildcards(self.raw_sample_dir+"/{sample}"+self.suffix_fwd)
-        else:
-            SAMPLENAMES=[re.sub(f'{self.suffix_fwd}$', '', sample) for sample in self.samples]
+    def keysList(self, dictionary):
+        keys_list=list(dictionary.keys())
 
-        return SAMPLENAMES
+        return keys_list
+    
+    def generateSettingsLists(self):
 
-    def settings(self):
-        """ 
-        Purpose: Determining the parameters from a variable input to a unified parameter naming.
-        Parameters: 
-            self.RNA - The parameter for selecting RNA or not.
-            self.suffix_rev - The suffix of the sample name in the reverse read. Set to None or "" if single end.
-            self.findSamples() - The function fo determining sample names.
-        Returns: 
-            nucleotide - either "DNA" or "RNA".
-            sample_type - either "SE" or "PE".
-            sample_ids - a list of samplenames (only basename without extension).
-        Comments: 
-        """ 
-        try:
-            self.RNA = self.RNA.capitalize() 
-        except: 
-            pass
+        keys_list=self.keysList(self.sample_dictionary)
+
+        sample_id_list=[]
+        sample_type_list=[]
+        nucleotide_list=[]
+        for key in keys_list:
+            samples=self.sample_dictionary[key]
+            print(samples)
+            
+            SS=SampleSettings(samples, self.RNA, self.get_sample_id, self.suffix_regex)
+            (sample_id, sample_type, nucleotide) = SS.settings()
+
+            if sample_id=="" and self.get_sample_id!=True:
+                sample_id=key
+            
+            sample_id_list.append(sample_id)
+            sample_type_list.append(sample_type)
+            nucleotide_list.append(nucleotide)
+
+        return sample_id_list, sample_type_list, nucleotide_list
+
+
+
+    # def __init__(self,RNA="", raw_sample_dir="", samples="", suffix_fwd=".fastq", suffix_rev=""):
+    #     """
+    #     Parameters:
+    #         self.RNA - The parameter for selecting RNA or not.
+    #         self.raw_sample_dir - The directory name containing the raw samples.
+    #         self.samples - The sample names.
+    #         self.suffix_fwd - The suffix of the sample name in the forward read.
+    #         self.suffix_rev - The suffix of the sample name in the reverse read.
+    #     """
+    #     self.RNA=RNA
+    #     self.raw_sample_dir = raw_sample_dir
+    #     self.samples = samples
+    #     self.suffix_fwd=suffix_fwd
+    #     self.suffix_rev=suffix_rev
+
+    # def findSamples(self):
+    #     """ 
+    #     Purpose: Generate a sample list.
+    #     Parameters: 
+    #         self.raw_sample_dir - The directory name containing the raw samples.
+    #         self.samples - The sample names.
+    #         self.suffix_fwd - The suffix of the sample name in the forward read.
+    #     Returns: 
+    #         A list of samplenames (only basename without extension).
+    #          - If self.samplenames is empty it searches the self.raw_sample_dir with the specified suffix.
+    #     Comments: 
+    #         Only uses suffix_fwd for determining. The suffix_rev is not needed for determining the samplenames.
+    #     """ 
+    #     if self.samples == "" or self.samples == None:
+    #         SAMPLENAMES, = glob_wildcards(self.raw_sample_dir+"/{sample}"+self.suffix_fwd)
+    #     else:
+    #         SAMPLENAMES=[re.sub(f'{self.suffix_fwd}$', '', sample) for sample in self.samples]
+
+    #     return SAMPLENAMES
+    
+
+    # def settings(self):
+    #     """ 
+    #     Purpose: Determining the parameters from a variable input to a unified parameter naming.
+    #     Parameters: 
+    #         self.RNA - The parameter for selecting RNA or not.
+    #         self.suffix_rev - The suffix of the sample name in the reverse read. Set to None or "" if single end.
+    #         self.findSamples() - The function fo determining sample names.
+    #     Returns: 
+    #         nucleotide - either "DNA" or "RNA".
+    #         sample_type - either "SE" or "PE".
+    #         sample_ids - a list of samplenames (only basename without extension).
+    #     Comments: 
+    #     """ 
+    #     try:
+    #         self.RNA = self.RNA.capitalize() 
+    #     except: 
+    #         pass
         
-        if self.RNA == "" or self.RNA == None or self.RNA == False or self.RNA != True or self.RNA=="False" or self.RNA=="No":
-            nucleotide="DNA"
-        else:
-            nucleotide="RNA"
+    #     if self.RNA == "" or self.RNA == None or self.RNA == False or self.RNA != True or self.RNA=="False" or self.RNA=="No":
+    #         nucleotide="DNA"
+    #     else:
+    #         nucleotide="RNA"
         
-        if self.suffix_rev == "" or self.suffix_rev == None:
-            sample_type="SE"
-            sample_ids=self.findSamples()
-        else:
-            sample_type="PE"
-            sample_ids=self.findSamples()
+    #     if self.suffix_rev == "" or self.suffix_rev == None:
+    #         sample_type="SE"
+    #         sample_ids=self.findSamples()
+    #     else:
+    #         sample_type="PE"
+    #         sample_ids=self.findSamples()
 
-        return nucleotide, sample_type, sample_ids
+    #     return nucleotide, sample_type, sample_ids
 
 
 # class SetUp:
