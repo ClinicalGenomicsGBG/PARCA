@@ -7,16 +7,21 @@ import re
 import sys
 import os
 from SampleSettings import SampleSettings
-#from FileProcessing import ProcessFiles
 
 """
-Class for determining the run setup parameters.
+Class for determining the run setup parameters for all samples in a dictionary.
 """
 
 class Setup:
     def __init__(self, sample_dictionary={}, RNA="", get_sample_id=True, suffix_regex='(.fq.gz$)|(.fastq.gz$)|(.fastq$)|(.fq$)'):
         """
-        suffix regex is only used if get_sample_id is true
+        Parameters: 
+            self.sample_dictionary - A dictionary with identifiers (could be used as sample id if get_sample_id is set to False) as keys and sample paths in a list as values.
+            self.RNA - Set to True if RNA and False if DNA.
+            self.get_sample_id - Set to True if the sample id should be inferred from sample paths and False if the dictionary key should be used as sample id.
+            self.suffix_regex - suffix_regex is only used if get_sample_id is True and consists of a regex that will match the file type extension suffix.
+        Returns:
+        Comments:
         """
         self.sample_dictionary=sample_dictionary
         self.RNA=RNA
@@ -24,12 +29,33 @@ class Setup:
         self.suffix_regex=suffix_regex
     
     def keysList(self, dictionary):
+        """
+        Purpose: Generate a list of the key names.
+        Parameters: 
+            dictionary - a dictionary with identifiers as values and sample path lists as values.
+        Returns:
+            A list of key names from the dictionary.
+        Comments:
+        """
         keys_list=list(dictionary.keys())
 
         return keys_list
     
     def generateSettingsLists(self):
-
+        """
+        Purpose: Generate run settings for all samples in a dictionary.
+        Parameters: 
+            self.keysList - A list of keys from the dictionary.
+            self.sample_dictionary - A dictionary with identifiers as values and sample path lists as values.
+            self.RNA - Set to True if RNA and False if DNA.
+            self.get_sample_id - Set to True if the sample id should be inferred from sample paths and False if the dictionary key should be used as sample id.
+            self.suffix_regex - self.suffix_regex - suffix_regex is only used if get_sample_id is True and consists of a regex that will match the file type extension suffix.
+        Returns:
+            sample_id_list - A list of sample ids.
+            sample_type_list - A list of sample types, either "PE" or "SE".
+            nucleotide_list - A list of "DNA" or "RNA"
+        Comments:
+        """
         keys_list=self.keysList(self.sample_dictionary)
 
         sample_id_list=[]
@@ -37,7 +63,7 @@ class Setup:
         nucleotide_list=[]
         for key in keys_list:
             samples=self.sample_dictionary[key]
-            print(samples)
+            #print(samples)
             
             SS=SampleSettings(samples, self.RNA, self.get_sample_id, self.suffix_regex)
             (sample_id, sample_type, nucleotide) = SS.settings()
@@ -50,131 +76,3 @@ class Setup:
             nucleotide_list.append(nucleotide)
 
         return sample_id_list, sample_type_list, nucleotide_list
-
-
-
-    # def __init__(self,RNA="", raw_sample_dir="", samples="", suffix_fwd=".fastq", suffix_rev=""):
-    #     """
-    #     Parameters:
-    #         self.RNA - The parameter for selecting RNA or not.
-    #         self.raw_sample_dir - The directory name containing the raw samples.
-    #         self.samples - The sample names.
-    #         self.suffix_fwd - The suffix of the sample name in the forward read.
-    #         self.suffix_rev - The suffix of the sample name in the reverse read.
-    #     """
-    #     self.RNA=RNA
-    #     self.raw_sample_dir = raw_sample_dir
-    #     self.samples = samples
-    #     self.suffix_fwd=suffix_fwd
-    #     self.suffix_rev=suffix_rev
-
-    # def findSamples(self):
-    #     """ 
-    #     Purpose: Generate a sample list.
-    #     Parameters: 
-    #         self.raw_sample_dir - The directory name containing the raw samples.
-    #         self.samples - The sample names.
-    #         self.suffix_fwd - The suffix of the sample name in the forward read.
-    #     Returns: 
-    #         A list of samplenames (only basename without extension).
-    #          - If self.samplenames is empty it searches the self.raw_sample_dir with the specified suffix.
-    #     Comments: 
-    #         Only uses suffix_fwd for determining. The suffix_rev is not needed for determining the samplenames.
-    #     """ 
-    #     if self.samples == "" or self.samples == None:
-    #         SAMPLENAMES, = glob_wildcards(self.raw_sample_dir+"/{sample}"+self.suffix_fwd)
-    #     else:
-    #         SAMPLENAMES=[re.sub(f'{self.suffix_fwd}$', '', sample) for sample in self.samples]
-
-    #     return SAMPLENAMES
-    
-
-    # def settings(self):
-    #     """ 
-    #     Purpose: Determining the parameters from a variable input to a unified parameter naming.
-    #     Parameters: 
-    #         self.RNA - The parameter for selecting RNA or not.
-    #         self.suffix_rev - The suffix of the sample name in the reverse read. Set to None or "" if single end.
-    #         self.findSamples() - The function fo determining sample names.
-    #     Returns: 
-    #         nucleotide - either "DNA" or "RNA".
-    #         sample_type - either "SE" or "PE".
-    #         sample_ids - a list of samplenames (only basename without extension).
-    #     Comments: 
-    #     """ 
-    #     try:
-    #         self.RNA = self.RNA.capitalize() 
-    #     except: 
-    #         pass
-        
-    #     if self.RNA == "" or self.RNA == None or self.RNA == False or self.RNA != True or self.RNA=="False" or self.RNA=="No":
-    #         nucleotide="DNA"
-    #     else:
-    #         nucleotide="RNA"
-        
-    #     if self.suffix_rev == "" or self.suffix_rev == None:
-    #         sample_type="SE"
-    #         sample_ids=self.findSamples()
-    #     else:
-    #         sample_type="PE"
-    #         sample_ids=self.findSamples()
-
-    #     return nucleotide, sample_type, sample_ids
-
-
-# class SetUp:
-
-#     def __init__(self, raw_sample_dir = "", filenames=""):
-#         self.raw_sample_dir = raw_sample_dir
-#         self.filenames = filenames
-        
-#     def detect_samples(self):
-
-#         sample_list = []
-
-#         if self.filenames == "search":
-#             self.filenames = [os.path.basename(x) for x in glob.glob(self.raw_sample_dir+"/*.f*")]
-
-#         for file in self.filenames:
-#             pattern=r'(.fq.gz$)|(.fastq.gz$)|(.fastq$)|(.fq$)'
-            
-#             matches=re.split(pattern,file)
-#             cleaned_matches=[match for match in matches if match]
-
-#             if len(cleaned_matches) <= 1:
-#                 print("Error! \n Input sample name did not match input restrictions. \n Input should be in the format \n \t \t <samplename>.<fq or fastq> \n \t \t or <samplename>.<fq or fastq>.gz")
-#                 raise SystemExit
-#             else:
-#                 sample_list.append(cleaned_matches[0])
-
-#         return sample_list
-
-
-## Previously placed in main
-# def find_samples(raw_sample_dir, samples, suffix_fwd):
-#     if samples == "" or samples == None:
-#         SAMPLENAMES, = glob_wildcards(raw_sample_dir+"/{sample}"+suffix_fwd)
-#     else:
-#         SAMPLENAMES=[re.sub(f'{suffix_fwd}$', '', sample) for sample in samples]
-
-#     return SAMPLENAMES
-
-# def settings(RNA="", raw_sample_dir="", samples="", suffix_fwd=".fastq", suffix_rev=""):
-#     try:
-#         RNA = RNA.capitalize() 
-#     except: 
-#         pass
-    
-#     if RNA == "" or RNA == None or RNA == False or RNA != True or RNA=="False" or RNA=="No":
-#         nucleotide="DNA"
-#     else:
-#         nucleotide="RNA"
-    
-#     if suffix_rev == "" or suffix_rev == None:
-#         sample_type="SE"
-#         sample_ids=find_samples(raw_sample_dir, samples, suffix_fwd)
-#     else:
-#         sample_type="PE"
-#         sample_ids=find_samples(raw_sample_dir, samples, suffix_fwd)
-
-#     return nucleotide, sample_type, sample_ids
