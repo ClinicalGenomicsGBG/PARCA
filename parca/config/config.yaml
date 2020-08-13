@@ -5,6 +5,10 @@ RNA: True #set to true or false or leave empty
 ## Input
 sampledir: 
   "/apps/bio/dev_repos/parca/demo/raw_samples"
+
+suffix_fwd: ".fastq.gz" #"_1.fastq.gz" #".fastq.gz"
+suffix_rev: #"_2.fastq.gz" # Leave empty if single end
+
 adapters:
 - "None"
 samples: #leave empty if you want to use all fastq-files in a sample directory
@@ -14,13 +18,11 @@ samples: #leave empty if you want to use all fastq-files in a sample directory
 #- "l"
 #- SRR1761912
 
-suffix_fwd: ".fastq.gz" #"_1.fastq.gz" #".fastq.gz"
-suffix_rev: #"_2.fastq.gz" # Leave empty if single end
-
 ## Output
 #output_folder_date: "" # if empty, a date will be generated in the format yyyy_mm_dd for the output folder
 outdir: 
-  "/apps/bio/dev_repos/parca/demo"
+  "/apps/bio/dev_repos/parca/demo/200813_demo"
+  #"/apps/bio/dev_repos/parca/demo"
 
 ## Singularity
 singularity_image:
