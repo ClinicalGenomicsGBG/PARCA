@@ -25,10 +25,9 @@ for key in settings_dict:
     sample_id_list.append(key)
     sample_type_list.append(settings_dict[key][1])
     nucleotide_list.append(settings_dict[key][2])
-print("sample_id:",sample_id_list)
-print("sample_type:",sample_type_list)
-print("nucleotide:",nucleotide_list)
-
+print("sample_id:", sample_id_list)
+print("sample_type:", sample_type_list)
+print("nucleotide:", nucleotide_list)
 
 rule all:
     input:
