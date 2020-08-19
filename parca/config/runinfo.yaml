@@ -16,3 +16,6 @@ adapters:
 
 outdir: 
   "/apps/bio/dev_repos/parca/demo/200813_demo"
+
+singularity_image:
+  "workflows/containers/image_parca_v3.sif"

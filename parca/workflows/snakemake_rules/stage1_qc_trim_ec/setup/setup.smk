@@ -56,7 +56,7 @@ rule interleave_PE:
     conda: "../../../conda/bbmap_env.yaml"
     shell:
         """
-        reformat.sh in={input.fwd} in2={input.rev} out={output.interleaved} > {log} 2> {log};
+        reformat.sh in={input.fwd} in2={input.rev} out={output.interleaved} &> {log}
         echo count > {output.read_count};
         echo $(cat {output.interleaved}|wc -l)/4|bc  >> {output.read_count};    
         """

@@ -11,7 +11,7 @@ From: ubuntu:16.04
 # RUN instruction (e.g. download files, install software)
 %post
 	apt-get -y update
-	apt-get install -y --no-install-recommends wget bzip2 ca-certificates build-essential bc pigz  
+	apt-get install -y --no-install-recommends wget bzip2 ca-certificates build-essential bc pigz python-yaml  
 	apt-get clean
 
 	#install conda

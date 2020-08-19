@@ -4,26 +4,26 @@ from workflows.utils.FileProcessing import ProcessFiles
 from workflows.utils.Setup import Setup
 
 configfile: "config/config.yaml"
-singularity: config['singularity_image']
 
+# Read the runinfo file containg parameters for the current run.
 runinfo = ProcessFiles(config['runinfo'])
 runinfo_dict=runinfo.readYaml()
 
 sample_paths_dict = runinfo_dict['samplePath']
 RNA = runinfo_dict['RNA']
+singularity: runinfo_dict['singularity_image']
 
+# 
 SU=Setup(sample_paths_dict, RNA, runinfo_dict['generateSampleID'])
 settings_dict = SU.generateSettingsLists()
 
-#print("sample_ids:", list(settings_dict.values()) , "\n")
 
-sample_id_list=[]
-sample_type_list=[]
-nucleotide_list=[]
 print("\n\t\t~~~~~~~~ P a R C A ~~~~~~~~")
 print("**** Pathogen Research in Clinical Applications ****")
 print("\n**** PaRCA started for the following samples: ****")
-
+sample_id_list=[]
+sample_type_list=[]
+nucleotide_list=[]
 for key in settings_dict:
     sample_id_list.append(key)
     sample_type_list.append(settings_dict[key][1])
