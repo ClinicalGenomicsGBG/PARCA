@@ -38,7 +38,7 @@ class SampleSettings:
             if isinstance(self.fwd_path, str) and isinstance(self.rev_path, str):
                 pass
             else:
-                raise InputError(f'Input is not of type character.')
+                raise InputError('Input is not of type character.')
 
         elif self.input_count == 1:
             self.fwd_path=self.sample_path_list[0]
@@ -46,7 +46,7 @@ class SampleSettings:
             if isinstance(self.fwd_path, str):
                 pass
             else:
-                raise InputError(f'Input is not of type character.')
+                raise InputError('Input is not of type character.')
         else:
             raise InputError(f'Input can only have a length of 1 or 2, not {self.input_count}.')
 

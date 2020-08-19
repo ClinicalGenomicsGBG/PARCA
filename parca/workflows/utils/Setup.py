@@ -7,6 +7,7 @@ import re
 import sys
 import os
 from workflows.utils.SampleSettings import SampleSettings
+from workflows.utils.ErrorMessages import InputError
 
 """
 Class for determining the run setup parameters for all samples in a dictionary.
@@ -57,22 +58,39 @@ class Setup:
         Comments:
         """
         keys_list=self.keysList(self.sample_dictionary)
-
-        sample_id_list=[]
-        sample_type_list=[]
-        nucleotide_list=[]
+        
+        settings_dict= {}
         for key in keys_list:
             samples=self.sample_dictionary[key]
-            #print(samples)
-            
+
             SS=SampleSettings(samples, self.RNA, self.get_sample_id, self.suffix_regex)
+
             (sample_id, sample_type, nucleotide) = SS.settings()
 
             if sample_id=="" and self.get_sample_id!=True:
                 sample_id=key
-            
-            sample_id_list.append(sample_id)
-            sample_type_list.append(sample_type)
-            nucleotide_list.append(nucleotide)
 
-        return sample_id_list, sample_type_list, nucleotide_list
+            if sample_id in settings_dict:
+                raise InputError('Sample ID is not unique.')
+            else:
+                settings_dict[sample_id] = [samples, sample_type, nucleotide]
+
+
+        # sample_id_list=[]
+        # sample_type_list=[]
+        # nucleotide_list=[]
+        # for key in keys_list:
+        #     samples=self.sample_dictionary[key]
+        #     #print(samples)
+            
+        #     SS=SampleSettings(samples, self.RNA, self.get_sample_id, self.suffix_regex)
+        #     (sample_id, sample_type, nucleotide) = SS.settings()
+
+        #     if sample_id=="" and self.get_sample_id!=True:
+        #         sample_id=key
+            
+        #     sample_id_list.append(sample_id)
+        #     sample_type_list.append(sample_type)
+        #     nucleotide_list.append(nucleotide)
+
+        return settings_dict
