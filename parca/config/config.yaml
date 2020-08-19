@@ -1,6 +1,6 @@
 # RUN CONFIGURATION
 #illumina:  False #set to true or false or leave empty
-runinfo: "runinfo.yaml"
+runinfo: "config/runinfo.yaml"
 
 #RNA: True #set to true or false or leave empty
 

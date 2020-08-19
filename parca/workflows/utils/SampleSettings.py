@@ -6,7 +6,7 @@ import glob
 import re
 import sys
 import os
-from ErrorMessages import InputError
+from workflows.utils.ErrorMessages import InputError
 
 """
 Class for determining the run setup parameters for one sample.

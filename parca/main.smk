@@ -1,30 +1,36 @@
-
 import glob
 import re
 from workflows.utils.FileProcessing import ProcessFiles
+from workflows.utils.Setup import Setup
 
 configfile: "config/config.yaml"
 singularity: config['singularity_image']
 
+runinfo = ProcessFiles(config['runinfo'])
+runinfo_dict=runinfo.readYaml()
 
-runinfo_dict = ProcessFiles(config['runinfo'])
 sample_paths_dict = runinfo_dict['samplePath']
-
 RNA = runinfo_dict['RNA']
 
 SU=Setup(sample_paths_dict, RNA, False)
 sample_id_list, sample_type_list, nucleotide_list= SU.generateSettingsLists()
 
+print("sample_ids:", sample_id_list)
+print("sample_types:", sample_type_list)
+print("nucleotides:",nucleotide_list)
 
-rule all:
-    input:
-        expand("{outdir}/{}/{}",
-            zip,
-            outdir="",
-            sample_id_list,
-            sample_type_list,
-            nucleotide_list
-            )
+
+# rule all:
+#     input:
+#         expand("{outdir}/{}/{}",
+#             zip,
+#             outdir="",
+#             sample_id_list,
+#             sample_type_list,
+#             nucleotide_list
+#             )
+
+
         # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
         #     outdir=config['outdir'],
         #     sample=sample_ids,
@@ -48,9 +54,9 @@ rule all:
             # nucleotide=nucleotide
             # )
 
-# ##STAGE 1
-# include:
-#     "workflows/snakemake_rules/stage1_qc_trim_ec/setup/setup.smk"
+##STAGE 1
+include:
+    "workflows/snakemake_rules/stage1_qc_trim_ec/setup/setup.smk"
 # # include:
 # #     "workflows/snakemake_rules/stage1_qc_trim_ec/quality_control/fastqc.smk"
 # include:

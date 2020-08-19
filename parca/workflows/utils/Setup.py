@@ -6,7 +6,7 @@ import glob
 import re
 import sys
 import os
-from SampleSettings import SampleSettings
+from workflows.utils.SampleSettings import SampleSettings
 
 """
 Class for determining the run setup parameters for all samples in a dictionary.
