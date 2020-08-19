@@ -27,6 +27,7 @@ From: ubuntu:16.04
 	conda config --add channels conda-forge
 
 	conda clean --all
+	python3 -m pip install pyyaml
 
 %test
     export PATH=/usr/miniconda3/bin:$PATH
