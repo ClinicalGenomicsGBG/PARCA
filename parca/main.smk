@@ -12,23 +12,33 @@ runinfo_dict=runinfo.readYaml()
 sample_paths_dict = runinfo_dict['samplePath']
 RNA = runinfo_dict['RNA']
 
-SU=Setup(sample_paths_dict, RNA, False)
-sample_id_list, sample_type_list, nucleotide_list= SU.generateSettingsLists()
+SU=Setup(sample_paths_dict, RNA, runinfo_dict['generateSampleID'])
+settings_dict = SU.generateSettingsLists()
 
-print("sample_ids:", sample_id_list)
-print("sample_types:", sample_type_list)
-print("nucleotides:",nucleotide_list)
+#print("sample_ids:", list(settings_dict.values()) , "\n")
+
+sample_id_list=[]
+sample_type_list=[]
+nucleotide_list=[]
+for key in settings_dict:
+    
+    sample_id_list.append(key)
+    sample_type_list.append(settings_dict[key][1])
+    nucleotide_list.append(settings_dict[key][2])
+print("sample_id:",sample_id_list)
+print("sample_type:",sample_type_list)
+print("nucleotide:",nucleotide_list)
 
 
-# rule all:
-#     input:
-#         expand("{outdir}/{}/{}",
-#             zip,
-#             outdir="",
-#             sample_id_list,
-#             sample_type_list,
-#             nucleotide_list
-#             )
+rule all:
+    input:
+        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/samples/{sample}.fastq",
+            zip,
+            outdir=[runinfo_dict['outdir']]*len(sample_id_list),
+            sample= sample_id_list,
+            sample_type = sample_type_list,
+            nucleotide = nucleotide_list
+            )
 
 
         # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",

@@ -3,10 +3,13 @@
 ## Set RNA to True for RNA samples and to False for DNA samples
 RNA: True
 
-## The keys under samplePath can be set to anything but the length of its value determines whether paired end or single end.
+## The keys under samplePath can be set to anything but the length of its value determines whether paired end or single end. The keys needs to have unique names.
 samplePath:
-  sample_1: ["/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_1.fastq.gz", "/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_2.fastq.gz"]
+  #sample_1: ["/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_1.fastq.gz", "/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_2.fastq.gz"]
   sample_2: ["/apps/bio/dev_repos/parca/demo/raw_samples/a.fastq.gz"]
+
+## Set to False if keys from samplePath should be used. If these should be generated, set to True.
+generateSampleID: True
 
 adapters:
   - "None"
