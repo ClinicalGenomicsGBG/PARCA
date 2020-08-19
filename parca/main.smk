@@ -1,5 +1,4 @@
-import glob
-import re
+import glob,re
 from workflows.utils.FileProcessing import ProcessFiles
 from workflows.utils.Setup import Setup
 
