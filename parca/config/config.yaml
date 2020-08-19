@@ -34,14 +34,14 @@ runinfo: "config/runinfo.yaml"
 
 ## Singularity
 singularity_image:
-  "/apps/bio/dev_repos/parca/parca/workflows/containers/image_parca_v3.sif"
+  "containers/image_parca_v3.sif"
 
 ## Conda environment
 conda_environment:
   "/apps/bio/dev_repos/parca/parca/workflows/conda/parca_container_env.yml"
 
 bbmap_environment:
-  "/apps/bio/dev_repos/parca/parca/workflows/conda/bbmap_env.yaml"
+  "workflows/conda/bbmap_env.yaml"
 
 
 # PROGRAMS

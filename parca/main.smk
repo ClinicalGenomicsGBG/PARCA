@@ -20,7 +20,10 @@ settings_dict = SU.generateSettingsLists()
 sample_id_list=[]
 sample_type_list=[]
 nucleotide_list=[]
-print("****Parca started for the following samples:****")
+print("\n\t\t~~~~~~~~ P a R C A ~~~~~~~~")
+print("**** Pathogen Research in Clinical Applications ****")
+print("\n**** PaRCA started for the following samples: ****")
+
 for key in settings_dict:
     sample_id_list.append(key)
     sample_type_list.append(settings_dict[key][1])

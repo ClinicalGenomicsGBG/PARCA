@@ -53,7 +53,7 @@ rule interleave_PE:
         read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/samples/count_raw_reads.txt"
     log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/{sample}_interleaved.log"
     benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/{sample}_interleaved.txt"
-    conda: config['bbmap_environment']
+    conda: "../../../conda/bbmap_env.yaml"
     shell:
         """
         reformat.sh in={input.fwd} in2={input.rev} out={output.interleaved} > {log} 2> {log};
