@@ -20,18 +20,21 @@ settings_dict = SU.generateSettingsLists()
 sample_id_list=[]
 sample_type_list=[]
 nucleotide_list=[]
+print("****Parca started for the following samples:****")
 for key in settings_dict:
-    
     sample_id_list.append(key)
     sample_type_list.append(settings_dict[key][1])
     nucleotide_list.append(settings_dict[key][2])
-print("sample_id:", sample_id_list)
-print("sample_type:", sample_type_list)
-print("nucleotide:", nucleotide_list)
+    print("SAMPLE ID:", key)
+    print("\tInput files:", settings_dict[key][0])
+    print("\tSample type:", sample_type_list)
+    print("\tNucleotide:", nucleotide_list)
+
+print("\nResults are placed in:", runinfo_dict['outdir'])
 
 rule all:
     input:
-        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/samples/{sample}.fastq",
+        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/samples/{sample}_interleaved.fastq",
             zip,
             outdir=[runinfo_dict['outdir']]*len(sample_id_list),
             sample= sample_id_list,

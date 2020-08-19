@@ -6,7 +6,7 @@ rule unzip_rename_SE:
         reads="{outdir}/snakemake_results_{sample}/SE_{nucleotide}/samples/{sample}.fastq",
         read_count="{outdir}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/count_raw_reads.txt"
     threads: 4
-    conda: config['conda_environment']
+    #conda: config['bbmap_environment']
     shell:
         """
         if [[ {input} =~ .*\.gz$ ]]; then \
@@ -27,7 +27,7 @@ rule unzip_rename_PE:
         fwd= "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R1.fastq",
         rev= "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R2.fastq"
     threads: 4
-    conda: config['conda_environment']
+    #conda: config['bbmap_environment']
     shell:
         """
         if [[ {input.fwd} =~ .*\.gz$ ]]; then \
@@ -53,7 +53,7 @@ rule interleave_PE:
         read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/samples/count_raw_reads.txt"
     log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/{sample}_interleaved.log"
     benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/{sample}_interleaved.txt"
-    conda: config['conda_environment']
+    conda: config['bbmap_environment']
     shell:
         """
         reformat.sh in={input.fwd} in2={input.rev} out={output.interleaved} > {log} 2> {log};

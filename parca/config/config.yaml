@@ -28,8 +28,8 @@ runinfo: "config/runinfo.yaml"
 
 ## Output
 #output_folder_date: "" # if empty, a date will be generated in the format yyyy_mm_dd for the output folder
-outdir: 
-  "/apps/bio/dev_repos/parca/demo/200813_demo"
+# outdir: 
+#   "/apps/bio/dev_repos/parca/demo/200813_demo"
   #"/apps/bio/dev_repos/parca/demo"
 
 ## Singularity
@@ -39,6 +39,10 @@ singularity_image:
 ## Conda environment
 conda_environment:
   "/apps/bio/dev_repos/parca/parca/workflows/conda/parca_container_env.yml"
+
+bbmap_environment:
+  "/apps/bio/dev_repos/parca/parca/workflows/conda/bbmap_env.yaml"
+
 
 # PROGRAMS
 pollux_path: 
