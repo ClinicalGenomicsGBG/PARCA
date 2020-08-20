@@ -40,8 +40,8 @@ runinfo: "config/runinfo.yaml"
 conda_environment:
   "/apps/bio/dev_repos/parca/parca/workflows/conda/parca_container_env.yml"
 
-bbmap_environment:
-  "workflows/conda/bbmap_env.yaml"
+# bbmap_environment:
+#   "workflows/conda/bbmap_env.yaml"
 
 
 # PROGRAMS

@@ -12,13 +12,13 @@ sample_paths_dict = runinfo_dict['samplePath']
 RNA = runinfo_dict['RNA']
 singularity: runinfo_dict['singularity_image']
 
-# 
+# Generate settings with correct naming.
 SU=Setup(sample_paths_dict, RNA, runinfo_dict['generateSampleID'])
 settings_dict = SU.generateSettingsLists()
 
 
 print("\n\t\t~~~~~~~~ P a R C A ~~~~~~~~")
-print("**** Pathogen Research in Clinical Applications ****")
+print("\t**** Pathogen Research in Clinical Applications ****")
 print("\n**** PaRCA started for the following samples: ****")
 sample_id_list=[]
 sample_type_list=[]
@@ -32,11 +32,11 @@ for key in settings_dict:
     print("\tSample type:", sample_type_list)
     print("\tNucleotide:", nucleotide_list)
 
-print("\nResults are placed in:", runinfo_dict['outdir'])
+print("\nResults are placed in:", runinfo_dict['outdir'], "\n")
 
 rule all:
     input:
-        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/samples/{sample}_interleaved.fastq",
+        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/samples/{sample}.fastq",
             zip,
             outdir=[runinfo_dict['outdir']]*len(sample_id_list),
             sample= sample_id_list,
@@ -58,9 +58,6 @@ rule all:
         #     suffix_fwd=suffix_fwd
         #     )
 
-
-
-
         #expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt",
             # outdir=config['outdir'],
             # sample=sample_ids,
@@ -71,8 +68,8 @@ rule all:
 ##STAGE 1
 include:
     "workflows/snakemake_rules/stage1_qc_trim_ec/setup/setup.smk"
-# # include:
-# #     "workflows/snakemake_rules/stage1_qc_trim_ec/quality_control/fastqc.smk"
+include:
+    "workflows/snakemake_rules/stage1_qc_trim_ec/quality_control/fastqc.smk"
 # include:
 #     "workflows/snakemake_rules/stage1_qc_trim_ec/trimming/bbduk_trimming.smk"
 # include:

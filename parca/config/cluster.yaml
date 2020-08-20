@@ -1,6 +1,18 @@
 __default__:
-  threads: 10
-  queue: cgg_short.q@yavin.medair.lcl
+  threads: 1
+  queue: cgg_short.q
+
+unzip_rename_SE:
+  threads: 4
+  queue: cgg_short.q
+
+unzip_rename_PE:
+  threads: 4
+  queue: cgg_short.q
+
+quality_control_raw_SE:
+  threads: 4
+  queue: cgg_short.q
 
 #$ -cwd
 #$ -S /bin/bash
