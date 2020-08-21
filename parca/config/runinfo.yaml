@@ -19,4 +19,4 @@ outdir:
   #"/apps/bio/dev_repos/parca/demo/200813_demo"
 
 singularity_image:
-  "workflows/containers/image_parca_v7.sif"
+  "workflows/containers/image_parca_v5.sif"

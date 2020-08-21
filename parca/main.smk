@@ -3,6 +3,8 @@ from workflows.utils.FileProcessing import ProcessFiles
 from workflows.utils.Setup import Setup
 
 configfile: "config/config.yaml"
+#snakemake -rp -s main.smk --cluster-config config/cluster.yaml --profile qsub_profile
+
 
 # Read the runinfo file containg parameters for the current run.
 runinfo = ProcessFiles(config['runinfo'])
@@ -29,8 +31,8 @@ for key in settings_dict:
     nucleotide_list.append(settings_dict[key][2])
     print("SAMPLE ID:", key)
     print("\tInput files:", settings_dict[key][0])
-    print("\tSample type:", sample_type_list)
-    print("\tNucleotide:", nucleotide_list)
+    print("\tSample type:", settings_dict[key][1])
+    print("\tNucleotide:", settings_dict[key][2])
 
 print("\nResults are placed in:", runinfo_dict['outdir'], "\n")
 
