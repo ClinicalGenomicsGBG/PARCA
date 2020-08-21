@@ -8,3 +8,4 @@ parca/workflows/__pycache__/
 parca/workflows/containers/*.sif
 parca/workflows/scripts/blast_processing/blast_preprocessing/__pycache__/
 parca/workflows/utils/__pycache__/
+parca/cluster_logs
