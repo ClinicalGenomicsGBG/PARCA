@@ -1,0 +1,8 @@
+name: R_env
+channels:
+  - conda-forge
+dependencies:
+  - r-base=4.0.2
+  - r-openxlsx=4.1.5
+  - r-magrittr=1.5
+  - r-tidyverse=1.3.0
