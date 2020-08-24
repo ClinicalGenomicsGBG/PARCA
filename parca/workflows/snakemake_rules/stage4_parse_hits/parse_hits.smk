@@ -22,17 +22,17 @@ rule merge_doublets:
     output:
         combined="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju.txt"
     params:
-        names_nodes_dmp_dir=config['names_nodes_dmp_dir']
-    conda: config['conda_environment']
+        names_nodes_dmp_dir=runinfo_dict['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
+    conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
     log: "{outdir}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage4/mergeOutputs.log"
     shell:
         """
         kaiju-mergeOutputs \
-        -i {input.kaiju_doublets} \
-        -j {input.kraken_doublets} \
-        -o {output.combined} \
-        -v -c lowest \
-        -t {params.names_nodes_dmp_dir}/nodes.dmp &> {log};
+            -i {input.kaiju_doublets} \
+            -j {input.kraken_doublets} \
+            -o {output.combined} \
+            -v -c lowest \
+            -t {params.names_nodes_dmp_dir}/nodes.dmp &> {log};
         """
 #"mergeOutputs -i $outdir/kaiju_compare.txt -j $outdir/kraken_compare.txt -o $outdir/combined_kraken_kaiju.txt -v -c lowest -t /tmp/pathfinder_dbs/nodes.dmp";
 

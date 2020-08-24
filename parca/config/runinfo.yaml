@@ -37,3 +37,6 @@ kaiju_names: "/medstore/Development/Metagenomics/PathFinder43b/databases/nodes.d
 
 ## Kraken settings
 kraken_db_base_path: "/medstore/External_References/krakdb_hll"
+
+## Names and nodes file
+names_nodes_dmp_dir: "/apps/bio/dev_repos/parca/demo/ref/names_and_nodes"

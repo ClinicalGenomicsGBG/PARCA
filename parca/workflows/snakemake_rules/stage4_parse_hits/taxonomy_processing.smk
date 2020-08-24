@@ -16,15 +16,15 @@ rule add_taxon_names_doublets:
         names_nodes_dmp_dir=config['names_nodes_dmp_dir']
         #nodes=config['nodes'],
         #names=config['names']
-    conda: config['conda_environment']
+    conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
     shell:
         """
         kaiju-addTaxonNames \
-        -t {params.names_nodes_dmp_dir}/nodes.dmp \
-        -n {params.names_nodes_dmp_dir}/names.dmp \
-        -i {input.combined} \
-        -o {output.named} \
-        -r superkingdom,class,order,family,genus,species;
+            -t {params.names_nodes_dmp_dir}/nodes.dmp \
+            -n {params.names_nodes_dmp_dir}/names.dmp \
+            -i {input.combined} \
+            -o {output.named} \
+            -r superkingdom,class,order,family,genus,species;
         """
 
 

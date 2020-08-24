@@ -1,5 +1,12 @@
 
 rule unzip_rename_SE:
+    """
+    Rule for unzipping single end fastq files. If the file is unzipped it is linked to a working directory location.
+    Input:
+        A fastq file, gzipped or not zipped. Note that other extensions e.g. ".zip" is currently not accounted for. Add if necessary.
+    Output:
+        An unzipped fastq file.
+    """
     input:
         lambda wildcards: settings_dict[wildcards.sample][0]
     output:
@@ -20,6 +27,13 @@ rule unzip_rename_SE:
         """
 
 rule unzip_rename_PE:
+    """
+    Rule for unzipping paired end end fastq files and renaming them to the same convention. If the file is unzipped it is linked to a working directory location.
+    Input:
+        Two fastq files, gzipped or not zipped. Note that other extensions e.g. ".zip" is currently not accounted for. Add if necessary.
+    Output:
+        Forward and reverse unzipped fastq files.
+    """
     input:
         fwd=lambda wildcards: settings_dict[wildcards.sample][0][0],
         rev=lambda wildcards: settings_dict[wildcards.sample][0][1]
@@ -45,6 +59,13 @@ rule unzip_rename_PE:
         """
 
 rule interleave_PE:
+    """
+    Rule for interleving paired end files for compatibility with following rules, might be able to remove this part in following updates.
+    Input:
+        Unzipped forward and revese fastq-files
+    Output:
+        An unzipped fastq file.
+    """
     input: 
         fwd= "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R1.fastq",
         rev= "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R2.fastq"
