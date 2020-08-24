@@ -37,20 +37,20 @@ runinfo: "config/runinfo.yaml"
 #   "containers/image_parca_v3.sif"
 
 ## Conda environment
-conda_environment:
-  "/apps/bio/dev_repos/parca/parca/workflows/conda/parca_container_env.yml"
+# conda_environment:
+#   "/apps/bio/dev_repos/parca/parca/workflows/conda/parca_container_env.yml"
 
 # bbmap_environment:
 #   "workflows/conda/bbmap_env.yaml"
 
 
 # PROGRAMS
-pollux_path: 
-  "/apps/bio/apps/pollux/1.0.2/bin/pollux"
-fiona_path: 
-  "/apps/bio/software/fiona/0.2.9/bin/fiona"
-kraken_path: 
-  "/apps/CLC_ExternalApps/kraken2"
+# pollux_path: 
+#   "/apps/bio/apps/pollux/1.0.2/bin/pollux"
+# fiona_path: 
+#   "/apps/bio/software/fiona/0.2.9/bin/fiona"
+# kraken_path: 
+#   "/apps/CLC_ExternalApps/kraken2"
 
 ## Kraken settings
 kraken_db_base_path: "/medstore/External_References/krakdb_hll"

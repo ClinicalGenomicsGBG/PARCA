@@ -38,27 +38,21 @@ print("\nResults are placed in:", runinfo_dict['outdir'], "\n")
 
 rule all:
     input:
-        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/samples/{sample}.fastq",
+        # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
+        #     zip,
+        #     outdir=runinfo_dict['outdir']*len(sample_id_list),
+        #     sample=sample_id_list,
+        #     sample_type=sample_type_list,
+        #     nucleotide=nucleotide_list
+        #     )
+        expand("{outdir}/snakemake_results_{sample}/SE_RNA/stage2/kmer_input/kmer_input.fasta",
             zip,
             outdir=[runinfo_dict['outdir']]*len(sample_id_list),
             sample= sample_id_list,
             sample_type = sample_type_list,
             nucleotide = nucleotide_list
             )
-
-
-        # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
-        #     outdir=config['outdir'],
-        #     sample=sample_ids,
-        #     sample_type=sample_type,
-        #     nucleotide=nucleotide
-        #     )
         
-        # expand("{sampledir}/{sample}{suffix_fwd}",
-        #     sampledir=raw_sample_dir,
-        #     sample=sample_ids,
-        #     suffix_fwd=suffix_fwd
-        #     )
 
         #expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt",
             # outdir=config['outdir'],
@@ -72,26 +66,26 @@ include:
     "workflows/snakemake_rules/stage1_qc_trim_ec/setup/setup.smk"
 include:
     "workflows/snakemake_rules/stage1_qc_trim_ec/quality_control/fastqc.smk"
-# include:
-#     "workflows/snakemake_rules/stage1_qc_trim_ec/trimming/bbduk_trimming.smk"
-# include:
-#     "workflows/snakemake_rules/stage1_qc_trim_ec/ec_pollux/ec_pollux.smk"
-# include:
-#     "workflows/snakemake_rules/stage1_qc_trim_ec/ec_fiona/ec_fiona.smk"
+include:
+    "workflows/snakemake_rules/stage1_qc_trim_ec/trimming/bbduk_trimming.smk"
+include:
+    "workflows/snakemake_rules/stage1_qc_trim_ec/ec_pollux/ec_pollux.smk"
+include:
+    "workflows/snakemake_rules/stage1_qc_trim_ec/ec_fiona/ec_fiona.smk"
 
-# ##STAGE 2
-# include:
-#     "workflows/snakemake_rules/stage2_assembly/megahit/megahit.smk"
-# include:
-#     "workflows/snakemake_rules/stage2_assembly/bbwrap_alignment/bbwrap_alignment.smk"
-# include:
-#     "workflows/snakemake_rules/stage2_assembly/merge_contigs_unmapped/merge_contigs_unmapped.smk"
+##STAGE 2
+include:
+    "workflows/snakemake_rules/stage2_assembly/megahit/megahit.smk"
+include:
+    "workflows/snakemake_rules/stage2_assembly/bbwrap_alignment/bbwrap_alignment.smk"
+include:
+    "workflows/snakemake_rules/stage2_assembly/merge_contigs_unmapped/merge_contigs_unmapped.smk"
 
-# ##STAGE 3
-# include:
-#     "workflows/snakemake_rules/stage3_kraken_kaiju/kraken_rules/kraken.smk"
-# include:
-#     "workflows/snakemake_rules/stage3_kraken_kaiju/kaiju_rules/kaiju.smk"
+##STAGE 3
+include:
+    "workflows/snakemake_rules/stage3_kraken_kaiju/kraken_rules/kraken.smk"
+include:
+    "workflows/snakemake_rules/stage3_kraken_kaiju/kaiju_rules/kaiju.smk"
 
 # ##STAGE 4
 # include:

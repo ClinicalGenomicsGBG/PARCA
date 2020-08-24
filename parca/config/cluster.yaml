@@ -14,7 +14,25 @@ quality_control_raw_SE:
   threads: 4
   queue: cgg_short.q
 
-#$ -cwd
+fiona_SE_RNA:
+  threads: 40 #110
+  queue: cgg_short.q@yavin.medair.lcl #wgs.q@kuat.medair.lcl
+
+fiona_SE_DNA:
+  threads: 40 #110
+  queue: cgg_short.q@yavin.medair.lcl #wgs.q@kuat.medair.lcl
+
+megahit_SE_RNA:
+  threads: 40 #120
+  queue: cgg_short.q@yavin.medair.lcl #wgs.q@kuat.medair.lcl
+
+bbwrap_alignment_SE_RNA:
+  threads: 40 #120
+  queue: cgg_short.q@yavin.medair.lcl #wgs.q@kuat.medair.lcl
+
+
+
+  #$ -cwd
 #$ -S /bin/bash
 #$ -pe mpi 120
 #$ -q wgs.q@kuat.medair.lcl

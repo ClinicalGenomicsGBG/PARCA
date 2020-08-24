@@ -5,7 +5,7 @@ rule pollux_SE_RNA:
     output: 
         "{outdir}/snakemake_results_{sample}/SE_RNA/stage1/pollux/trimmed_reads.corrected.fq"
     params:
-        pollux=config['pollux_path'],
+        pollux=runinfo_dict['pollux_path'], #config['pollux_path'],
         outdir="{outdir}/snakemake_results_{sample}/SE_RNA/stage1/pollux",
         corrected="{outdir}/snakemake_results_{sample}/SE_RNA/stage1/pollux/trimmed_reads.fq.corrected"
     log: "{outdir}/snakemake_results_{sample}/logs_SE_RNA/stage1/pollux.log"

@@ -7,7 +7,7 @@ rule bbwrap_alignment_SE_RNA:
         unmapped="{outdir}/snakemake_results_{sample}/SE_RNA/stage2/bbwrap_alignment/unmapped_reads.fasta",
         scafstats="{outdir}/snakemake_results_{sample}/stats_SE_RNA/stage2/bbwrap_alignment/bbmap_scafstats.txt",
         stats="{outdir}/snakemake_results_{sample}/stats_SE_RNA/stage2/bbwrap_alignment/bbmap_stats.txt"
-    conda: config['conda_environment']
+    conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/snakemake_results_{sample}/logs_SE_RNA/stage2/bbwrap_alignment.log"
     benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_SE_RNA/stage2/bbwrap.txt"
     threads: 110
@@ -36,7 +36,7 @@ rule pileup_SE_RNA:
         "{outdir}/snakemake_results_{sample}/SE_RNA/stage2/bbwrap_alignment/aln.sam.gz"
     output:
         "{outdir}/snakemake_results_{sample}/SE_RNA/stage2/pileup/bbmap_cov.txt"
-    conda: config['conda_environment']
+    conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/snakemake_results_{sample}/logs_SE_RNA/stage2/pileup.log"
     shell:
         """

@@ -7,10 +7,10 @@ rule bbduk_trimming_SE:
         stats= "{outdir}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/trimming/bbduk_stats.txt",
         trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt"
     params:     
-        adapters=config['adapters'],
+        adapters= runinfo_dict['adapters'], #config['adapters'],
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t"
     #threads: 23
-    conda: config['conda_environment']
+    conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage1/trimming.log"
     benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_SE_{nucleotide}/stage1/trimming.txt"
     shell:
