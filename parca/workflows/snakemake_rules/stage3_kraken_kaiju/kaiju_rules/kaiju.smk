@@ -4,10 +4,10 @@ rule kaiju:
     output:
         kaiju="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.txt"
     params:
-        kaiju_db_base_path=config['kaiju_db_base_path'],
-        kaijunames=config['kaiju_names']
+        kaiju_db_base_path=runinfo_dict['kaiju_db_base_path'], #config['kaiju_db_base_path'],
+        kaijunames=runinfo_dict['kaiju_names'] #config['kaiju_names']
     threads: 110
-    conda: config['conda_environment']
+    conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
     shell:
         """
         kaiju \
@@ -35,7 +35,7 @@ rule kaiju_filter_classified_RNA:
         read_count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_RNA/stage3/kaiju/count_kaiju_filtered_classified.txt"
     params:
         program="kaiju"
-    conda: config['conda_environment']
+    conda: "../../../conda/R_env.yaml" #config['conda_environment']
     script:
             "../../../scripts/kmer_processing/filter_classified.R"
 

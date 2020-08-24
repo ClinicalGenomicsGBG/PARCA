@@ -53,7 +53,7 @@ runinfo: "config/runinfo.yaml"
 #   "/apps/CLC_ExternalApps/kraken2"
 
 ## Kraken settings
-kraken_db_base_path: "/medstore/External_References/krakdb_hll"
+# kraken_db_base_path: "/medstore/External_References/krakdb_hll"
 
 krakendb_RNA: ["eukaryotes_cds", "viruses"] #, "bacteria_progenomes_cds_total"]
 krakendblimits_RNA: ["0.15", "0.05"] #, "0.05"]
@@ -67,9 +67,9 @@ kraken2_db_base_path: "/medstore/Development/Metagenomics/kraken_dbs"
 kraken2_mini_db: "viruses" #"minikraken_8GB_20200312"
 kraken2_limits: "0.05" #["0.15"]
 
-## Kaiju settings
-kaiju_db_base_path: "/medstore/Development/Metagenomics/PathFinder43b/databases" #"/tmp/pathfinder_dbs" #cp -r /medstore/Development/Metagenomics/PathFinder43b/databases/* /tmp/pathfinder_dbs
-kaiju_names: "/medstore/Development/Metagenomics/PathFinder43b/databases/nodes.dmp" #"/tmp/pathfinder_dbs/nodes.dmp"
+# ## Kaiju settings
+# kaiju_db_base_path: "/medstore/Development/Metagenomics/PathFinder43b/databases" #"/tmp/pathfinder_dbs" #cp -r /medstore/Development/Metagenomics/PathFinder43b/databases/* /tmp/pathfinder_dbs
+# kaiju_names: "/medstore/Development/Metagenomics/PathFinder43b/databases/nodes.dmp" #"/tmp/pathfinder_dbs/nodes.dmp"
 
 kaijudb_RNA: ["genbank_eukaryotes_171014_kaiju_db","genbank_viruses_171017_kaiju_db"] #["progenomes_complete","genbank_eukaryotes_171014_kaiju_db","genbank_viruses_171017_kaiju_db"]
 kaijuscore_RNA: ["85","75"] #["80", "85","75"]

@@ -1,4 +1,4 @@
-from collections import defaultdict
+#from collections import defaultdict
 
 rule kraken:
     input: 
@@ -6,14 +6,14 @@ rule kraken:
     output:  
         kraken="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.txt"
     params:
-        kraken_path=config['kraken_path'],
-        kraken_db_base_path=config['kraken_db_base_path']
+        #kraken_path=config['kraken_path'],
+        kraken_db_base_path=runinfo_dict['kraken_db_base_path'] #config['kraken_db_base_path']
     threads: 110
-    conda: config['conda_environment']
+    conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
     log:"{outdir}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.log"
     shell:
         """
-        {params.kraken_path}/kraken \
+        kraken \
             --db {params.kraken_db_base_path}/{wildcards.kraken_db} \
             --preload \
             --threads {threads} \
@@ -21,6 +21,15 @@ rule kraken:
             --output {output.kraken} \
             &>{log}; 
         """
+        # """
+        # {params.kraken_path}/kraken \
+        #     --db {params.kraken_db_base_path}/{wildcards.kraken_db} \
+        #     --preload \
+        #     --threads {threads} \
+        #     --fasta-input {input.kmer_input} \
+        #     --output {output.kraken} \
+        #     &>{log}; 
+        # """
 
 rule kraken_filter_score:
     input: 
@@ -28,17 +37,24 @@ rule kraken_filter_score:
     output:  
         filtered="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt"
     params:
-        kraken_path=config['kraken_path'],
-        kraken_db_base_path=config['kraken_db_base_path']
-    conda: config['conda_environment']
+        #kraken_path=config['kraken_path'],
+        kraken_db_base_path=runinfo_dict['kraken_db_base_path'] #config['kraken_db_base_path']
+    conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
     shell:
         """
-        {params.kraken_path}/kraken-filter \
+        kraken-filter \
             --db {params.kraken_db_base_path}/{wildcards.kraken_db} \
             --threshold {wildcards.db_limits} \
             {input.kraken} \
             > {output.filtered};
         """
+        # """
+        # {params.kraken_path}/kraken-filter \
+        #     --db {params.kraken_db_base_path}/{wildcards.kraken_db} \
+        #     --threshold {wildcards.db_limits} \
+        #     {input.kraken} \
+        #     > {output.filtered};
+        # """
 
 rule kraken_filter_classified_RNA:
     input:
@@ -51,7 +67,7 @@ rule kraken_filter_classified_RNA:
         read_count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_RNA/stage3/kraken/count_kraken_filtered_classified.txt"
     params:
         program="kraken"
-    conda: config['conda_environment']
+    conda: "../../../conda/R_env.yaml" #config['conda_environment']
     script:
         "../../../scripts/kmer_processing/filter_classified.R"
 
@@ -69,7 +85,7 @@ rule kraken_filter_classified_DNA:
         read_count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_DNA/stage3/kraken/count_kraken_filtered_classified.txt"
     params:
         program="kraken"
-    conda: config['conda_environment']
+    conda: "../../../conda/R_env.yaml" #config['conda_environment']
     script:
         "../../../scripts/kmer_processing/filter_classified.R"
 

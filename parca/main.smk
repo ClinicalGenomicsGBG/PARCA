@@ -87,11 +87,11 @@ include:
 include:
     "workflows/snakemake_rules/stage3_kraken_kaiju/kaiju_rules/kaiju.smk"
 
-# ##STAGE 4
-# include:
-#     "workflows/snakemake_rules/stage4_parse_hits/parse_hits.smk"
-# include:
-#     "workflows/snakemake_rules/stage4_parse_hits/taxonomy_processing.smk" 
+##STAGE 4
+include:
+    "workflows/snakemake_rules/stage4_parse_hits/parse_hits.smk"
+include:
+    "workflows/snakemake_rules/stage4_parse_hits/taxonomy_processing.smk" 
 
 # ##STAGE 5
 # include:

@@ -2,6 +2,7 @@ __default__:
   threads: 1
   queue: cgg_short.q
 
+# Stage 1
 unzip_rename_SE:
   threads: 4
   queue: cgg_short.q
@@ -22,6 +23,7 @@ fiona_SE_DNA:
   threads: 40 #110
   queue: cgg_short.q@yavin.medair.lcl #wgs.q@kuat.medair.lcl
 
+# Stage 2
 megahit_SE_RNA:
   threads: 40 #120
   queue: cgg_short.q@yavin.medair.lcl #wgs.q@kuat.medair.lcl
@@ -30,9 +32,19 @@ bbwrap_alignment_SE_RNA:
   threads: 40 #120
   queue: cgg_short.q@yavin.medair.lcl #wgs.q@kuat.medair.lcl
 
+# Stage 3
+kaiju:
+  threads: 40 #120
+  queue: cgg_short.q@yavin.medair.lcl #wgs.q@kuat.medair.lcl
+
+kraken:
+  threads: 40 #120
+  queue: cgg_short.q@yavin.medair.lcl #wgs.q@kuat.medair.lcl
 
 
-  #$ -cwd
+
+
+#$ -cwd
 #$ -S /bin/bash
 #$ -pe mpi 120
 #$ -q wgs.q@kuat.medair.lcl

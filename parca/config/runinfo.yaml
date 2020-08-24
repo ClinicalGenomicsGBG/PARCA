@@ -28,5 +28,12 @@ fiona_path:
   "/apps/bio/software/fiona/0.2.9/bin/fiona"
 
 ## Programs that should be replaced to conda
-kraken_path: 
-  "/apps/CLC_ExternalApps/kraken2"
+# kraken_path: 
+#   "/apps/CLC_ExternalApps/kraken2"
+
+## Kaiju settings
+kaiju_db_base_path: "/medstore/Development/Metagenomics/PathFinder43b/databases" #"/tmp/pathfinder_dbs" #cp -r /medstore/Development/Metagenomics/PathFinder43b/databases/* /tmp/pathfinder_dbs
+kaiju_names: "/medstore/Development/Metagenomics/PathFinder43b/databases/nodes.dmp" #"/tmp/pathfinder_dbs/nodes.dmp"
+
+## Kraken settings
+kraken_db_base_path: "/medstore/External_References/krakdb_hll"
