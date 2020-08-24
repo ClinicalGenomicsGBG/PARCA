@@ -1,4 +1,14 @@
 rule kaiju:
+    """ 
+    Rule for running metagenomic classifier Kaiju.
+    Input: 
+        Fasta files of sequences.
+    Params: 
+        kaiju_db_base_path=The path to the databases used for kaiju.
+        kaijunames=Path to nodes file.
+    Output: 
+        Kaiju classifications.
+    """ 
     input: 
         kmer_input="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta"
     output:
@@ -24,6 +34,15 @@ rule kaiju:
         """
 
 rule kaiju_filter_classified_RNA:
+    """
+    Rule for filtering all Kaiju classifications for the longest match for each sequence.
+    Input: 
+        Kaiju classifications for all databases.
+    Params: 
+        program=Input to R-script which classifier is used.
+    Output: 
+        classified_filtered=Filtered kaiju classifications.
+    """ 
     input:
         files=expand("{{outdir}}/snakemake_results_{{sample}}/{{sample_type}}_RNA/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.txt",
             zip,
