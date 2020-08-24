@@ -5,6 +5,17 @@
 # RNA.contigs.fa
 # RNA.log
 rule megahit_SE_RNA:
+    """ 
+    Rule for running Megahit metagenomic assembler on single end RNA.
+    Input: 
+        A trimmed and error corrected fastq file.
+    Params: 
+        out_prefix=Output prefix.
+        outdir=Output directory.
+        min_contig_len=The minimum length for being assigned as a contig.
+    Output: 
+        Log files, stats and the contigs file in Fasta format.
+    """ 
     input:
         "{outdir}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fq"
     output:
