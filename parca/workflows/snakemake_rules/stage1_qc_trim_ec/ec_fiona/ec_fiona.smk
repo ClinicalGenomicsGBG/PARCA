@@ -1,7 +1,7 @@
 
 rule fiona_SE_RNA:
     """ 
-    Rule for running fiona error correction on RNA.
+    Rule for running fiona error correction on single end RNA.
     Input: 
         Trimmed reads.
     Params: 
@@ -25,7 +25,7 @@ rule fiona_SE_RNA:
 
 rule fiona_SE_DNA:
     """ 
-    Rule for running fiona error correction on DNA.
+    Rule for running fiona error correction on single end DNA.
     Input: 
         Trimmed reads.
     Params: 
