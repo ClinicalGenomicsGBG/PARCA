@@ -1,5 +1,16 @@
 
 rule pollux_SE_RNA:
+    """ 
+    Rule for error correction using Pollux.
+    Input: 
+        Trimmed fastq files.
+    Params: 
+        pollux=Path to pollux software.
+        outdir=Out directory path.
+        corrected=intermediate file.
+    Output: 
+        Error corrected reads.
+    """ 
     input: 
         "{outdir}/snakemake_results_{sample}/SE_RNA/stage1/trimming/trimmed_reads.fq"
     output: 
