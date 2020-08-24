@@ -1,6 +1,15 @@
 #from collections import defaultdict
 
 rule kraken:
+    """ 
+    Rule for running kraken.
+    Input: 
+        kmer_input=A fasta file with sequences.
+    Params: 
+        kraken_db_base_path=Path to kraken databases.
+    Output: 
+        kraken=Sequence classification summary.
+    """ 
     input: 
         kmer_input="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta"
     output:  
@@ -32,6 +41,14 @@ rule kraken:
         # """
 
 rule kraken_filter_score:
+    """ 
+    Rule for filtering the kraken classifications.
+    Input: Sequence classification summary.
+    Params: 
+        kraken_db_base_path=Path to kraken databases.
+    Output:
+        Filtered sequence classificaion summary. 
+    """ 
     input: 
         kraken="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.txt"
     output:  
@@ -57,6 +74,16 @@ rule kraken_filter_score:
         # """
 
 rule kraken_filter_classified_RNA:
+    """
+    Rule for filtering all kraken classifications for the highest calculated (seq_length-kmer_len)*score+0.5.
+    score = C/Q, where C is the number of k-mers mapped to LCA values in the clade rooted at the label, and Q is the number of k-mers in the sequence that lack an ambiguous nucleotide.
+    Input: 
+        Kaiju classifications for all databases.
+    Params: 
+        program=Input to R-script which classifier is used.
+    Output: 
+        classified_filtered=Filtered kaiju classifications.
+    """ 
     input:
         files=expand("{{outdir}}/snakemake_results_{{sample}}/{{sample_type}}_RNA/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt", 
             zip,
@@ -73,8 +100,15 @@ rule kraken_filter_classified_RNA:
 
 rule kraken_filter_classified_DNA:
     """
-    Filter best classified read.
-    """
+    Rule for filtering all kraken classifications for the highest calculated (seq_length-kmer_len)*score+0.5.
+    score = C/Q, where C is the number of k-mers mapped to LCA values in the clade rooted at the label, and Q is the number of k-mers in the sequence that lack an ambiguous nucleotide.
+    Input: 
+        Kaiju classifications for all databases.
+    Params: 
+        program=Input to R-script which classifier is used.
+    Output: 
+        classified_filtered=Filtered kaiju classifications.
+    """ 
     input:
         files=expand("{{outdir}}/snakemake_results_{{sample}}/{{sample_type}}_DNA/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt", 
             zip,
