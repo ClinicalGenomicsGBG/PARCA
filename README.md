@@ -3,6 +3,9 @@
 ## Pathogen Research in Clinical Applications
 
 ---
+## Prerequisites:
+* Databases for Kraken and Kaiju are currently manually downloaded 
+* Pollux and Fiona are not available from conda and has to be manually downloaded
 
 ## **The pipeline**
 
