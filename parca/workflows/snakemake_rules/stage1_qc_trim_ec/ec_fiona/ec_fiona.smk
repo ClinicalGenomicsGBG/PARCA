@@ -1,5 +1,14 @@
 
 rule fiona_SE_RNA:
+    """ 
+    Rule for running fiona error correction on RNA.
+    Input: 
+        Trimmed reads.
+    Params: 
+        fiona=Path to fiona software.
+    Output: 
+        Error corrected reads.
+    """ 
     input: 
         "{outdir}/snakemake_results_{sample}/SE_RNA/stage1/pollux/trimmed_reads.corrected.fq"
     output: 
@@ -15,6 +24,15 @@ rule fiona_SE_RNA:
         """
 
 rule fiona_SE_DNA:
+    """ 
+    Rule for running fiona error correction on DNA.
+    Input: 
+        Trimmed reads.
+    Params: 
+        fiona=Path to fiona software.
+    Output: 
+        Error corrected reads.
+    """ 
     input: 
        "{outdir}/snakemake_results_{sample}/SE_DNA/stage1/trimming/trimmed_reads.fq"
     output: 
