@@ -47,7 +47,6 @@ rule pileup_SE_RNA:
     Rule for counting the number of reads assigned to each contig.
     Input: Alignment file. 
     Output: Contig coverage.
-
     """ 
     input:
         "{outdir}/snakemake_results_{sample}/SE_RNA/stage2/bbwrap_alignment/aln.sam.gz"
