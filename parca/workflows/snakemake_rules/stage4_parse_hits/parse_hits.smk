@@ -1,6 +1,19 @@
 
 
 rule compare_kmer_results:
+    """ 
+    Rule for comparing the kaiju and kraken results. 
+    Input: 
+        kraken=Kraken classifications.
+        kaiju=Kaiju classifications.
+    Output: 
+        kraken_doublets=Kraken classifications for sequences that Kaiju also was able to classify.
+        Kaiju_doublets=Kaiju classifications for sequences that Kraken also was able to classify.
+        singletons=Classifications that only Kraken or Kaiju was able to make.
+        merged=Kraken and Kaiju classifications in the same dataframe.
+        read_count_doublet=The number of sequences that both Kaiju and Kraken was able to classify.
+        read_count_singletons=The number of sequences that only Kaiju or Kraken was able to classify.
+    """ 
     input:
         kraken="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_filtered_classified.txt",
         kaiju="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kaiju/kaiju_filtered_classified.txt"
@@ -16,6 +29,16 @@ rule compare_kmer_results:
         "../../scripts/kmer_processing/compare_outputs.R"
 
 rule merge_doublets:
+    """ 
+    Rule for comparing the classifications from Kraken and Kaiju so that conflicting classifications for reads are solved by taking the lowest taxonomic ID if the classifications belong to the same lineage, if they do not belong to the same lineage the LCA is selected.
+    Input: 
+        kaiju_doublets=Kaiju classifications for sequences that Kraken also was able to classify.
+        kraken_doublets=Kraken classifications for sequences that Kaiju also was able to classify.
+    Params: 
+        names_nodes_dmp_dir=Names and nodes dmp file.
+    Output: 
+        Merged classifications from Kraken and Kaiju.
+    """ 
     input:
         kaiju_doublets="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/kaiju_doublets.txt",
         kraken_doublets="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/kraken_doublets.txt"
