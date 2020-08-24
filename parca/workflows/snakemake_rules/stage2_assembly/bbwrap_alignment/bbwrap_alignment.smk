@@ -1,4 +1,15 @@
 rule bbwrap_alignment_SE_RNA:
+    """ 
+    Rule for aligning the reads back to the generated contigs.
+    Input: 
+        ref=Contigs generated from megahit.
+        reads=Trimmed and error corrected reads.
+    Output: 
+        mapped=The sequences that could be mapped to a contig.
+        unmapped_reads=Fasta file of sequences that could not be mapped to a contig.
+        scafstats=Mapping statistics.
+        stats=Overall mapping statistics.
+    """ 
     input:
         ref="{outdir}/snakemake_results_{sample}/SE_RNA/stage2/megahit/RNA.contigs.fa",
         reads="{outdir}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fq"
@@ -32,6 +43,12 @@ rule bbwrap_alignment_SE_RNA:
         """
 
 rule pileup_SE_RNA:
+    """ 
+    Rule for counting the number of reads assigned to each contig.
+    Input: Alignment file. 
+    Output: Contig coverage.
+
+    """ 
     input:
         "{outdir}/snakemake_results_{sample}/SE_RNA/stage2/bbwrap_alignment/aln.sam.gz"
     output:
