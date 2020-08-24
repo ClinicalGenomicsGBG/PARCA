@@ -1,5 +1,17 @@
 
 rule bbduk_trimming_SE:
+    """ 
+    Rule for trimming fastq files.
+    Input: 
+        A fastq file.
+    Params: 
+        adapters=adapter-string if adapters should be removed.
+        adaptertrimcommand=trimming settings.
+    Output: 
+        reads=Trimmed reads.
+        stats=Statistics generated from bbduk.
+        trimmed_read_count=The number of reads after trimming.
+    """ 
     input:
          "{outdir}/snakemake_results_{sample}/SE_{nucleotide}/samples/{sample}.fastq"
     output:
