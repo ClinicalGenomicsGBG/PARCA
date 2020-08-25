@@ -24,7 +24,7 @@ rule compare_kmer_results:
         merged="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/merged_total.txt",
         read_count_doublet="{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_doublets.txt",
         read_count_singletons="{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_singletons.txt"
-    conda: "../../../conda/R_env.yaml" #config['conda_environment']
+    conda: "../../conda/R_env.yaml" #config['conda_environment']
     script:
         "../../scripts/kmer_processing/compare_outputs.R"
 
@@ -46,7 +46,7 @@ rule merge_doublets:
         combined="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju.txt"
     params:
         names_nodes_dmp_dir=runinfo_dict['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
-    conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
+    conda: "../../conda/kaiju_env.yaml" #config['conda_environment']
     log: "{outdir}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage4/mergeOutputs.log"
     shell:
         """
