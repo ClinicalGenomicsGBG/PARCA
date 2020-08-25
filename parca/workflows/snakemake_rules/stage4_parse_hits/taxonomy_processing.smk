@@ -22,7 +22,7 @@ rule add_taxon_names_doublets:
     output:
         named="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju_names_unfiltered.txt"
     params:
-        names_nodes_dmp_dir=config['names_nodes_dmp_dir']
+        names_nodes_dmp_dir=runinfo_dict['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
         #nodes=config['nodes'],
         #names=config['names']
     conda: "../../conda/kaiju_env.yaml" #config['conda_environment']
@@ -47,8 +47,7 @@ rule filter_SGF_empty:
         combined_unfiltered=The merged kraken and kaiju results for the sequences that both softwares could classify where the lineage is added.
         kraken_doublets=Kraken classifications that were also classified by Kaiju.
         kaiju_doublets=Kaiju classifications that were also classified by Kraken.
-        singletons
-    Params: 
+        singletons=Classifications that could be made by only Kraken or Kaiju.
     Output: 
         combined_SGF_empty_filter=Classifications where species AND genus AND family exists.
         singletons_added_SGF_empty=Classifications made by kraken or kaiju and classifications that was missing species AND genus AND family.
@@ -67,10 +66,13 @@ rule filter_SGF_empty:
 
 rule add_taxonomic_lineage_singletons:
     """ 
-    Rule for 
+    Rule for creating a dataframe with the taxonomic lineage for all taxids in the singletons file.
     Input: 
+        singletons_added_SGF_empty=Classifications made by kraken or kaiju and classifications that was missing species AND genus AND family.
     Params: 
+        dmp_dir=directory with names and nodes file
     Output: 
+        tax_id_lineage=A dataframe with the taxonomic lineage for all taxids in singletons_added_SGF_empty.
     """ 
     input: 
         singletons_added_SGF_empty="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_added_SGF_empty.txt",
@@ -78,7 +80,7 @@ rule add_taxonomic_lineage_singletons:
         tax_id_lineage="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_tax_id_lineage.txt"
     conda: "../../conda/taxonkit_env.yaml" #config['conda_environment']
     params:
-        dmp_dir=config['names_nodes_dmp_dir']
+        dmp_dir=runinfo_dict['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
     shell:
         """
         [ ! -s {input.singletons_added_SGF_empty} ] && touch {output.tax_id_lineage} || \
@@ -95,10 +97,12 @@ rule add_taxonomic_lineage_singletons:
 
 rule singletons_species_to_genus:
     """ 
-    Rule for 
+    Rule for setting ranks below genus to genus.
     Input: 
-    Params: 
+        singletons_added_SGF_empty=Classifications made by kraken or kaiju and classifications that was missing species AND genus AND family.
+        tax_id_lineage=A dataframe with the taxonomic lineage for all taxids in singletons_added_SGF_empty.
     Output: 
+        singletons_genus=classifications where ranks below genus are moved to genus.
     """ 
     input: 
         singletons_added_SGF_empty="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_added_SGF_empty.txt",
@@ -122,7 +126,7 @@ rule add_taxon_names_singletons:
     output: 
         singletons_genus_names="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names.txt",
     params:
-        names_nodes_dmp_dir=config['names_nodes_dmp_dir']
+        names_nodes_dmp_dir=runinfo_dict['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
         #nodes=config['nodes'],
         #names=config['names']
     conda: "../../conda/kaiju_env.yaml" #config['conda_environment']
