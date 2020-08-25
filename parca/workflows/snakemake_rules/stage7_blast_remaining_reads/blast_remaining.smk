@@ -9,10 +9,10 @@ checkpoint prepare_nt_blast_input:
         kmer_blast="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/kmer_species_subsetblast_classed.txt",
     output: 
         blast_infiles=directory("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage7/ntblastin"),
-        count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_printedfiles_assembledreadlengths.txt"
+        read_count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_printedfiles_assembledreadlengths.txt"
     params: 
         chunk_size=10000
-    conda: config['conda_environment'] 
+    conda: "../../conda/biopython_env.yaml" #config['conda_environment'] 
     script:
         "../../scripts/blast_processing/blast_preprocessing/create_ntblast_input.py"
 
@@ -29,8 +29,8 @@ rule blast_remaining_reads_nt:
         e_val="1e-5",
         max_seqs="10",
         qcov_hsp_perc="20",
-        nt_db_dir=config['nt_db_dir']
-    conda: config['conda_environment'] 
+        nt_db_dir=runinfo_dict['nt_db_dir'] #config['nt_db_dir']
+    conda: "../../conda/blast_env.yaml" #config['conda_environment'] 
     threads: 10
     shell:
         """
@@ -72,7 +72,7 @@ rule merge_nt_blast_result:
         blast_output=aggregate_ntblast_input
     output: 
         best_blast="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage7/best_nt_blast.txt"
-    conda: config['conda_environment'] 
+    conda: "../../conda/R_env.yaml" #config['conda_environment'] 
     script:
         "../../scripts/blast_processing/blast_postprocessing/merge_slice_blast_result.R"
 
@@ -92,9 +92,9 @@ rule taxonomic_lineage_best_nt_blast:
         best_blast="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage7/best_nt_blast.txt"
     output:
         tax_id_lineage="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage7/best_nt_blast_tax_id_lineage.txt"
-    conda: config['conda_environment']
+    conda: "../../conda/taxonkit_env.yaml" #config['conda_environment']
     params:
-        dmp_dir=config['names_nodes_dmp_dir']
+        dmp_dir=runinfo_dict['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
     shell:
         """
         [ ! -s {input.best_blast} ] && touch {output.tax_id_lineage} || \
@@ -131,7 +131,7 @@ rule reformat_nt_blast_taxids:
     output: 
         species_and_above="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage7/best_nt_blast_species_and_above.txt",
         count_reads_tax_ids="{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_reads_taxid_BLASTnt.txt"
-    conda: config['conda_environment'] 
+    conda: "../../conda/R_env.yaml" #config['conda_environment'] 
     params:
         blast_type="BLASTnt",
         primates_file=config['primates_file']

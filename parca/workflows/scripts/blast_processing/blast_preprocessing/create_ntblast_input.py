@@ -25,7 +25,7 @@ fasta_path = snakemake.input['kmer_input']
 chunk_size = snakemake.params['chunk_size']
 
 out_dir= snakemake.output['blast_infiles']
-stats_file=snakemake.output['count']
+stats_file=snakemake.output['read_count']
 
 os.system(f"if [ ! -d {out_dir} ]; then mkdir {out_dir};fi;") 
 
