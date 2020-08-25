@@ -5,11 +5,11 @@ rule existing_slices_split:
     output: 
         detected="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/detected_slices.txt",
         missing="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/missing_slices.txt",
-        count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_detected_missing_slices.txt"
+        read_count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_detected_missing_slices.txt"
     params: 
-        existing_slice_path=config['existing_slice_path'],
+        existing_slice_path=runinfo_dict['existing_slice_path'], #config['existing_slice_path'],
         min_tax_id_count=2
-    conda: config['conda_environment']
+    conda: "../../conda/R_env.yaml" #config['conda_environment']
     script: "../../scripts/blast_processing/blast_preprocessing/existing_slices_split.R" 
 
 def create_file_list(file_name):
@@ -22,7 +22,7 @@ rule copy_detected_slices:
         detected="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/detected_slices.txt",
     output: temp(directory("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/existing_slices"))
     params: 
-        existing_slice_path=config['existing_slice_path']
+        existing_slice_path=runinfo_dict['existing_slice_path'] #config['existing_slice_path']
     benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/existing_slices_copy.txt"
     run: 
         detected_list=create_file_list(input.detected)
@@ -36,7 +36,7 @@ rule download_missing_slices:
         missing="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/missing_slices.txt"
     output: temp(directory("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices"))
     params: 
-        existing_slice_path=config['existing_slice_path']
+        existing_slice_path=runinfo_dict['existing_slice_path'] #config['existing_slice_path']
     benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/download_slices.txt"
     run: 
         missing_list=create_file_list(input.missing)
@@ -50,7 +50,7 @@ rule all_downloaded_slices:
         downloaded_dir="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices"
     output: 
         all_downloaded=temp("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices.txt")
-    conda: config['conda_environment']
+    conda: "../../conda/R_env.yaml" #config['conda_environment']
     benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/download_slices_merged.txt"
     script: "../../scripts/blast_processing/blast_preprocessing/merge_downloaded_slices.R" 
 
@@ -64,8 +64,8 @@ rule create_tax_id_accession_slice_files:
     output: 
         created_slice_dir=temp(directory("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices_acc"))
     params:
-        splitaccdump_dir=config['splitaccdump_dir']
-    conda: config['conda_environment'] 
+        splitaccdump_dir=runinfo_dict['splitaccdump_dir'] #config['splitaccdump_dir']
+    conda: "../../conda/R_env.yaml" #config['conda_environment'] 
     benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/downloaded_slices_acc.txt"
     script:  "../../scripts/blast_processing/blast_preprocessing/create_slice_files_downloaded.R"
 
@@ -76,7 +76,7 @@ checkpoint all_gislices:
     output: 
         all_slices=directory("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/all_gislices")
     params: 
-        splitaccdump_dir=config['splitaccdump_dir']
+        splitaccdump_dir=runinfo_dict['splitaccdump_dir'] #config['splitaccdump_dir']
     shell: 
         """
         if [ ! -d {output.all_slices} ]; then \mkdir {output.all_slices};fi;
@@ -97,9 +97,9 @@ rule create_blastdb_alias:
     output:
         "{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}.nal"
     params: 
-        nt_db_dir=config['nt_db_dir'],
+        nt_db_dir=runinfo_dict['nt_db_dir'], #config['nt_db_dir'],
         out="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}"
-    conda: config['conda_environment'] 
+    conda: "../../conda/blast_env.yaml" #config['conda_environment'] 
     shell:
         """
         blastdb_aliastool -dbtype nucl -seqidlist {input} -db {params.nt_db_dir}/nt -out {params.out} >/dev/null;
