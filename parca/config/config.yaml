@@ -88,12 +88,12 @@ kaijumatches_DNA: ["18","20","15"]
 
 
 
-# BLAST
-existing_slice_path: "/medstore/Development/Metagenomics/PathFinder43b/databases/gislices"
+# # BLAST
+# existing_slice_path: "/medstore/Development/Metagenomics/PathFinder43b/databases/gislices"
 
-splitaccdump_dir: "/medstore/Development/Metagenomics/PathFinder43b/databases/splitaccdump" #accession dump to filter for downloaded accessions
+# splitaccdump_dir: "/medstore/Development/Metagenomics/PathFinder43b/databases/splitaccdump" #accession dump to filter for downloaded accessions
 
-nt_db_dir: "/medstore/Development/Metagenomics/PathFinder43b/databases/nt"
+# nt_db_dir: "/medstore/Development/Metagenomics/PathFinder43b/databases/nt"
 
 # Primates file
 primates_file: "/medstore/Development/Metagenomics/PathFinder43b/databases/primates_taxids.txt"

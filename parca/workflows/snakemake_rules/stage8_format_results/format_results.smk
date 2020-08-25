@@ -13,7 +13,7 @@ rule format_all_classified:
         all_classed="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_scores.txt"
     output: 
         all_classed_read_taxid="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid.txt"
-    conda: config['conda_environment'] 
+    conda: "../../conda/R_env.yaml" #config['conda_environment'] 
     script:
          "../../scripts/reformat_results/reformat_all_classed.R"
 
@@ -22,9 +22,9 @@ rule add_taxon_names_all_classed:
         all_classed_read_taxid="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid.txt"
     output: 
         all_classed_read_taxid_names="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt"
-    conda: config['conda_environment'] 
+    conda: "../../conda/kaiju_env.yaml" #config['conda_environment'] 
     params: 
-        names_nodes_dmp_dir=config['names_nodes_dmp_dir']
+        names_nodes_dmp_dir=runinfo_dict['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
     shell:
         """
         kaiju-addTaxonNames \

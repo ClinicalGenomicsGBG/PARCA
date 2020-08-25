@@ -45,7 +45,7 @@ rule all:
         #     sample_type=sample_type_list,
         #     nucleotide=nucleotide_list
         #     )
-        expand("{outdir}/snakemake_results_{sample}/SE_RNA/stage2/kmer_input/kmer_input.fasta",
+        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
             zip,
             outdir=[runinfo_dict['outdir']]*len(sample_id_list),
             sample= sample_id_list,
@@ -93,22 +93,22 @@ include:
 include:
     "workflows/snakemake_rules/stage4_parse_hits/taxonomy_processing.smk" 
 
-# ##STAGE 5
-# include:
-#     "workflows/snakemake_rules/stage5_blast_processing/blast_processing.smk" 
+##STAGE 5
+include:
+    "workflows/snakemake_rules/stage5_blast_processing/blast_processing.smk" 
 
 
-# ##STAGE 6
-# include:
-#    "workflows/snakemake_rules/stage6_blast_sliced_db/blast_above_species_classed.smk"
+##STAGE 6
+include:
+   "workflows/snakemake_rules/stage6_blast_sliced_db/blast_above_species_classed.smk"
 
-# ##STAGE 7 
-# include:
-#    "workflows/snakemake_rules/stage7_blast_remaining_reads/blast_remaining.smk"
+##STAGE 7 
+include:
+   "workflows/snakemake_rules/stage7_blast_remaining_reads/blast_remaining.smk"
 
-# ##STAGE 8
-# include:
-#     "workflows/snakemake_rules/stage8_format_results/format_results.smk"
+##STAGE 8
+include:
+    "workflows/snakemake_rules/stage8_format_results/format_results.smk"
 
 
 
