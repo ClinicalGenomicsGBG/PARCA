@@ -25,7 +25,7 @@ rule add_taxon_names_doublets:
         names_nodes_dmp_dir=config['names_nodes_dmp_dir']
         #nodes=config['nodes'],
         #names=config['names']
-    conda: "../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
+    conda: "../../conda/kaiju_env.yaml" #config['conda_environment']
     shell:
         """
         kaiju-addTaxonNames \
@@ -39,11 +39,15 @@ rule add_taxon_names_doublets:
 
 rule filter_SGF_empty:
     """ 
-    Rule for 
-
-    Doublets (i.e. sequences that could be classified by both kraken and kaiju), that does not contain species AND genus AND family are added to singletons. 
+    Rule for filtering doublets sequence classifications (i.e. sequences that could be classified by both kraken and kaiju) to only contain classifications were species AND genus AND family is not NA.
+    Doublets that are NA for species AND genus AND family are added to singletons. 
     Doublets that had either species OR genus OR family was not added to a file.
+
     Input: 
+        combined_unfiltered=The merged kraken and kaiju results for the sequences that both softwares could classify where the lineage is added.
+        kraken_doublets=Kraken classifications that were also classified by Kaiju.
+        kaiju_doublets=Kaiju classifications that were also classified by Kraken.
+        singletons
     Params: 
     Output: 
         combined_SGF_empty_filter=Classifications where species AND genus AND family exists.
@@ -72,7 +76,7 @@ rule add_taxonomic_lineage_singletons:
         singletons_added_SGF_empty="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_added_SGF_empty.txt",
     output:
         tax_id_lineage="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_tax_id_lineage.txt"
-    conda: config['conda_environment']
+    conda: "../../conda/taxonkit_env.yaml" #config['conda_environment']
     params:
         dmp_dir=config['names_nodes_dmp_dir']
     shell:
@@ -102,7 +106,7 @@ rule singletons_species_to_genus:
     output: 
         singletons_genus="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus.txt",
         read_count_singletons_genus = "{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_singletons_genus.txt"
-    conda: config['conda_environment']
+    conda: "../../conda/R_env.yaml" #config['conda_environment']
     script: 
         "../../scripts/taxonomy_processing/filter_taxonomy.R" 
 
@@ -121,7 +125,7 @@ rule add_taxon_names_singletons:
         names_nodes_dmp_dir=config['names_nodes_dmp_dir']
         #nodes=config['nodes'],
         #names=config['names']
-    conda: config['conda_environment']
+    conda: "../../conda/kaiju_env.yaml" #config['conda_environment']
     shell:
         """
         kaiju-addTaxonNames \
@@ -143,7 +147,7 @@ rule reformat_singletons:
         singletons_genus_names="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names.txt"
     output: 
         singletons_genus_names_reformat="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names_reformat.txt"
-    conda: config['conda_environment']
+    conda: "../../conda/R_env.yaml" #config['conda_environment']
     script:
         "../../scripts/taxonomy_processing/reformat_taxonomy.R"  
 
@@ -178,5 +182,5 @@ rule genus_species_split:
         species="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/species_classed.txt",
         higher="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/above_species_classed.txt",
         read_count = "{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_species_genus_higher.txt"
-    conda: config['conda_environment']
+    conda: "../../conda/R_env.yaml" #config['conda_environment']
     script: "../../scripts/taxonomy_processing/genus_species_split.R" 
