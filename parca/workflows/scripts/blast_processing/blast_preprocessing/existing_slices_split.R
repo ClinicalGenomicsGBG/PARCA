@@ -20,7 +20,7 @@ min_tax_id_count <- snakemake@params[["min_tax_id_count"]]
 
 detected_slice_file <- snakemake@output[["detected"]]
 missing_slice_file <- snakemake@output[["missing"]]
-count_file <- snakemake@output[["count"]]
+count_file <- snakemake@output[["read_count"]]
 
 existing_slice_list <- list.files(path=existing_slice_path)
 df_rank_kingdom_genus_species <- read_tsv(higher_file) 
