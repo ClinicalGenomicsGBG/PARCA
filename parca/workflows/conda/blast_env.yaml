@@ -1,0 +1,7 @@
+name: blast_env
+channels:
+  - bioconda
+dependencies:
+  - blast=2.9.0 
+  #- kraken2=2.0.9beta
+  #- kraken=1.1.1
