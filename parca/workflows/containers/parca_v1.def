@@ -18,7 +18,8 @@ From: ubuntu:16.04
 		ca-certificates \
 		bc \
 		pbzip2 \
-		pigz
+		pigz \
+		tzdata
 	apt-get clean
 
 	#install conda
