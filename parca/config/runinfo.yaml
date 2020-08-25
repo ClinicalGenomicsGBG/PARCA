@@ -41,3 +41,10 @@ kraken_db_base_path: "/medstore/External_References/krakdb_hll"
 
 ## Names and nodes file
 names_nodes_dmp_dir: "/apps/bio/dev_repos/parca/demo/ref/names_and_nodes"
+
+# BLAST
+existing_slice_path: "/medstore/Development/Metagenomics/PathFinder43b/databases/gislices"
+
+splitaccdump_dir: "/medstore/Development/Metagenomics/PathFinder43b/databases/splitaccdump" #accession dump to filter for downloaded accessions
+
+nt_db_dir: "/medstore/Development/Metagenomics/PathFinder43b/databases/nt"
