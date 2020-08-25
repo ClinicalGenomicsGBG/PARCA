@@ -8,6 +8,15 @@
 #     script:
 #         "../../scripts/taxonomy_processing/create_taxonomy_db.R"
 rule add_taxon_names_doublets:
+    """ 
+    Rule for adding lineage to taxonomic IDs.
+    Input: 
+        combined=The merged kraken and kaiju results for the sequences that both softwares could classify.
+    Params: 
+        names_nodes_dmp_dir=runinfo_dict['names_nodes_dmp_dir']
+    Output: 
+        named=The lineage added to the input file.
+    """ 
     input:
         combined="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju.txt"
     output:
@@ -16,7 +25,7 @@ rule add_taxon_names_doublets:
         names_nodes_dmp_dir=config['names_nodes_dmp_dir']
         #nodes=config['nodes'],
         #names=config['names']
-    conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
+    conda: "../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
     shell:
         """
         kaiju-addTaxonNames \
@@ -29,6 +38,17 @@ rule add_taxon_names_doublets:
 
 
 rule filter_SGF_empty:
+    """ 
+    Rule for 
+
+    Doublets (i.e. sequences that could be classified by both kraken and kaiju), that does not contain species AND genus AND family are added to singletons. 
+    Doublets that had either species OR genus OR family was not added to a file.
+    Input: 
+    Params: 
+    Output: 
+        combined_SGF_empty_filter=Classifications where species AND genus AND family exists.
+        singletons_added_SGF_empty=Classifications made by kraken or kaiju and classifications that was missing species AND genus AND family.
+    """ 
     input: 
         combined_unfiltered="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju_names_unfiltered.txt",
         kraken_doublets="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/kraken_doublets.txt",
@@ -37,11 +57,17 @@ rule filter_SGF_empty:
     output: 
         combined_SGF_empty_filter="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_kraken_kaiju_names.txt",
         singletons_added_SGF_empty="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_added_SGF_empty.txt"
-    conda: config['conda_environment']
+    conda: "../../conda/R_env.yaml" #config['conda_environment']
     script:
         "../../scripts/taxonomy_processing/filter_SGF_empty.R" 
 
 rule add_taxonomic_lineage_singletons:
+    """ 
+    Rule for 
+    Input: 
+    Params: 
+    Output: 
+    """ 
     input: 
         singletons_added_SGF_empty="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_added_SGF_empty.txt",
     output:
@@ -64,6 +90,12 @@ rule add_taxonomic_lineage_singletons:
         """ 
 
 rule singletons_species_to_genus:
+    """ 
+    Rule for 
+    Input: 
+    Params: 
+    Output: 
+    """ 
     input: 
         singletons_added_SGF_empty="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_added_SGF_empty.txt",
         tax_id_lineage="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_tax_id_lineage.txt"
@@ -75,6 +107,12 @@ rule singletons_species_to_genus:
         "../../scripts/taxonomy_processing/filter_taxonomy.R" 
 
 rule add_taxon_names_singletons:
+    """ 
+    Rule for 
+    Input: 
+    Params: 
+    Output: 
+    """ 
     input: 
         singletons_genus="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus.txt",
     output: 
@@ -95,6 +133,12 @@ rule add_taxon_names_singletons:
         """
 
 rule reformat_singletons:
+    """ 
+    Rule for 
+    Input: 
+    Params: 
+    Output: 
+    """ 
     input: 
         singletons_genus_names="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names.txt"
     output: 
@@ -104,6 +148,12 @@ rule reformat_singletons:
         "../../scripts/taxonomy_processing/reformat_taxonomy.R"  
 
 rule merge_combined_with_singletons:
+    """ 
+    Rule for 
+    Input: 
+    Params: 
+    Output: 
+    """ 
     input: 
         singletons_genus_names_reformat="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names_reformat.txt",
         combined_SGF_empty_filter="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_kraken_kaiju_names.txt"
@@ -116,6 +166,12 @@ rule merge_combined_with_singletons:
         """
 
 rule genus_species_split:
+    """ 
+    Rule for 
+    Input: 
+    Params: 
+    Output: 
+    """ 
     input: 
         combined_doublets_singletons="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt"
     output:
