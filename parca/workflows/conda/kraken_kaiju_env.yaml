@@ -1,7 +1,0 @@
-name: kraken_kaiju_env
-channels:
-  - bioconda
-dependencies:
-  - kaiju=1.7.3
-  - kraken2=2.0.9beta
-  - kraken=1.1.1
