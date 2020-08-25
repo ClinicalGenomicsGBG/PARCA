@@ -19,7 +19,8 @@ outdir:
   #"/apps/bio/dev_repos/parca/demo/200813_demo"
 
 singularity_image:
-  "workflows/containers/image_parca_v5.sif"
+  "workflows/containers/image_parca_v6.sif" #Build complete: /tmp/image-244526401 
+  #pyyaml tored in directory: /tmp/pip-ephem-wheel-cache-rz6n2chl/wheels/13/90/db/290ab3a34f2ef0b5a0f89235dc2d40fea83e77de84ed2dc05c
 
 ## PROGRAMS NOT AVAILABLE IN CONDA
 pollux_path: 
@@ -28,8 +29,8 @@ fiona_path:
   "/apps/bio/software/fiona/0.2.9/bin/fiona"
 
 ## Programs that should be replaced to conda
-# kraken_path: 
-#   "/apps/CLC_ExternalApps/kraken2"
+kraken_path: 
+  "/apps/CLC_ExternalApps/kraken2"
 
 ## Kaiju settings
 kaiju_db_base_path: "/medstore/Development/Metagenomics/PathFinder43b/databases" #"/tmp/pathfinder_dbs" #cp -r /medstore/Development/Metagenomics/PathFinder43b/databases/* /tmp/pathfinder_dbs
