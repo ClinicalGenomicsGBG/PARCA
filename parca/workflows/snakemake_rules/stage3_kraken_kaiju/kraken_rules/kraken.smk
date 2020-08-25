@@ -16,13 +16,14 @@ rule kraken:
         kraken="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.txt"
     params:
         #kraken_path=config['kraken_path'],
+        kraken_path=runinfo_dict['kraken_path'],
         kraken_db_base_path=runinfo_dict['kraken_db_base_path'] #config['kraken_db_base_path']
     threads: 110
-    conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
+    #conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
     log:"{outdir}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.log"
     shell:
         """
-        kraken \
+        {params.kraken_path}/kraken \
             --db {params.kraken_db_base_path}/{wildcards.kraken_db} \
             --preload \
             --threads {threads} \
@@ -31,7 +32,7 @@ rule kraken:
             &>{log}; 
         """
         # """
-        # {params.kraken_path}/kraken \
+        # kraken \
         #     --db {params.kraken_db_base_path}/{wildcards.kraken_db} \
         #     --preload \
         #     --threads {threads} \
@@ -55,18 +56,19 @@ rule kraken_filter_score:
         filtered="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt"
     params:
         #kraken_path=config['kraken_path'],
+        kraken_path=runinfo_dict['kraken_path'],
         kraken_db_base_path=runinfo_dict['kraken_db_base_path'] #config['kraken_db_base_path']
-    conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
+    #conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
     shell:
         """
-        kraken-filter \
+        {params.kraken_path}/kraken-filter \
             --db {params.kraken_db_base_path}/{wildcards.kraken_db} \
             --threshold {wildcards.db_limits} \
             {input.kraken} \
             > {output.filtered};
         """
         # """
-        # {params.kraken_path}/kraken-filter \
+        # kraken-filter \
         #     --db {params.kraken_db_base_path}/{wildcards.kraken_db} \
         #     --threshold {wildcards.db_limits} \
         #     {input.kraken} \
@@ -78,11 +80,11 @@ rule kraken_filter_classified_RNA:
     Rule for filtering all kraken classifications for the highest calculated (seq_length-kmer_len)*score+0.5.
     score = C/Q, where C is the number of k-mers mapped to LCA values in the clade rooted at the label, and Q is the number of k-mers in the sequence that lack an ambiguous nucleotide.
     Input: 
-        Kaiju classifications for all databases.
+        Kraken classifications for all databases.
     Params: 
         program=Input to R-script which classifier is used.
     Output: 
-        classified_filtered=Filtered kaiju classifications.
+        classified_filtered=Filtered Kraken classifications.
     """ 
     input:
         files=expand("{{outdir}}/snakemake_results_{{sample}}/{{sample_type}}_RNA/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt", 

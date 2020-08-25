@@ -17,7 +17,7 @@ rule kaiju:
         kaiju_db_base_path=runinfo_dict['kaiju_db_base_path'], #config['kaiju_db_base_path'],
         kaijunames=runinfo_dict['kaiju_names'] #config['kaiju_names']
     threads: 110
-    conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
+    conda: "../../../conda/kaiju_env.yaml" #config['conda_environment']
     shell:
         """
         kaiju \
