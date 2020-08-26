@@ -12,7 +12,7 @@ rule fiona_SE_RNA:
     input: 
         "{outdir}/snakemake_results_{sample}/SE_RNA/stage1/pollux/trimmed_reads.corrected.fq"
     output: 
-        "{outdir}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fq"
+        "{outdir}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fa"
     params:
         fiona=runinfo_dict['fiona_path'] #config['fiona_path']
     log:  "{outdir}/snakemake_results_{sample}/logs_SE_RNA/stage1/fiona.log"
@@ -20,7 +20,7 @@ rule fiona_SE_RNA:
     threads: 110
     shell:
         """
-        {params.fiona} -nt {threads} -g 100000000 {input} {output} &> {log}
+        {params.fiona} -nt {threads} -g 100000000 {input} {output} &> {log};
         """
 
 rule fiona_SE_DNA:
@@ -36,7 +36,7 @@ rule fiona_SE_DNA:
     input: 
        "{outdir}/snakemake_results_{sample}/SE_DNA/stage1/trimming/trimmed_reads.fq"
     output: 
-        "{outdir}/snakemake_results_{sample}/SE_DNA/stage1/fiona/trimmed_reads_fiona.fq"
+        "{outdir}/snakemake_results_{sample}/SE_DNA/stage1/fiona/trimmed_reads_fiona.fa"
     params:
         fiona=runinfo_dict['fiona_path'] #config['fiona_path']
     log:  "{outdir}/snakemake_results_{sample}/logs_SE_DNA/stage1/fiona.log"
@@ -44,8 +44,14 @@ rule fiona_SE_DNA:
     threads: 110
     shell:
         """
-        {params.fiona} -nt {threads} -g 100000000 {input} {output} &> {log}
+        {params.fiona} \
+            -nt {threads} \
+            -id 3 \
+            -g 4000000000 \
+            {input} \
+            {output}"
         """
+
 
 #fiona -nt 110 -g 100000000 $outdir/pollux/trimmed_reads.corrected.fq $outdir/trimmed_reads_fiona.fa
 
