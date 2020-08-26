@@ -1,6 +1,6 @@
 
 # PaRCA
-## Pathogen Research in Clinical Applications
+## Pathogen detection for Research and Clinical Applications
 
 ---
 ## Prerequisites:
