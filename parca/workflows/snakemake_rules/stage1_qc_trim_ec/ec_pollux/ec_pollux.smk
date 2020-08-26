@@ -23,7 +23,15 @@ rule pollux_SE_RNA:
     benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_SE_RNA/stage1/pollux.txt"
     shell:
         """
-        {params.pollux} -s false -n true -d true -h true -f false -i {input} -o {params.outdir} &> {log}; \
+        {params.pollux} \
+            -s false \
+            -n true \
+            -d true \
+            -h true \
+            -f false \
+            -i {input} \
+            -o {params.outdir} \
+            &> {log}; \
         mv {params.corrected} {output};
         """
 
