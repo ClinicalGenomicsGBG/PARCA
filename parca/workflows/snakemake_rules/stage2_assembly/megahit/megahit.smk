@@ -17,7 +17,7 @@ rule megahit_SE_RNA:
         Log files, stats and the contigs file in Fasta format.
     """ 
     input:
-        "{outdir}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fq"
+        "{outdir}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fa"
     output:
         done_file="{outdir}/snakemake_results_{sample}/SE_RNA/stage2/megahit/done",
         intermediate_contigs_dir=directory("{outdir}/snakemake_results_{sample}/SE_RNA/stage2/megahit/intermediate_contigs"),
@@ -35,7 +35,7 @@ rule megahit_SE_RNA:
     threads: 110
     shell: 
         """
-        megahit -f -t {threads} --out-dir {params.outdir} --read {input} --out-prefix {params.out_prefix} --min-contig-len {params.min_contig_length} &> {log};
+        megahit -t {threads} --out-dir {params.outdir} --read {input} --out-prefix {params.out_prefix} --min-contig-len {params.min_contig_length} &> {log};
         echo $(grep ">" {output.contigs}|wc -l) > {output.read_count};
         """
         #echo $(cat {output.contigs}|wc -l)/4|bc  > {output.read_count};
