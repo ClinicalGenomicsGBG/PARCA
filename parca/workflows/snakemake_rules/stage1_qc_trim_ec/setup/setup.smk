@@ -1,7 +1,7 @@
 
 rule unzip_rename_SE:
     """
-    Rule for unzipping single end fastq files. If the file is unzipped it is linked to a working directory location.
+    Rule for unzipping single end fastq files. If the file is unzipped it is linked to a working directory location. It is required to unzip the files since fiona error correction used in a subsequent step cannot use zipped files as input.
     Input:
         A fastq file, gzipped or not zipped. Note that other extensions e.g. ".zip" is currently not accounted for. Add if necessary.
     Output:
@@ -16,19 +16,31 @@ rule unzip_rename_SE:
     #conda: config['bbmap_environment']
     shell:
         """
-        if [[ {input} =~ .*\.gz$ ]]; then \
+        if [[ {input} =~ .*\.fastq\.gz$ || {input} =~ .*\.fq\.gz$ ]]; then \
             pigz -p {threads} -dc {input} > {output.reads}; \
+        elif [[ {input} =~ .*\.fastq$ || {input} =~ .*\.fq$ ]]; then \
+            ln -s {input} {output.reads}; \
         else \
-            if [[ ! -f {output.reads} ]]; then \
-                ln -s {input} {output.reads}; fi; \
+            echo "Unsupported file extension: Input should have extension .fastq or .fq or .gz"; \
         fi;  
         echo count > {output.read_count};
         echo $(cat {output.reads}|wc -l)/4|bc  >> {output.read_count};
         """
 
+        # """
+        # if [[ {input} =~ .*\.gz$ ]]; then \
+        #     pigz -p {threads} -dc {input} > {output.reads}; \
+        # else \
+        #     if [[ ! -f {output.reads} ]]; then \
+        #         ln -s {input} {output.reads}; fi; \
+        # fi;  
+        # echo count > {output.read_count};
+        # echo $(cat {output.reads}|wc -l)/4|bc  >> {output.read_count};
+        # """
+
 rule unzip_rename_PE:
     """
-    Rule for unzipping paired end end fastq files and renaming them to the same convention. If the file is unzipped it is linked to a working directory location.
+    Rule for unzipping paired end end fastq files and renaming them to the same convention. If the file is unzipped it is linked to a working directory location. It is required to unzip the files since fiona error correction used in a subsequent step cannot use zipped files as input.
     Input:
         Two fastq files, gzipped or not zipped. Note that other extensions e.g. ".zip" is currently not accounted for. Add if necessary.
     Output:
@@ -39,24 +51,46 @@ rule unzip_rename_PE:
         rev=lambda wildcards: settings_dict[wildcards.sample][0][1]
     output:
         fwd= "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R1.fastq",
-        rev= "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R2.fastq"
+        rev= "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R2.fastq",
+        #read_count="{outdir}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/count_raw_reads.txt"
     threads: 4
     #conda: config['bbmap_environment']
     shell:
         """
-        if [[ {input.fwd} =~ .*\.gz$ ]]; then \
+        if [[ {input.fwd} =~ .*\.fastq\.gz$ || {input.fwd} =~ .*\.fq\.gz$ ]]; then \
             pigz -p {threads} -dc {input.fwd} > {output.fwd}; \
+        elif [[ {input.fwd} =~ .*\.fastq$ || {input.fwd} =~ .*\.fq$ ]]; then \
+            ln -s {input.fwd} {output.fwd}; \
         else \
-            if [[ ! -f {output.fwd} ]]; then \
-                ln -s {input.fwd} {output.fwd}; fi; \
+            echo "Unsupported file extension: Input should have extension .fastq or .fq or .gz"; \
         fi;  
-        if [[ {input.rev} =~ .*\.gz$ ]]; then \
+
+
+        if [[ {input.rev} =~ .*\.fastq\.gz$ || {input.rev} =~ .*\.fq\.gz$ ]]; then \
             pigz -p {threads} -dc {input.rev} > {output.rev}; \
+        elif [[ {input.rev} =~ .*\.fastq$ || {input.rev} =~ .*\.fq$ ]]; then \
+            ln -s {input.rev} {output.rev}; \
         else \
-            if [[ ! -f {output.rev} ]]; then \
-                ln -s {input.rev} {output.rev}; fi; \
-        fi;  
+            echo "Unsupported file extension: Input should have extension .fastq or .fq or .gz"; \
+        fi; 
         """
+        
+        # """
+        # if [[ {input.fwd} =~ .*\.gz$ ]]; then \
+        #     pigz -p {threads} -dc {input.fwd} > {output.fwd}; \
+        # else \
+        #     if [[ ! -f {output.fwd} ]]; then \
+        #         ln -s {input.fwd} {output.fwd}; fi; \
+        # fi;  
+
+
+        # if [[ {input.rev} =~ .*\.gz$ ]]; then \
+        #     pigz -p {threads} -dc {input.rev} > {output.rev}; \
+        # else \
+        #     if [[ ! -f {output.rev} ]]; then \
+        #         ln -s {input.rev} {output.rev}; fi; \
+        # fi;  
+        # """
 
 rule interleave_PE:
     """
