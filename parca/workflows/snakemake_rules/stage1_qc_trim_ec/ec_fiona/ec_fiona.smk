@@ -20,7 +20,11 @@ rule fiona_SE_RNA:
     threads: 110
     shell:
         """
-        {params.fiona} -nt {threads} -g 100000000 {input} {output} &> {log};
+        {params.fiona} \
+            -nt {threads} \
+            -g 100000000 \
+            {input} \
+            {output} &> {log};
         """
 
 rule fiona_SE_DNA:
