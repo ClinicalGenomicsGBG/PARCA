@@ -63,3 +63,7 @@ rule fiona_SE_DNA:
 #     Number of threads to use (default 1). In range [1..inf]. Default: 1.
 # -g, --genome-length INT64
 #    Approximate length of the underlying genome. In range [1..inf].
+# -id, --indel-length INTEGER
+#         Maximal indel length. Use 0 for correcting only substitutions and 1
+#         for edit distance corrections on Illumina reads. In range [0..4].
+#         Default: 1.
