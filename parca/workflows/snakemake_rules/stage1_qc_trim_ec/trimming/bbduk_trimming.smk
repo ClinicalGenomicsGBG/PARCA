@@ -260,7 +260,7 @@ rule bbduk_trimming_PE_unmerged:
         echo $(cat {output.reads}|wc -l)/4|bc  >> {output.trimmed_read_count};
         """
 
-rule reformat_unmerged:
+rule reformat_unmerged_PE:
     input: 
         reads="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/trimmed_reads_paired.fq"
     output: 
@@ -287,6 +287,17 @@ rule reformat_unmerged:
 
         with open(output['reads'], 'w') as printresults:
             printresults.writelines("%s" % line for line in reformatted)
+
+# rule count_trimmed_reads_PE:
+#     input: 
+#         "{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads_paired.txt",
+#         "{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads_merged.txt"
+#     output: 
+#     shell:
+#         """
+#         """
+
+ 
 # bbduk.sh
 # in=<file>           Main input. in=stdin.fq will pipe from stdin.
 # entropymask=f       Values:
