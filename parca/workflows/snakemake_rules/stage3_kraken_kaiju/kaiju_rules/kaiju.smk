@@ -58,6 +58,32 @@ rule kaiju_filter_classified_RNA:
     script:
             "../../../scripts/kmer_processing/filter_classified.R"
 
+
+rule kaiju_filter_classified_DNA:
+    """
+    Rule for filtering all Kaiju classifications for the longest match for each sequence.
+    Input: 
+        Kaiju classifications for all databases.
+    Params: 
+        program=Input to R-script which classifier is used.
+    Output: 
+        classified_filtered=Filtered kaiju classifications.
+    """ 
+    input:
+        files=expand("{{outdir}}/snakemake_results_{{sample}}/{{sample_type}}_DNA/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.txt",
+            zip,
+            kaiju_db=config['kaijudb_DNA'], 
+            kaiju_score=config['kaijuscore_DNA'],
+            kaiju_matches=config['kaijumatches_DNA'] ) 
+    output:
+        classified_filtered="{outdir}/snakemake_results_{sample}/{sample_type}_DNA/stage3/kaiju/kaiju_filtered_classified.txt",
+        read_count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_DNA/stage3/kaiju/count_kaiju_filtered_classified.txt"
+    params:
+        program="kaiju"
+    conda: "../../../conda/R_env.yaml" #config['conda_environment']
+    script:
+            "../../../scripts/kmer_processing/filter_classified.R"
+
 # Kaiju 1.5.0
 # Copyright 2015-2017 Peter Menzel, Anders Krogh
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
