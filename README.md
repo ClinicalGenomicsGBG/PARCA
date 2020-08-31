@@ -50,6 +50,7 @@
 ## Usage
 
 ```
+cd /apps/bio/dev_repos/parca/parca;
 snakemake \
     -rp \
     -s main.smk \
