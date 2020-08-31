@@ -6,6 +6,7 @@
 ## Prerequisites:
 * Databases for Kraken and Kaiju are currently manually downloaded 
 * Pollux and Fiona are not available from conda and has to be manually downloaded
+* The workflow uses the singularity definition file in workflows/containers/parca_v1.def which should be built prior to running the pipeline.
 
 ## **The pipeline**
 
