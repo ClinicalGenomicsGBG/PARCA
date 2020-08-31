@@ -23,3 +23,26 @@ rule create_kmer_classifier_input_SE_RNA:
         echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count};
         """
         #echo $(cat {output.kmer_input}|wc -l)/4|bc  >> {output.read_count};
+
+rule create_kmer_classifier_input_SE_DNA:
+    """ 
+    Rule for renaming the preprocessed (bbduk_trimming and fiona error correction) file.
+    Input: 
+        fasta=Sequences that were trimmed using bbduk and corrected using fiona.
+    Output: 
+        kmer_input=All sequences.
+        read_count=The number of sequences in kmer_input.
+    """ 
+    input:
+        fasta="{outdir}/snakemake_results_{sample}/SE_DNA/stage1/fiona/trimmed_reads_fiona.fa"
+    output:
+        kmer_input="{outdir}/snakemake_results_{sample}/SE_RNA/stage2/kmer_input/kmer_input.fasta",
+        read_count="{outdir}/snakemake_results_{sample}/stats_SE_RNA/stage2/kmer_input/count_kmer_input.txt"
+    #conda: config['conda_environment']
+    shell:
+        """
+        cp {input.fasta} {output.kmer_input};
+        
+        echo count > {output.read_count};
+        echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count};
+        """
