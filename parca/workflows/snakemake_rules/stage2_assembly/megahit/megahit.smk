@@ -35,11 +35,18 @@ rule megahit_SE_RNA:
     threads: 110
     shell: 
         """
-        megahit -t {threads} --out-dir {params.outdir} --read {input} --out-prefix {params.out_prefix} --min-contig-len {params.min_contig_length} &> {log};
+        megahit \
+            -t {threads} \
+            --out-dir {params.outdir} \
+            --read {input} \
+            --out-prefix {params.out_prefix} \
+            --min-contig-len {params.min_contig_length} \
+            &> {log};
         echo $(grep ">" {output.contigs}|wc -l) > {output.read_count};
         """
         #echo $(cat {output.contigs}|wc -l)/4|bc  > {output.read_count};
 
+# "megahit -t 110 --out-dir $outdir/megahit $inreads --out-prefix RNA $mincontig"
 #-t/--num-cpu-threads     <int>          number of CPU threads, at least 2 if GPU enabled. [# of logical processors]
 #-o/--out-dir             <string>       output directory [./megahit_out]
 #-r/--read                <se>           comma-separated list of fasta/q single-end files

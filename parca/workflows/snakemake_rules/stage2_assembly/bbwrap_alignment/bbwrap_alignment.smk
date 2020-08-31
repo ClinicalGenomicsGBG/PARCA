@@ -12,7 +12,7 @@ rule bbwrap_alignment_SE_RNA:
     """ 
     input:
         ref="{outdir}/snakemake_results_{sample}/SE_RNA/stage2/megahit/RNA.contigs.fa",
-        reads="{outdir}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fq"
+        reads="{outdir}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fa"
     output:
         mapped="{outdir}/snakemake_results_{sample}/SE_RNA/stage2/bbwrap_alignment/aln.sam.gz",
         unmapped="{outdir}/snakemake_results_{sample}/SE_RNA/stage2/bbwrap_alignment/unmapped_reads.fasta",

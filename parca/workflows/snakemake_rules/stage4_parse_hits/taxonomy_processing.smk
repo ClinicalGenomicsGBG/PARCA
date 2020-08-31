@@ -64,7 +64,7 @@ rule filter_SGF_empty:
     script:
         "../../scripts/taxonomy_processing/filter_SGF_empty.R" 
 
-rule add_taxonomic_lineage_singletons:
+rule get_taxonomic_lineage_singletons:
     """ 
     Rule for creating a dataframe with the taxonomic lineage for all taxids in the singletons file.
     Input: 
