@@ -31,7 +31,7 @@
   * rule filter_SGF_empty: 
     * Doublets that had either species OR genus OR family was not added to a file. *Revisit this*
 	* Revisit comparison between kraken and kaiju for SGF empty.
-	  * Matching length (kaiju) is compared with (length-30)*(C/Q)+0.5 where C is the number of kmer matching the LCA and Q corresponds to the number of kmers that where queried agains the db (kraken)
+	  * Matching length (kaiju) is compared with (length-30)*(C/Q)+0.5 where C is the number of kmers matching the LCA and Q corresponds to the number of kmers that where queried agains the db (kraken)
   
 ### Stage 5: Blast processing
 * "workflows/snakemake_rules/stage5_blast_processing/blast_processing.smk" 
