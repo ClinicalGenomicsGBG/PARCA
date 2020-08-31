@@ -12,6 +12,7 @@
 
 ### Stage 1: Quality control and error correction
 * `workflows/snakemake_rules/stage1_qc_trim_ec/setup/setup.smk`
+  * Check if it is possible to skip interleaving files and instead work directly on PE reads.
 * `workflows/snakemake_rules/stage1_qc_trim_ec/quality_control/fastqc.smk`
 * `workflows/snakemake_rules/stage1_qc_trim_ec/trimming/bbduk_trimming.smk`
 * `workflows/snakemake_rules/stage1_qc_trim_ec/ec_pollux/ec_pollux.smk`
