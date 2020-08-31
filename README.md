@@ -57,3 +57,5 @@ snakemake \
 ```
 
 ### To-Do
+* Comments on what to add to future updates are added to the previous section "The pipeline".
+
