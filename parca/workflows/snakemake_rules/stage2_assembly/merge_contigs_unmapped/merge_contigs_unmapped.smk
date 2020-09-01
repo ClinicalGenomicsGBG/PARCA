@@ -46,3 +46,9 @@ rule create_kmer_classifier_input_SE_DNA:
         echo count > {output.read_count};
         echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count};
         """
+
+# rule join_paired:
+#     input: 
+#         unmerged="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/unmapped_reads_unmerged.fasta"
+#     output: 
+#     run: 
