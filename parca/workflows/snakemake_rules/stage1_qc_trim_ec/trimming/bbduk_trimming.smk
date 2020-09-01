@@ -72,7 +72,7 @@ rule bbduk_merging_PE:
         interleaved="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_interleaved.fastq"
     output: 
         merged="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads.fastq",
-        unmerged="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/paired_reads.fastq"
+        unmerged="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads.fastq"
     params:     
         mininsert=17
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
@@ -104,9 +104,9 @@ rule bbduk_trimming_PE_merged_lKtrim:
     input:
         "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads.fastq"
     output:
-        reads="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/trimmed_reads_lKtrim.fq",
+        reads="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_lKtrim.fq",
         stats="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged_lKtrim.txt",
-        trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads_merged_lKtrim.txt"
+        trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_lKtrim.txt"
     params:     
         adapters=runinfo_dict['adapters'], #config['adapters'],
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t"
