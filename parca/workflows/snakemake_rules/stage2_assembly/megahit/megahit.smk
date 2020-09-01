@@ -81,15 +81,16 @@ rule megahit_PE_RNA:
     threads: 110
     shell: 
         """
-        #[ -d {params.sub_outdir} ] || mkdir {params.sub_outdir};
         megahit \
             -t {threads} \
-            --out-dir {params.outdir} \
+            --out-dir {params.outdir}/tmp \
             --12 {input.unmerged} \
             --read {input.merged} \
             --out-prefix {params.out_prefix} \
             --min-contig-len {params.min_contig_length} \
             &> {log};
+        mv {params.outdir}/tmp/* {params.outdir};
+        rmdir {params.outdir}/tmp;
         echo $(grep ">" {output.contigs}|wc -l) > {output.read_count};
         """
 
