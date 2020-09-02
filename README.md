@@ -9,6 +9,12 @@
 * The workflow uses the singularity definition file in workflows/containers/parca_v1.def which should be built prior to running the pipeline.
 
 ## **The pipeline**
+The pipeline is made for assigning sequencing reads to taxonomic identifiers.
+It handles for cases:
+* SE RNA: Stage 1-8 created on the development git branch.
+* PE RNA: Currently under development.
+* SE DNA: Under development.
+* PE DNA: Under development.
 
 ### Stage 1: Quality control and error correction
 * `workflows/snakemake_rules/stage1_qc_trim_ec/setup/setup.smk`
