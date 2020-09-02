@@ -61,8 +61,8 @@ rule megahit_PE_RNA:
         Log files, stats and the contigs file in Fasta format.
     """ 
     input:
-        unmerged="{outdir}/snakemake_results_{sample}/PE_RNA/stage1/trimming/trimmed_reads_paired_reformatted.fq",
-        merged="{outdir}/snakemake_results_{sample}/PE_RNA/stage1/trimming/trimmed_reads_merged.fq"
+        unmerged="{outdir}/snakemake_results_{sample}/PE_RNA/stage1/trimming/unmerged_reads_trimmed.fq",
+        merged="{outdir}/snakemake_results_{sample}/PE_RNA/stage1/trimming/merged_reads_trimmed.fq"
     output:
         done_file="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/megahit/done",
         intermediate_contigs_dir=directory("{outdir}/snakemake_results_{sample}/PE_RNA/stage2/megahit/intermediate_contigs"),
