@@ -10,7 +10,7 @@
 
 ## **The pipeline**
 The pipeline is made for assigning sequencing reads to taxonomic identifiers.
-It handles for cases:
+It handles four cases:
 * SE RNA: Stage 1-8 created on the development git branch.
 * PE RNA: Currently under development.
 * SE DNA: Under development.
