@@ -76,15 +76,15 @@ rule bbwrap_alignment_PE_RNA:
     """ 
     input: 
         ref="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/megahit/RNA.contigs.fa",
-        reads="{outdir}/snakemake_results_{sample}/PE_RNA/stage1/trimming/trimmed_reads_{group}.fq"
+        reads="{outdir}/snakemake_results_{sample}/PE_RNA/stage1/trimming/{group}_reads_trimmed.fq"
     output: 
-        mapped="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/aln_{group}.sam.gz",
-        unmapped="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/unmapped_reads_{group}.fasta",
-        scafstats="{outdir}/snakemake_results_{sample}/stats_PE_RNA/stage2/bbwrap_alignment/bbmap_scafstats_{group}.txt",
-        stats="{outdir}/snakemake_results_{sample}/stats_PE_RNA/stage2/bbwrap_alignment/bbmap_stats_{group}.txt"
+        mapped="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/{group}_aln.sam.gz",
+        unmapped="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/{group}_reads_unmapped.fasta",
+        scafstats="{outdir}/snakemake_results_{sample}/stats_PE_RNA/stage2/bbwrap_alignment/{group}_bbmap_scafstats.txt",
+        stats="{outdir}/snakemake_results_{sample}/stats_PE_RNA/stage2/bbwrap_alignment/{group}_bbmap_stats.txt"
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
-    log: "{outdir}/snakemake_results_{sample}/logs_PE_RNA/stage2/bbwrap_alignment_{group}.log"
-    benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_PE_RNA/stage2/bbwrap_{group}.txt"
+    log: "{outdir}/snakemake_results_{sample}/logs_PE_RNA/stage2/{group}_bbwrap_alignment.log"
+    benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_PE_RNA/stage2/{group}_bbwrap.txt"
     wildcard_constraints:
         group="unmerged|merged"
     threads: 110
@@ -116,11 +116,11 @@ rule pileup_PE_RNA:
     Output: Contig coverage.
     """ 
     input:
-        aln="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/aln_{group}.sam.gz"
+        aln="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/{group}_aln.sam.gz"
     output:
-        cov="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/pileup/bbmap_cov_{group}.txt"
+        cov="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/pileup/{group}_bbmap_cov.txt"
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
-    log: "{outdir}/snakemake_results_{sample}/logs_PE_RNA/stage2/pileup_{group}.log"
+    log: "{outdir}/snakemake_results_{sample}/logs_PE_RNA/stage2/{group}_pileup.log"
     wildcard_constraints:
         group="unmerged|merged"
     shell:
@@ -134,8 +134,8 @@ rule pileup_PE_RNA:
 
 rule merge_pileup_files_PE_RNA:
     input: 
-        merged_cov="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/pileup/bbmap_cov_merged.txt",
-        unmerged_cov="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/pileup/bbmap_cov_unmerged.txt"
+        merged_cov="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/pileup/merged_bbmap_cov.txt",
+        unmerged_cov="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/pileup/unmerged_bbmap_cov.txt"
     output: 
         cov="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/pileup/bbmap_cov.txt"
     shell: 
