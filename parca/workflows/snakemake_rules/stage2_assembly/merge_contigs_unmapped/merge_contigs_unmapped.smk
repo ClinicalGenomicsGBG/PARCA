@@ -47,8 +47,49 @@ rule create_kmer_classifier_input_SE_DNA:
         echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count};
         """
 
-# rule join_paired:
-#     input: 
-#         unmerged="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/unmapped_reads_unmerged.fasta"
-#     output: 
-#     run: 
+rule join_unmerged_PE:
+    """ 
+    Rule for joining paired end reads using "N" as separator.
+    Input: fasta=Reads that were not merged with bbmerge nor mapped to contigs from megahit.
+    Output: fasta=Paired reads joined using "N" as separator.
+    """ 
+    input:
+        fasta="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/unmerged_reads_unmapped.fasta"
+    output:
+        fasta="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/unmerged_reads_unmapped_joined.fasta"
+    run:
+        reformatted=[]
+        with open(input['fasta'], 'r') as filehandle:
+            contents = [line.strip() for line in filehandle.readlines()]
+
+            for i in range(0,len(contents),4):
+                headerFwd=contents[i]
+                sequenceFwd=contents[i+1]
+
+                headerRev=contents[i+2]
+                sequenceRev=contents[i+3]
+
+                readIdFwd=headerFwd.split(" ")[0]
+                readIdRev=headerRev.split(" ")[0]
+                if readIdFwd==readIdRev:
+                    reformatted.append(readIdFwd)
+                    reformatted.append(sequenceFwd+"N"+sequenceRev)
+
+        with open(output['fasta'], 'w') as printresults:
+            printresults.writelines("%s\n" % line for line in reformatted)            
+
+rule create_kmer_classifier_input_PE_RNA:
+    input: 
+        unmerged_reads_unmapped="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/unmerged_reads_unmapped_joined.fasta",
+        contigs="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/megahit/RNA.contigs.fa",
+        merged_reads_mapped="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/merged_reads_unmapped.fasta"
+    output: 
+        kmer_input="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/kmer_input/kmer_input.fasta",
+        read_count="{outdir}/snakemake_results_{sample}/stats_PE_RNA/stage2/kmer_input/count_kmer_input.txt"
+    shell:
+        """
+        cat {input} > {output.kmer_input};
+
+        echo count > {output.read_count};
+        echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count};
+        """ 
