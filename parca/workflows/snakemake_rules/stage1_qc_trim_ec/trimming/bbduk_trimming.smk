@@ -76,8 +76,8 @@ rule bbduk_merging_PE:
     params:     
         mininsert=17
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
-    log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/merging.log"
-    benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/merging.txt"
+    log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/bbduk_merging.log"
+    benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/bbduk_merging.txt"
     shell:
         """
         bbmerge.sh \
@@ -90,7 +90,7 @@ rule bbduk_merging_PE:
 
 rule bbduk_trimming_PE_merged_lKtrim:
     """ 
-    Rule for trimming fastq files with parameter lKtrim for adapters.
+    Rule for trimming merged fastq files with parameter lKtrim for adapters.
     Input: 
         A fastq file.
     Params: 
@@ -105,14 +105,14 @@ rule bbduk_trimming_PE_merged_lKtrim:
         "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads.fastq"
     output:
         reads="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_lKtrim.fq",
-        stats="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged_lKtrim.txt",
+        stats="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged_reads_lKtrim.txt",
         trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_lKtrim.txt"
     params:     
         adapters=runinfo_dict['adapters'], #config['adapters'],
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t"
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
-    log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/trimming_merged_lKtrim.log"
-    benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/trimming_merged_lKtrim.txt"
+    log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/merged_reads_lKtrim.log"
+    benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/merged_reads_lKtrim.txt"
     shell:
         """
         adapter={params.adapters};
@@ -150,7 +150,7 @@ rule bbduk_trimming_PE_merged_lKtrim:
 
 rule bbduk_trimming_PE_merged_rKtrim:
     """ 
-    Rule for trimming fastq files with parameter rKtrim for adapters.
+    Rule for trimming merged fastq files with parameter rKtrim for adapters.
     Input: 
         A fastq file.
     Params: 
@@ -162,17 +162,17 @@ rule bbduk_trimming_PE_merged_rKtrim:
         trimmed_read_count=The number of reads after trimming.
     """ 
     input:
-        "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/trimmed_reads_lKtrim.fq"
+        "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_lKtrim.fq"
     output:
-        reads="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/trimmed_reads_merged.fq",
-        stats="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged.txt",
-        trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads_merged.txt"
+        reads="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_trimmed.fq",
+        stats="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged_reads_trimmed.txt",
+        trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_trimmed.txt"
     params:     
         adapters=runinfo_dict['adapters'], #config['adapters'],
         adaptertrimcommand="ktrim=r k=16 mink=11 hdist=1 rcomp=t" 
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
-    log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/trimming_merged.log"
-    benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/trimming_merged.txt"
+    log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/merged_reads_trimmed.log"
+    benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/merged_reads_trimmed.txt"
     shell:
         """
         adapter={params.adapters};
@@ -213,17 +213,17 @@ rule bbduk_trimming_PE_unmerged:
         trimmed_read_count=The number of reads after trimming.
     """ 
     input:
-        "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/paired_reads.fastq"
+        "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads.fastq"
     output:
-        reads="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/trimmed_reads_paired.fq",
-        stats="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_paired.txt",
-        trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads_paired.txt"
+        reads="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed_raw.fq",
+        stats="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_unmerged_reads_trimmed_raw.txt",
+        trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_unmerged_reads_trimmed_raw.txt"
     params:     
         adapters=runinfo_dict['adapters'], #config['adapters'],
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t" 
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
-    log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/trimming_paired.log"
-    benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/trimming_paired.txt"
+    log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/unmerged_reads_trimmed_raw.log"
+    benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/unmerged_reads_trimmed_raw.txt"
     shell:
         """
         adapter={params.adapters};
@@ -262,9 +262,9 @@ rule bbduk_trimming_PE_unmerged:
 
 rule reformat_unmerged_PE:
     input: 
-        reads="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/trimmed_reads_paired.fq"
+        reads="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed_raw.fq"
     output: 
-        reads="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/trimmed_reads_paired_reformatted.fq"
+        reads="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.fq"
     run: 
         reformatted=[]
         with open(input['reads'], 'r') as filehandle:
