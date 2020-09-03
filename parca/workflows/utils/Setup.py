@@ -14,18 +14,17 @@ Class for determining the run setup parameters for all samples in a dictionary.
 """
 
 class Setup:
-    def __init__(self, sample_dictionary={}, RNA="", get_sample_id=True, suffix_regex='(.fq.gz$)|(.fastq.gz$)|(.fastq$)|(.fq$)'):
+    def __init__(self, sample_dictionary={}, get_sample_id=True, suffix_regex='(.fq.gz$)|(.fastq.gz$)|(.fastq$)|(.fq$)'):
         """
         Parameters: 
             self.sample_dictionary - A dictionary with identifiers (could be used as sample id if get_sample_id is set to False) as keys and sample paths in a list as values.
-            self.RNA - Set to True if RNA and False if DNA.
             self.get_sample_id - Set to True if the sample id should be inferred from sample paths and False if the dictionary key should be used as sample id.
             self.suffix_regex - suffix_regex is only used if get_sample_id is True and consists of a regex that will match the file type extension suffix.
         Returns:
         Comments:
         """
         self.sample_dictionary=sample_dictionary
-        self.RNA=RNA
+        #self.RNA=RNA
         self.get_sample_id=get_sample_id
         self.suffix_regex=suffix_regex
     
@@ -48,7 +47,6 @@ class Setup:
         Parameters: 
             self.keysList - A list of keys from the dictionary.
             self.sample_dictionary - A dictionary with identifiers as values and sample path lists as values.
-            self.RNA - Set to True if RNA and False if DNA.
             self.get_sample_id - Set to True if the sample id should be inferred from sample paths and False if the dictionary key should be used as sample id.
             self.suffix_regex - self.suffix_regex - suffix_regex is only used if get_sample_id is True and consists of a regex that will match the file type extension suffix.
         Returns:
@@ -63,7 +61,7 @@ class Setup:
         for key in keys_list:
             samples=self.sample_dictionary[key]
 
-            SS=SampleSettings(samples, self.RNA, self.get_sample_id, self.suffix_regex)
+            SS=SampleSettings(samples, self.get_sample_id, self.suffix_regex)
 
             (sample_id, sample_type, nucleotide) = SS.settings()
 

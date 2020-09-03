@@ -13,42 +13,44 @@ Class for determining the run setup parameters for one sample.
 """
 
 class SampleSettings:
-    def __init__(self, sample_path_list=[], RNA="", get_sample_id=True, suffix_regex='(.fq.gz$)|(.fastq.gz$)|(.fastq$)|(.fq$)'):
+    def __init__(self, sample_path_list=[], get_sample_id=True, suffix_regex='(.fq.gz$)|(.fastq.gz$)|(.fastq$)|(.fq$)'):
         """
         Purpose: Checks validity of input files. The sample_path_list has to consist of 1 or 2 items in a list and be of type str.
         Parameters: 
-            sample_path_list - A list with either 1 or 2 items with the full sample path.
-            RNA - True or False depending on whether the sample is of RNA or DNA respectively.
-            get_sample_id - Set to True for searcing for a sample id that does not contain an extension and is similar between two sequences if sample_path_list has 2 items.
+            sample_path_list - A list with either 2 or 3 items with the full sample path and RNA or DNA stated last.
+            get_sample_id - Set to True for searcing for a sample id that does not contain an extension and is similar between two sequences if sample_path_list has 3 items.
             suffix_regex - suffix_regex is only used if get_sample_id is True and consists of a regex that will match the file type extension suffix.
         Returns:
         Comments:
         """
         self.sample_path_list=sample_path_list
-        self.RNA=RNA
+        #self.RNA=RNA
         self.get_sample_id=get_sample_id
         self.suffix_regex=suffix_regex
     
         self.input_count=len(self.sample_path_list)
 
-        if self.input_count == 2:
+        if self.input_count == 3:
             self.fwd_path=self.sample_path_list[0]
             self.rev_path=self.sample_path_list[1]
+            self.nt=self.sample_path_list[2]
             
-            if isinstance(self.fwd_path, str) and isinstance(self.rev_path, str):
+            if os.path.isfile(self.fwd_path) and os.path.isfile(self.rev_path) and isinstance(self.nt, str):
                 pass
             else:
                 raise InputError('Input is not of type character.')
 
-        elif self.input_count == 1:
+        elif self.input_count == 2:
             self.fwd_path=self.sample_path_list[0]
+            self.nt=self.sample_path_list[1]
 
-            if isinstance(self.fwd_path, str):
+            if os.path.isfile(self.fwd_path) and isinstance(self.nt, str):
                 pass
             else:
                 raise InputError('Input is not of type character.')
+
         else:
-            raise InputError(f'Input can only have a length of 1 or 2, not {self.input_count}.')
+            raise InputError(f'Input can only have a length of 2 or 3, not {self.input_count}. Input example [<read>, <DNA or RNA>] or [<read fwd>, <read rev>, <DNA or RNA>].')
 
     def findSampleIdPE(self):
         """
@@ -95,19 +97,21 @@ class SampleSettings:
         """
         Purpose: Determine whether the samples should be interpreted as DNA or RNA.
         Parameters: 
-            self.RNA - True or False depending on whether the samples are of DNA or RNA.
+            self.nt - True or False depending on whether the samples are of DNA or RNA.
         Returns: "DNA" if RNA variable is empty, None, False, not True, "False" or "No", otherwise "RNA" is returned.
         Comments:
         """
         try:
-            self.RNA = self.RNA.capitalize() 
+            self.nt = self.nt.upper() 
         except: 
-            pass
-        
-        if self.RNA == "" or self.RNA == None or self.RNA == False or self.RNA != True or self.RNA=="False" or self.RNA=="No":
+            raise InputError('Nucleotide should be specified as RNA or DNA.')
+
+        if self.nt == "RNA":
+            nucleotide="RNA"
+        elif self.nt == "DNA":
             nucleotide="DNA"
         else:
-            nucleotide="RNA"
+            raise InputError('Nucleotide should be specified as RNA or DNA.')
 
         return nucleotide
       
@@ -129,12 +133,13 @@ class SampleSettings:
         nucleotide = self.getNucleotide()
 
         sample_id=""
-        if self.input_count == 2:
+        if self.input_count == 3:
             sample_type="PE"
             
             if self.get_sample_id == True:
                 sample_id=self.findSampleIdPE()
-        else:
+
+        elif self.input_count == 2:
             sample_type="SE"
 
             if self.get_sample_id == True:
