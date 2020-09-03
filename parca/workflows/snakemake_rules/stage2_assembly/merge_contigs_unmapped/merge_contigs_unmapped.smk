@@ -36,8 +36,8 @@ rule create_kmer_classifier_input_SE_DNA:
     input:
         fasta="{outdir}/snakemake_results_{sample}/SE_DNA/stage1/fiona/trimmed_reads_fiona.fa"
     output:
-        kmer_input="{outdir}/snakemake_results_{sample}/SE_RNA/stage2/kmer_input/kmer_input.fasta",
-        read_count="{outdir}/snakemake_results_{sample}/stats_SE_RNA/stage2/kmer_input/count_kmer_input.txt"
+        kmer_input="{outdir}/snakemake_results_{sample}/SE_DNA/stage2/kmer_input/kmer_input.fasta",
+        read_count="{outdir}/snakemake_results_{sample}/stats_SE_DNA/stage2/kmer_input/count_kmer_input.txt"
     #conda: config['conda_environment']
     shell:
         """
