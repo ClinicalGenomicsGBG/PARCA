@@ -37,11 +37,13 @@ rule megahit_SE_RNA:
         """
         megahit \
             -t {threads} \
-            --out-dir {params.outdir} \
+            --out-dir {params.outdir}/tmp \
             --read {input} \
             --out-prefix {params.out_prefix} \
             --min-contig-len {params.min_contig_length} \
             &> {log};
+        mv {params.outdir}/tmp/* {params.outdir};
+        rmdir {params.outdir}/tmp;
         echo $(grep ">" {output.contigs}|wc -l) > {output.read_count};
         """
         #echo $(cat {output.contigs}|wc -l)/4|bc  > {output.read_count};

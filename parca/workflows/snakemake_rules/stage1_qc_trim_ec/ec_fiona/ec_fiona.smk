@@ -53,7 +53,7 @@ rule fiona_SE_DNA:
             -id 3 \
             -g 4000000000 \
             {input} \
-            {output}"
+            {output} &> {log};
         """
 
 

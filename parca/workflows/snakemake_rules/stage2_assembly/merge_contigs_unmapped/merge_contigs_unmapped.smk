@@ -1,3 +1,5 @@
+import re
+
 rule create_kmer_classifier_input_SE_RNA:
     """ 
     Rule for merging fasta files with contigs and fasta files with unmapped reads.
@@ -14,7 +16,6 @@ rule create_kmer_classifier_input_SE_RNA:
     output:
         kmer_input="{outdir}/snakemake_results_{sample}/SE_RNA/stage2/kmer_input/kmer_input.fasta",
         read_count="{outdir}/snakemake_results_{sample}/stats_SE_RNA/stage2/kmer_input/count_kmer_input.txt"
-    #conda: config['conda_environment']
     shell:
         """
         cat {input.contigs} {input.unmapped_reads} > {output.kmer_input};
@@ -38,7 +39,6 @@ rule create_kmer_classifier_input_SE_DNA:
     output:
         kmer_input="{outdir}/snakemake_results_{sample}/SE_DNA/stage2/kmer_input/kmer_input.fasta",
         read_count="{outdir}/snakemake_results_{sample}/stats_SE_DNA/stage2/kmer_input/count_kmer_input.txt"
-    #conda: config['conda_environment']
     shell:
         """
         cp {input.fasta} {output.kmer_input};
@@ -47,7 +47,7 @@ rule create_kmer_classifier_input_SE_DNA:
         echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count};
         """
 
-rule join_unmerged_PE:
+rule join_unmerged_PE_RNA:
     """ 
     Rule for joining paired end reads using "N" as separator.
     Input: fasta=Reads that were not merged with bbmerge nor mapped to contigs from megahit.
@@ -79,6 +79,16 @@ rule join_unmerged_PE:
             printresults.writelines("%s\n" % line for line in reformatted)            
 
 rule create_kmer_classifier_input_PE_RNA:
+    """ 
+    Rule for merging the contigs generated from megahit and the reads that could not map to the contigs unmerged_reads_unmapped and merged_reads_unmapped.
+    Input: 
+        unmerged_reads_unmapped=Reads that were not merged by bbduk and that could not map to the contigs.
+        contigs=The contigs created from megahit.
+        merged_reads_mapped=Reads that were merged by bbduk and that could not map to the contigs.
+    Output: 
+        kmer_input=The merged fasta files.
+        read_count=The total number of reads.
+    """ 
     input: 
         unmerged_reads_unmapped="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/unmerged_reads_unmapped_joined.fasta",
         contigs="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/megahit/RNA.contigs.fa",
@@ -86,6 +96,86 @@ rule create_kmer_classifier_input_PE_RNA:
     output: 
         kmer_input="{outdir}/snakemake_results_{sample}/PE_RNA/stage2/kmer_input/kmer_input.fasta",
         read_count="{outdir}/snakemake_results_{sample}/stats_PE_RNA/stage2/kmer_input/count_kmer_input.txt"
+    shell:
+        """
+        cat {input} > {output.kmer_input};
+
+        echo count > {output.read_count};
+        echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count};
+        """ 
+
+rule join_unmerged_PE_DNA:
+    """ 
+    Rule for joining paired end reads using "N" as separator from a fastq into a fasta.
+    Input: fastq=Reads that were not merged with bbmerge nor mapped to contigs from megahit.
+    Output: fasta=Paired reads joined using "N" as separator.
+    """ 
+    input:
+        fastq="{outdir}/snakemake_results_{sample}/PE_DNA/stage1/trimming/unmerged_reads_trimmed.fq"
+    output:
+        fasta="{outdir}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/unmerged_reads_joined.fasta"
+    run:
+        reformatted=[]
+        with open(input['fastq'], 'r') as filehandle:
+            contents = [line.strip() for line in filehandle.readlines()]
+
+            for i in range(0,len(contents),8):
+                headerFwd=contents[i]
+                sequenceFwd=contents[i+1]
+
+                headerRev=contents[i+4]
+                sequenceRev=contents[i+5]
+
+                readIdFwd=headerFwd.split(" ")[0]
+                readIdRev=headerRev.split(" ")[0]
+
+                readIdFwd=re.sub(r"^@", ">", readIdFwd)
+                readIdRev=re.sub(r"^@", ">", readIdRev)
+                
+                if readIdFwd==readIdRev:
+                    reformatted.append(readIdFwd)
+                    reformatted.append(sequenceFwd+"N"+sequenceRev)
+
+        with open(output['fasta'], 'w') as printresults:
+            printresults.writelines("%s\n" % line for line in reformatted)            
+
+rule convert_fasta_to_fastq_PE_DNA:
+    """ 
+    Rule for coverting the reads that could be merged by bbduk from fastq to fasta.
+    Input: 
+        fastq=
+    Params: 
+    Output: 
+    """ 
+    input: 
+        fastq="{outdir}/snakemake_results_{sample}/PE_DNA/stage1/trimming/merged_reads_trimmed.fq"
+    output:
+        fasta="{outdir}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/merged_reads_trimmed.fa"
+    conda: "../../../conda/bbmap_env.yaml"
+    shell: 
+        """
+        reformat.sh \
+            in={input.fastq} \
+            out={output.fasta} \
+            fastawrap=100000;
+        """
+
+rule create_kmer_classifier_input_PE_DNA:
+    """ 
+    Rule for merging reads that could not be merged by bbduk with the ones that could be merged by bbduk.
+    Input:  
+        unmerged_reads=Reads that could not be merged by bbduk.
+        merged_reads=Reads that could be merged by bbduk.
+    Output: 
+        kmer_input=The merged file in fasta format.
+        read_count=The number of sequences in the merged file.
+    """ 
+    input: 
+        unmerged_reads="{outdir}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/unmerged_reads_joined.fasta",
+        merged_reads="{outdir}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/merged_reads_trimmed.fa"
+    output: 
+        kmer_input="{outdir}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/kmer_input.fasta",
+        read_count="{outdir}/snakemake_results_{sample}/stats_PE_DNA/stage2/kmer_input/count_kmer_input.txt"
     shell:
         """
         cat {input} > {output.kmer_input};
