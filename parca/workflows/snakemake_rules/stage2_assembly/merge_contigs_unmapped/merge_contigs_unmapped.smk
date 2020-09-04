@@ -143,9 +143,9 @@ rule convert_fasta_to_fastq_PE_DNA:
     """ 
     Rule for coverting the reads that could be merged by bbduk from fastq to fasta.
     Input: 
-        fastq=
-    Params: 
+        fastq=file in fastq format.
     Output: 
+        fasta=reads file in fasta format.
     """ 
     input: 
         fastq="{outdir}/snakemake_results_{sample}/PE_DNA/stage1/trimming/merged_reads_trimmed.fq"
