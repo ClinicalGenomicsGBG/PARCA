@@ -28,6 +28,7 @@ It handles four cases:
 * `workflows/snakemake_rules/stage2_assembly/megahit/megahit.smk`
 * `workflows/snakemake_rules/stage2_assembly/bbwrap_alignment/bbwrap_alignment.smk`
   * PE RNA: merged and unmerged bbmap coverage is added to the same file. The header for both files is included which starts with "#", check if this is handled correctly in latter steps! 
+  * PE/SE RNA: Maybe remove the contigs that nothing was mapped back to?
 * `workflows/snakemake_rules/stage2_assembly/merge_contigs_unmapped/merge_contigs_unmapped.smk`
 
 ### Stage 3: Kraken and Kaiju
