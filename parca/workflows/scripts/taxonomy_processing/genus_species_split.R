@@ -15,6 +15,10 @@ suppressPackageStartupMessages({
 # higher_file <-"/Users/pernillaericsson/Documents/medair1/apps/bio/dev_repos/parca/demo/snakemake_results_a/SE_RNA/stage4/genusspeciessplit/above_species_classed.txt"
 # read_count_file <- "/Users/pernillaericsson/Documents/medair1/apps/bio/dev_repos/parca/demo/snakemake_results_a/SE_RNA/stage4/genusspeciessplit/read_count_species_genus_higher.txt"
 
+combined_doublets_singletons_file <- "/Users/pernillaericsson/Documents/medair1/apps/bio/dev_repos/parca/demo/200819_demo/snakemake_results_SRR1761912/PE_RNA/stage4/taxonomy_processing/combined_doublets_singletons.txt"
+species_file <- "/Users/pernillaericsson/Desktop/species_classed.txt"
+higher_file < -"/Users/pernillaericsson/Desktop/above_species_classed.txt"
+read_count_file <- "/Users/pernillaericsson/Desktop/read_count_species_genus_higher.txt"
 
 combined_doublets_singletons_file <- snakemake@input[["combined_doublets_singletons"]]
 
@@ -53,6 +57,12 @@ df %<>%
     class=str_replace_all( class, " ", "_"),
     superkingdom=str_replace_all( superkingdom, " ", "_"),
     ) 
+
+df_tmp_filter <- df %>% select(species, genus, family, order, class, superkingdom)
+
+df <- df[rowSums(is.na(df_tmp_filter)) != ncol(df_tmp_filter), ]
+
+df
 
 df_rank <- 
   df %>% 
