@@ -8,7 +8,7 @@ rule unzip_rename_SE:
         An unzipped fastq file.
     """
     input:
-        lambda wildcards: settings_dict[wildcards.sample][0]
+        lambda wildcards: settings_dict[wildcards.sample][0][0]
     output:
         reads="{outdir}/snakemake_results_{sample}/SE_{nucleotide}/samples/{sample}.fastq",
         read_count="{outdir}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/count_raw_reads.txt"
