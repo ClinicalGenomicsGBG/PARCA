@@ -5,8 +5,9 @@ From: ubuntu:16.04
 	PaRCA singularity image
 
 %labels
-	DESCRIPTION PARCA singularity image
+	DESCRIPTION PaRCA singularity image
 	AUTHOR Pernilla Ericsson
+	VERSION v1.0
 
 # RUN instruction (e.g. download files, install software)
 %post
