@@ -10,11 +10,11 @@
 
 ## **The pipeline**
 The pipeline is made for assigning sequencing reads to taxonomic identifiers.
-It handles four cases:
-* SE RNA: Stage 1-8 created on the development git branch.
-* PE RNA: Currently under development.
-* SE DNA: Under development.
-* PE DNA: Under development.
+It handles four cases, see steps in `parca/dag/dag_all.png`:
+* SE RNA
+* PE RNA
+* SE DNA
+* PE DNA
 
 ### Stage 1: Quality control and error correction
 * `workflows/snakemake_rules/stage1_qc_trim_ec/setup/setup.smk`
