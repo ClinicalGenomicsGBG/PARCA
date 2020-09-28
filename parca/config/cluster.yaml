@@ -28,7 +28,15 @@ megahit_SE_RNA:
   threads: 40 #120
   queue: cgg_short.q@yavin.medair.lcl #wgs.q@kuat.medair.lcl
 
+megahit_PE_RNA:
+  threads: 40 #120
+  queue: cgg_short.q@yavin.medair.lcl #wgs.q@kuat.medair.lcl
+
 bbwrap_alignment_SE_RNA:
+  threads: 40 #120
+  queue: cgg_short.q@yavin.medair.lcl #wgs.q@kuat.medair.lcl
+  
+bbwrap_alignment_PE_RNA_unmerged:
   threads: 40 #120
   queue: cgg_short.q@yavin.medair.lcl #wgs.q@kuat.medair.lcl
 
