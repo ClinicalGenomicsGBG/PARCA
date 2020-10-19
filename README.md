@@ -68,3 +68,6 @@ snakemake \
 
 ### To-Do
 * Comments on what to add to future updates are added to the previous section "The pipeline" with specifications for certain rules and snakemake files.
+
+### Pipeline overview
+![Parca flow chart](./parca_flow_chart_png.png)
