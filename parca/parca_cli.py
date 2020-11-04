@@ -33,3 +33,6 @@
 #     print("\tNucleotide:", settings_dict[key][2])
 
 # print("\nResults are placed in:", runinfo_dict['outdir'], "\n")
+
+## dryrun functionality
+## print dag functionality
