@@ -1,40 +1,12 @@
-import glob,re
-from workflows.utils.FileProcessing import ProcessFiles
-from workflows.utils.Setup import Setup
+#import glob,re
 
 configfile: "config/config.yaml"
-#snakemake -rp -s main.smk --cluster-config config/cluster.yaml --profile qsub_profile
-#snakemake --dag -s main.smk| dot -Tpng > dag.png
 
-# Read the runinfo file containg parameters for the current run.
-#runinfo = ProcessFiles(config['runinfo'])
-#runinfo_dict=runinfo.readYaml()
-
-#sample_paths_dict = runinfo_dict['samplePath']
-#RNA = runinfo_dict['RNA']
 singularity: config['singularity_image']
 
-# Generate settings with correct naming.
-# SU=Setup(sample_paths_dict, runinfo_dict['generateSampleID'])
-# settings_dict = SU.generateSettingsLists()
-
-
-# print("\n\t\t~~~~~~~~ P a R C A ~~~~~~~~")
-# print("\t**** Pathogen Research in Clinical Applications ****")
-# print("\n**** PaRCA started for the following samples: ****")
-# sample_id_list=[]
-# sample_type_list=[]
-# nucleotide_list=[]
-# for key in settings_dict:
-#     sample_id_list.append(key)
-#     sample_type_list.append(settings_dict[key][1])
-#     nucleotide_list.append(settings_dict[key][2])
-#     print("SAMPLE ID:", key)
-#     print("\tInput files:", settings_dict[key][0][0:2])
-#     print("\tSample type:", settings_dict[key][1])
-#     print("\tNucleotide:", settings_dict[key][2])
-
-# print("\nResults are placed in:", runinfo_dict['outdir'], "\n")
+sample_id_list=["S1"]
+sample_type_list=["PE"]
+nucleotide_list=["RNA"]
 
 print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
             zip,
@@ -43,24 +15,23 @@ print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/sta
             sample_type=sample_type_list,
             nucleotide=nucleotide_list
             ))
-print(settings_dict)
 
-rule all:
-    input:
-        # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
-        #     zip,
-        #     outdir=[runinfo_dict['outdir']]*len(sample_id_list),
-        #     sample= sample_id_list,
-        #     sample_type = sample_type_list,
-        #     nucleotide = nucleotide_list
-        #     )
-        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
-            zip,
-            outdir=[config['outdir']]*len(sample_id_list),
-            sample=sample_id_list,
-            sample_type=sample_type_list,
-            nucleotide=nucleotide_list
-            )
+# rule all:
+#     input:
+#         # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
+#         #     zip,
+#         #     outdir=[config['outdir']]*len(sample_id_list),
+#         #     sample= sample_id_list,
+#         #     sample_type = sample_type_list,
+#         #     nucleotide = nucleotide_list
+#         #     )
+#         expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
+#             zip,
+#             outdir=[config['outdir']]*len(sample_id_list),
+#             sample=sample_id_list,
+#             sample_type=sample_type_list,
+#             nucleotide=nucleotide_list
+#             )
 
         
 
