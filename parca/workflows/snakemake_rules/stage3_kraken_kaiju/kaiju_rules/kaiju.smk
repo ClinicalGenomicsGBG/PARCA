@@ -14,8 +14,8 @@ rule kaiju:
     output:
         kaiju="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.txt"
     params:
-        kaiju_db_base_path=runinfo_dict['kaiju_db_base_path'], #config['kaiju_db_base_path'],
-        kaijunames=runinfo_dict['kaiju_names'] #config['kaiju_names']
+        kaiju_db_base_path=config['kaiju_db_base_path'], #config['kaiju_db_base_path'],
+        kaijunames=config['kaiju_names'] #config['kaiju_names']
     threads: 110
     conda: "../../../conda/kaiju_env.yaml" #config['conda_environment']
     shell:

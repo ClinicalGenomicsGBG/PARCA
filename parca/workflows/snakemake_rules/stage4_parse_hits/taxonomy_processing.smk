@@ -13,7 +13,7 @@ rule add_taxon_names_doublets:
     Input: 
         combined=The merged kraken and kaiju results for the sequences that both softwares could classify.
     Params: 
-        names_nodes_dmp_dir=runinfo_dict['names_nodes_dmp_dir']
+        names_nodes_dmp_dir=config['names_nodes_dmp_dir']
     Output: 
         named=The lineage added to the input file.
     """ 
@@ -22,7 +22,7 @@ rule add_taxon_names_doublets:
     output:
         named="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju_names_unfiltered.txt"
     params:
-        names_nodes_dmp_dir=runinfo_dict['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
+        names_nodes_dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
         #nodes=config['nodes'],
         #names=config['names']
     conda: "../../conda/kaiju_env.yaml" #config['conda_environment']
@@ -80,7 +80,7 @@ rule get_taxonomic_lineage_singletons:
         tax_id_lineage="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_tax_id_lineage.txt"
     conda: "../../conda/taxonkit_env.yaml" #config['conda_environment']
     params:
-        dmp_dir=runinfo_dict['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
+        dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
     shell:
         """
         [ ! -s {input.singletons_added_SGF_empty} ] && touch {output.tax_id_lineage} || \
@@ -126,7 +126,7 @@ rule add_taxon_names_singletons:
     output: 
         singletons_genus_names="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names.txt",
     params:
-        names_nodes_dmp_dir=runinfo_dict['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
+        names_nodes_dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
         #nodes=config['nodes'],
         #names=config['names']
     conda: "../../conda/kaiju_env.yaml" #config['conda_environment']

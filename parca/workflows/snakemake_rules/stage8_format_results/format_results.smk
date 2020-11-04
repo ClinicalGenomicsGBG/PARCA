@@ -24,7 +24,7 @@ rule add_taxon_names_all_classed:
         all_classed_read_taxid_names="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt"
     conda: "../../conda/kaiju_env.yaml" #config['conda_environment'] 
     params: 
-        names_nodes_dmp_dir=runinfo_dict['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
+        names_nodes_dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
     shell:
         """
         kaiju-addTaxonNames \

@@ -19,7 +19,7 @@ rule bbduk_trimming_SE:
         stats= "{outdir}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/trimming/bbduk_stats.txt",
         trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt"
     params:     
-        adapters= runinfo_dict['adapters'], #config['adapters'],
+        adapters= config['adapters'], #config['adapters'],
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t"
     #threads: 23
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
@@ -108,7 +108,7 @@ rule bbduk_trimming_PE_merged_lKtrim:
         stats="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged_reads_lKtrim.txt",
         trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_lKtrim.txt"
     params:     
-        adapters=runinfo_dict['adapters'], #config['adapters'],
+        adapters=config['adapters'], #config['adapters'],
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t"
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/merged_reads_lKtrim.log"
@@ -168,7 +168,7 @@ rule bbduk_trimming_PE_merged_rKtrim:
         stats="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged_reads_trimmed.txt",
         trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_trimmed.txt"
     params:     
-        adapters=runinfo_dict['adapters'], #config['adapters'],
+        adapters=config['adapters'], #config['adapters'],
         adaptertrimcommand="ktrim=r k=16 mink=11 hdist=1 rcomp=t" 
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/merged_reads_trimmed.log"
@@ -219,7 +219,7 @@ rule bbduk_trimming_PE_unmerged:
         stats="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_unmerged_reads_trimmed_raw.txt",
         trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_unmerged_reads_trimmed_raw.txt"
     params:     
-        adapters=runinfo_dict['adapters'], #config['adapters'],
+        adapters=config['adapters'], #config['adapters'],
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t" 
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/unmerged_reads_trimmed_raw.log"

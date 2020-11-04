@@ -89,7 +89,7 @@ rule taxonomic_lineage_best_blast:
         tax_id_lineage="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_tax_id_lineage.txt"
     conda: "../../conda/taxonkit_env.yaml" #config['conda_environment']
     params:
-        dmp_dir=runinfo_dict['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
+        dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
     shell:
         """
         [ ! -s {input.best_blast} ] && touch {output.tax_id_lineage} || \

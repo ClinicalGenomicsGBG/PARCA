@@ -14,7 +14,7 @@ rule fiona_SE_RNA:
     output: 
         "{outdir}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fa"
     params:
-        fiona=runinfo_dict['fiona_path'] #config['fiona_path']
+        fiona=config['fiona_path'] #config['fiona_path']
     log:  "{outdir}/snakemake_results_{sample}/logs_SE_RNA/stage1/fiona.log"
     benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_SE_RNA/stage1/fiona.txt"
     threads: 110
@@ -42,7 +42,7 @@ rule fiona_SE_DNA:
     output: 
         "{outdir}/snakemake_results_{sample}/SE_DNA/stage1/fiona/trimmed_reads_fiona.fa"
     params:
-        fiona=runinfo_dict['fiona_path'] #config['fiona_path']
+        fiona=config['fiona_path'] #config['fiona_path']
     log:  "{outdir}/snakemake_results_{sample}/logs_SE_DNA/stage1/fiona.log"
     benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_SE_DNA/stage1/fiona.txt"
     threads: 110

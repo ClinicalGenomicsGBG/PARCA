@@ -29,7 +29,7 @@ rule blast_remaining_reads_nt:
         e_val="1e-5",
         max_seqs="10",
         qcov_hsp_perc="20",
-        nt_db_dir=runinfo_dict['nt_db_dir'] #config['nt_db_dir']
+        nt_db_dir=config['nt_db_dir'] #config['nt_db_dir']
     conda: "../../conda/blast_env.yaml" #config['conda_environment'] 
     threads: 10
     shell:
@@ -94,7 +94,7 @@ rule taxonomic_lineage_best_nt_blast:
         tax_id_lineage="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage7/best_nt_blast_tax_id_lineage.txt"
     conda: "../../conda/taxonkit_env.yaml" #config['conda_environment']
     params:
-        dmp_dir=runinfo_dict['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
+        dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
     shell:
         """
         [ ! -s {input.best_blast} ] && touch {output.tax_id_lineage} || \

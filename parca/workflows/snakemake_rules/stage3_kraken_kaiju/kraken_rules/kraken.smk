@@ -16,8 +16,8 @@ rule kraken:
         kraken="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.txt"
     params:
         #kraken_path=config['kraken_path'],
-        kraken_path=runinfo_dict['kraken_path'],
-        kraken_db_base_path=runinfo_dict['kraken_db_base_path'] #config['kraken_db_base_path']
+        kraken_path=config['kraken_path'],
+        kraken_db_base_path=config['kraken_db_base_path'] #config['kraken_db_base_path']
     threads: 110
     #conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
     log:"{outdir}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.log"
@@ -56,8 +56,8 @@ rule kraken_filter_score:
         filtered="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt"
     params:
         #kraken_path=config['kraken_path'],
-        kraken_path=runinfo_dict['kraken_path'],
-        kraken_db_base_path=runinfo_dict['kraken_db_base_path'] #config['kraken_db_base_path']
+        kraken_path=config['kraken_path'],
+        kraken_db_base_path=config['kraken_db_base_path'] #config['kraken_db_base_path']
     #conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
     shell:
         """
