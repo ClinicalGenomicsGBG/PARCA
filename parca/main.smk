@@ -12,7 +12,7 @@ configfile: "config/config.yaml"
 
 #sample_paths_dict = runinfo_dict['samplePath']
 #RNA = runinfo_dict['RNA']
-singularity: runinfo_dict['singularity_image']
+singularity: config['singularity_image']
 
 # Generate settings with correct naming.
 # SU=Setup(sample_paths_dict, runinfo_dict['generateSampleID'])
@@ -38,7 +38,7 @@ singularity: runinfo_dict['singularity_image']
 
 print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
             zip,
-            outdir=[runinfo_dict['outdir']]*len(sample_id_list),
+            outdir=[config['outdir']]*len(sample_id_list),
             sample=sample_id_list,
             sample_type=sample_type_list,
             nucleotide=nucleotide_list
@@ -56,7 +56,7 @@ rule all:
         #     )
         expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
             zip,
-            outdir=[runinfo_dict['outdir']]*len(sample_id_list),
+            outdir=[config['outdir']]*len(sample_id_list),
             sample=sample_id_list,
             sample_type=sample_type_list,
             nucleotide=nucleotide_list
