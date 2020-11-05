@@ -16,6 +16,7 @@ print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/sta
             nucleotide=nucleotide_list
             ))
 
+
 # rule all:
 #     input:
 #         # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
