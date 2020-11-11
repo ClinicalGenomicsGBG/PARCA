@@ -1,4 +1,5 @@
 #import glob,re
+import yaml
 
 configfile: "config/config.yaml"
 
@@ -8,6 +9,19 @@ sample_id_list=["S1"]
 sample_type_list=["PE"]
 nucleotide_list=["RNA"]
 
+# run_dict=""
+
+# pipeline_input=[]
+# for run in run_dict:
+#     if case and control:
+#         case_control_list=expand()
+#         pipeline_input.append(case_control_list)
+#     elif case:
+#         case_list=expand()
+#         pipeline_input.append(case_list)
+
+
+# Rule all
 print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
             zip,
             outdir=[config['outdir']]*len(sample_id_list),
@@ -15,6 +29,12 @@ print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/sta
             sample_type=sample_type_list,
             nucleotide=nucleotide_list
             ))
+
+# rule case
+
+# rule case control
+
+
 
 # rule all:
 #     input:
