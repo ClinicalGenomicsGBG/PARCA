@@ -77,25 +77,13 @@ def program_versions():
 
     # Add conda package versions
 
+
 if __name__ == '__main__':
-    #Create output directory from randomly generated name
+    # Create output directory from randomly generated name
     work_dir = os.path.dirname(os.path.abspath(__file__))
-  
+
     # Call the click groups.
     main()
-
-
-#main.add_command(function)
-
-#a=$(find $(pwd)  -type f | tr "\n" " ")
-#python3 poppunk_cli.py fit-model --outdir /home/xerpey/tutorials/poppunk_tutorial/results --generate_subdir  $a --dryrun
-
-
-
-#import glob,re
-
-
-
 
 #snakemake -rp -s main.smk --cluster-config config/cluster.yaml --profile qsub_profile
 #snakemake --dag -s main.smk| dot -Tpng > dag.png
