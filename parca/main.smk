@@ -1,55 +1,60 @@
 #import glob,re
 import yaml
+import pandas as pd
+import numpy as np
 
 configfile: "config/config.yaml"
 
 singularity: config['singularity_image']
 
-# sample_id_list=["S1"]
-# sample_type_list=["PE"]
-# nucleotide_list=["RNA"]
+#run_dict = config['run_dict']
+#metadata_dict = config['metadata_dict']
 
-run_dict={'run_1': {'run_id': 'run_1', 'case': 'sample_1', 'control': 'sample_2'},
- 'run_2': {'run_id': 'run_2', 'case': 'sample_2'}}
-
-# run_dict=config['']
-
+run_dict = {'run_1': {'case': 'sample_1', 'control': 'sample_2'}, 'run_2': {'case': 'sample_2'}}
+metadata_dict = [{'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_1.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'rev', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_2.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_2', 'start_date': 20201104, 'nucleotide': 'DNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/a.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'SE'}]
+metadata_dataframe = pd.DataFrame.from_dict(metadata_dict)
+#print(metadata_dataframe)
 
 def generate_pipeline_input(dictionary_of_runs):
     pipeline_input=[]
     for run_id in dictionary_of_runs:
         run=dictionary_of_runs[run_id]
         if "case" in run and "control" in run:
-            case_control_list=expand()
+            case_sample_id = run['case']
+            control_sample_id = run['control']
+            print(metadata_dataframe.loc[metadata_dataframe['sample_id'] == case_sample_id])
+            case_control_list=expand(f'{case_sample_id}_{control_sample_id}')
             pipeline_input.append(case_control_list)
         elif "case" in run:
-            case_list=expand()
+            case_sample_id = run['case']
+            case_list=expand(f'{case_sample_id}')
             pipeline_input.append(case_list)
     return pipeline_input
 
 rule all:
-    input:
-        generate_pipeline_input(run_dict)
+    run:
+        print(generate_pipeline_input(run_dict))
 
-rule control_and_case:
-    input:
-        "{outdir}/snakemake_results_{sample}/"
-    output:
-        "{outdir}/snakemake_results_{sample}/case_{}_control_{}.txt"
-    shell:
-        """
-        touch {output}
-        """
 
-rule case:
-    input:
-        "{outdir}/snakemake_results_{sample}/"
-    output:
-        "{outdir}/snakemake_results_{sample}/case_{}.txt"
-    shell:
-        """
-        touch {output}
-        """
+# rule control_and_case:
+#     input:
+#         "{outdir}/snakemake_results_{sample}/"
+#     output:
+#         "{outdir}/snakemake_results_{sample}/case_{}_control_{}.txt"
+#     shell:
+#         """
+#         touch {output}
+#         """
+
+# rule case:
+#     input:
+#         "{outdir}/snakemake_results_{sample}/"
+#     output:
+#         "{outdir}/snakemake_results_{sample}/case_{}.txt"
+#     shell:
+#         """
+#         touch {output}
+#         """
 
 # Rule all
 # print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
@@ -86,8 +91,8 @@ rule case:
         
 
 ##STAGE 1
-include:
-    "workflows/snakemake_rules/stage1_qc_trim_ec/setup/setup.smk"
+# include:
+#     "workflows/snakemake_rules/stage1_qc_trim_ec/setup/setup.smk"
 include:
     "workflows/snakemake_rules/stage1_qc_trim_ec/quality_control/fastqc.smk"
 include:
