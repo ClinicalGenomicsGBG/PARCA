@@ -6,20 +6,21 @@ import snakemake
 import subprocess
 import pandas as pd
 from workflow.utils.generate_outdir import GenerateOutdir
+from workflow.utils.process_runinfo_metadata import ProcessRuninfoMetadata
 
 @click.group()
 def main():
     pass
-    
+
 @main.command()
 @click.option('--metadata', 'metadata',
-                nargs=-1,
-                required=True,
-                type=click.Path(exists=True))
+              nargs=-1,
+              required=True,
+              type=click.Path(exists=True))
 @click.option('--runinfo', 'runinfo',
-                nargs=-1,
-                required=True,
-                type=click.Path(exists=True))  
+              nargs=-1,
+              required=True,
+              type=click.Path(exists=True))
 @click.option('-o', '--outdir', 'outdir', type=click.Path(exists=True),
               required=True,
               help='Give a full path to a directory where all results will be placed')
@@ -40,28 +41,34 @@ def run(metadata, runinfo, dryrun, outdir, generate_subdir):
         if return_code != 0:
             raise SystemExit('Output directory could not be created')
 
-    # config_dict_added = {
-    #             'sample_paths': list(inputfiles),
-    #             'threads': threads,
-    #             'outdir': outdir}
-    # status = snakemake.snakemake(snakefile=f'{work_dir}/Snakefile',
-    #                              cores=threads,
-    #                              config=config_dict_added,
-    #                              workdir=work_dir,
-    #                              latency_wait=30,
-    #                              dryrun=dryrun)
+    run_dict = ProcessRuninfoMetadata.generate_runinfo_dict(runinfo)
+    metadata_dict = ProcessRuninfoMetadata.generate_metadata_dict(metadata)
+
+    config_dict_added = {
+                'run_dict': run_dict,
+                'metadata_dict': metadata_dict,
+                'outdir': outdir}
+
+    status = snakemake.snakemake(snakefile=f'{work_dir}/Snakefile',
+                                 config=config_dict_added,
+                                 workdir=work_dir,
+                                 latency_wait=30,
+                                 dryrun=dryrun)
+
     # print("STATUSCODE:", status)  # True or False
 
     #clean up if error... do not use this since if the generate outdir is not used it will remove unnecessary things 
     #return_code=subprocess.call(['rmdir', outdir])
 
+
 @main.command()
 def program_versions():
     """Print dependencies."""
     import subprocess
-    git_version = subprocess.check_output(['git', 'describe', '--always', '--dirty'],
-                                            cwd=work_dir,
-                                            universal_newlines=True).strip()
+    git_version = subprocess.check_output(['git', 'describe',
+                                          '--always', '--dirty'],
+                                          cwd=work_dir,
+                                          universal_newlines=True).strip()
     extra = ""
     if "dirty" in git_version:
         git_version = git_version.strip("-dirty")
@@ -73,7 +80,7 @@ def program_versions():
 if __name__ == '__main__':
     #Create output directory from randomly generated name
     work_dir = os.path.dirname(os.path.abspath(__file__))
-    
+  
     # Call the click groups.
     main()
 

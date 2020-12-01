@@ -32,11 +32,11 @@ class ProcessRuninfoMetadata:
         return runinfo_dict
 
     @staticmethod
-    def generate_metadata_dataframe(metadata_path,
-                                    sample_id_col='sample_id',
-                                    fwd_or_rev_col='fwd_or_rev',
-                                    fwd_code="fwd",
-                                    rev_code="rev"):
+    def generate_metadata_dict(metadata_path,
+                               sample_id_col='sample_id',
+                               fwd_or_rev_col='fwd_or_rev',
+                               fwd_code="fwd",
+                               rev_code="rev"):
         meta = pd.read_csv(metadata_path)
 
         detect_PE_or_SE = meta.groupby(sample_id_col).agg(
@@ -47,6 +47,7 @@ class ProcessRuninfoMetadata:
                                              else "SE"))
 
         meta_PE_SE = pd.merge(meta, detect_PE_or_SE, on=[sample_id_col])
+        meta_PE_SE = meta_PE_SE.to_dict('records')
 
         return meta_PE_SE
 
@@ -56,4 +57,4 @@ if __name__ == '__main__':
     runinfo = "/Users/pernillaericsson/Documents/medair1/apps/bio/dev_repos/parca/demo/runinfo/runinfo.csv"
 
     print(ProcessRuninfoMetadata.generate_runinfo_dict(runinfo))
-    print(ProcessRuninfoMetadata.generate_metadata_dataframe(metadata))
+    print(ProcessRuninfoMetadata.generate_metadata_dict(metadata))
