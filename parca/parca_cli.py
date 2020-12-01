@@ -18,11 +18,9 @@ def main():
 
 @main.command()
 @click.option('-m', '--metadata', 'metadata',
-              nargs=-1,
               required=True,
               type=click.Path(exists=True))
 @click.option('-r', '--runinfo', 'runinfo',
-              nargs=-1,
               required=True,
               type=click.Path(exists=True))
 @click.option('-o', '--outdir', 'outdir', type=click.Path(exists=True),
