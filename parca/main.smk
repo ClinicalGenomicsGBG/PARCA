@@ -22,7 +22,6 @@ def generate_pipeline_input(dictionary_of_runs):
         if "case" in run and "control" in run:
             case_sample_id = run['case']
             control_sample_id = run['control']
-            print(metadata_dataframe.loc[metadata_dataframe['sample_id'] == case_sample_id])
             case_control_list=expand(f'{case_sample_id}_{control_sample_id}')
             pipeline_input.append(case_control_list)
         elif "case" in run:

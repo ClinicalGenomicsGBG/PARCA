@@ -1,23 +1,27 @@
 
 import os
-import yaml
 import click
 import snakemake
 import subprocess
 import pandas as pd
-from workflow.utils.generate_outdir import GenerateOutdir
-from workflow.utils.process_runinfo_metadata import ProcessRuninfoMetadata
+from workflows.utils.generate_outdir import GenerateOutdir
+from workflows.utils.process_runinfo_metadata import ProcessRuninfoMetadata
 
 @click.group()
 def main():
+    """
+    ~~~~~~~~ P a R C A ~~~~~~~~
+    **** Pathogen Research in Clinical Applications ****
+    **** PaRCA started for the following samples: ****
+    """
     pass
 
 @main.command()
-@click.option('--metadata', 'metadata',
+@click.option('-m', '--metadata', 'metadata',
               nargs=-1,
               required=True,
               type=click.Path(exists=True))
-@click.option('--runinfo', 'runinfo',
+@click.option('-r', '--runinfo', 'runinfo',
               nargs=-1,
               required=True,
               type=click.Path(exists=True))
@@ -28,9 +32,7 @@ def main():
               help='Generate a subfolder with date within outdir a given outdir')
 @click.option('-d', '--dryrun', 'dryrun', is_flag=True, help='dryrun')
 def run(metadata, runinfo, dryrun, outdir, generate_subdir):
-    """
-
-    """
+    """a"""
     if generate_subdir and outdir:
         base_outdir = outdir
         sub_outdir = GenerateOutdir.get_date_and_randomizer()
@@ -85,42 +87,8 @@ if __name__ == '__main__':
     # Call the click groups.
     main()
 
-#snakemake -rp -s main.smk --cluster-config config/cluster.yaml --profile qsub_profile
-#snakemake --dag -s main.smk| dot -Tpng > dag.png
-# from workflows.utils.FileProcessing import ProcessFiles
-# from workflows.utils.Setup import Setup
+# snakemake -rp -s main.smk --cluster-config config/cluster.yaml --profile qsub_profile
+# snakemake --dag -s main.smk| dot -Tpng > dag.png
 
-# Read the runinfo file containg parameters for the current run.
-#runinfo = ProcessFiles(config['runinfo'])
-#runinfo_dict=runinfo.readYaml()
+# print dag functionality
 
-#sample_paths_dict = runinfo_dict['samplePath']
-#RNA = runinfo_dict['RNA']
-
-# with open(self.filename, 'r') as yamlFile:
-#     yamlDict = yaml.safe_load(yamlFile)
-
-# Generate settings with correct naming.
-# SU=Setup(sample_paths_dict, runinfo_dict['generateSampleID'])
-# settings_dict = SU.generateSettingsLists()
-
-
-# print("\n\t\t~~~~~~~~ P a R C A ~~~~~~~~")
-# print("\t**** Pathogen Research in Clinical Applications ****")
-# print("\n**** PaRCA started for the following samples: ****")
-# sample_id_list=[]
-# sample_type_list=[]
-# nucleotide_list=[]
-# for key in settings_dict:
-#     sample_id_list.append(key)
-#     sample_type_list.append(settings_dict[key][1])
-#     nucleotide_list.append(settings_dict[key][2])
-#     print("SAMPLE ID:", key)
-#     print("\tInput files:", settings_dict[key][0][0:2])
-#     print("\tSample type:", settings_dict[key][1])
-#     print("\tNucleotide:", settings_dict[key][2])
-
-# print("\nResults are placed in:", runinfo_dict['outdir'], "\n")
-
-## dryrun functionality
-## print dag functionality
