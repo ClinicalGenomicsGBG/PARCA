@@ -5,30 +5,60 @@ configfile: "config/config.yaml"
 
 singularity: config['singularity_image']
 
-sample_id_list=["S1"]
-sample_type_list=["PE"]
-nucleotide_list=["RNA"]
+# sample_id_list=["S1"]
+# sample_type_list=["PE"]
+# nucleotide_list=["RNA"]
 
-# run_dict=""
+run_dict={'run_1': {'run_id': 'run_1', 'case': 'sample_1', 'control': 'sample_2'},
+ 'run_2': {'run_id': 'run_2', 'case': 'sample_2'}}
 
-# pipeline_input=[]
-# for run in run_dict:
-#     if case and control:
-#         case_control_list=expand()
-#         pipeline_input.append(case_control_list)
-#     elif case:
-#         case_list=expand()
-#         pipeline_input.append(case_list)
+# run_dict=config['']
 
+
+def generate_pipeline_input(dictionary_of_runs):
+    pipeline_input=[]
+    for run_id in dictionary_of_runs:
+        run=dictionary_of_runs[run_id]
+        if "case" in run and "control" in run:
+            case_control_list=expand()
+            pipeline_input.append(case_control_list)
+        elif "case" in run:
+            case_list=expand()
+            pipeline_input.append(case_list)
+    return pipeline_input
+
+rule all:
+    input:
+        generate_pipeline_input(run_dict)
+
+rule control_and_case:
+    input:
+        "{outdir}/snakemake_results_{sample}/"
+    output:
+        "{outdir}/snakemake_results_{sample}/case_{}_control_{}.txt"
+    shell:
+        """
+        touch {output}
+        """
+
+rule case:
+    input:
+        "{outdir}/snakemake_results_{sample}/"
+    output:
+        "{outdir}/snakemake_results_{sample}/case_{}.txt"
+    shell:
+        """
+        touch {output}
+        """
 
 # Rule all
-print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
-            zip,
-            outdir=[config['outdir']]*len(sample_id_list),
-            sample=sample_id_list,
-            sample_type=sample_type_list,
-            nucleotide=nucleotide_list
-            ))
+# print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
+#             zip,
+#             outdir=[config['outdir']]*len(sample_id_list),
+#             sample=sample_id_list,
+#             sample_type=sample_type_list,
+#             nucleotide=nucleotide_list
+#             ))
 
 # rule case
 
