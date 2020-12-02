@@ -1,9 +1,9 @@
 # RUN CONFIGURATION
-run_info: ""
-run_metadata: ""
+# run_info: ""
+# run_metadata: ""
 
-adapters:
-  - "None"
+# adapters:
+#   - "None"
 
 outdir: 
   "/apps/bio/dev_repos/parca/demo/200819_demo"
