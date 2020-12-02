@@ -5,7 +5,7 @@ rule bbduk_trimming_SE:
     Input: 
         A fastq file.
     Params: 
-        adapters=adapter-string if adapters should be removed.
+        adapters=adapters to be removed.
         adaptertrimcommand=trimming settings.
     Output: 
         reads=Trimmed reads.
@@ -19,7 +19,7 @@ rule bbduk_trimming_SE:
         stats= "{outdir}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/trimming/bbduk_stats.txt",
         trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt"
     params:     
-        adapters= config['adapters'], #config['adapters'],
+        adapters=','.join(list(metadata_dataframe.loc[metadata_dataframe['sample_id'] == wildcards.sample]['adapters']))
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t"
     #threads: 23
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
@@ -28,7 +28,7 @@ rule bbduk_trimming_SE:
     shell:
         """
         adapter={params.adapters};
-        if [[ -z ${{adapter/None/}} ]]; then
+        if [[ -z ${{adapter//NA/}} ]] || [[ ${{adapter//NA/}} == "," ]]; then
             bbduk.sh \
                 in={input} \
                 entropymask=t \
@@ -40,6 +40,7 @@ rule bbduk_trimming_SE:
                 qtrim=rl \
                 overwrite=true &> {log}; \
         else
+            adapter=$(echo $adapter | sed 's/^,//g' | sed 's/,$//g');
             bbduk.sh \
                 in={input} \
                 entropymask=t \
@@ -50,7 +51,7 @@ rule bbduk_trimming_SE:
                 minlength=40 \
                 qtrim=rl \
                 overwrite=true \
-                ref={params.adapters} \
+                ref=$adapter \
                 {params.adaptertrimcommand} &> {log}; \
         fi; \
         echo count > {output.trimmed_read_count};
@@ -94,7 +95,7 @@ rule bbduk_trimming_PE_merged_lKtrim:
     Input: 
         A fastq file.
     Params: 
-        adapters=adapter-string if adapters should be removed.
+        adapters=adapters to be removed.
         adaptertrimcommand=trimming settings.
     Output: 
         reads=Trimmed reads.
@@ -108,7 +109,7 @@ rule bbduk_trimming_PE_merged_lKtrim:
         stats="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged_reads_lKtrim.txt",
         trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_lKtrim.txt"
     params:     
-        adapters=config['adapters'], #config['adapters'],
+        adapters=metadata_dataframe.loc[metadata_dataframe['sample_id'] == wildcards.sample]['adapters'],
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t"
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/merged_reads_lKtrim.log"
@@ -116,7 +117,7 @@ rule bbduk_trimming_PE_merged_lKtrim:
     shell:
         """
         adapter={params.adapters};
-        if [[ -z ${{adapter/None/}} ]]; then
+        if [[ -z ${{adapter//NA/}} ]] || [[ ${{adapter//NA/}} == "," ]]; then
             bbduk.sh \
                 in={input} \
                 entropymask=t \
@@ -129,6 +130,7 @@ rule bbduk_trimming_PE_merged_lKtrim:
                 overwrite=true \
                 &> {log}; \
         else
+            adapter=$(echo $adapter | sed 's/^,//g' | sed 's/,$//g');
             bbduk.sh \
                 in={input} \
                 entropymask=t \
@@ -139,7 +141,7 @@ rule bbduk_trimming_PE_merged_lKtrim:
                 minlength=40 \
                 qtrim=rl \
                 overwrite=true \
-                ref={params.adapters} \
+                ref=$adapter \
                 {params.adaptertrimcommand} \
                 &> {log}; \
         fi; \
@@ -154,7 +156,7 @@ rule bbduk_trimming_PE_merged_rKtrim:
     Input: 
         A fastq file.
     Params: 
-        adapters=adapter-string if adapters should be removed.
+        adapters=adapter to be removed.
         adaptertrimcommand=trimming settings.
     Output: 
         reads=Trimmed reads.
@@ -168,7 +170,7 @@ rule bbduk_trimming_PE_merged_rKtrim:
         stats="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged_reads_trimmed.txt",
         trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_trimmed.txt"
     params:     
-        adapters=config['adapters'], #config['adapters'],
+        adapters=','.join(list(metadata_dataframe.loc[metadata_dataframe['sample_id'] == wildcards.sample]['adapters'])),
         adaptertrimcommand="ktrim=r k=16 mink=11 hdist=1 rcomp=t" 
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/merged_reads_trimmed.log"
@@ -176,7 +178,7 @@ rule bbduk_trimming_PE_merged_rKtrim:
     shell:
         """
         adapter={params.adapters};
-        if [[ -z ${{adapter/None/}} ]]; then
+        if [[ -z ${{adapter//NA/}} ]] || [[ ${{adapter//NA/}} == "," ]]; then
             bbduk.sh \
                 in={input} \
                 stats={output.stats} \
@@ -185,13 +187,14 @@ rule bbduk_trimming_PE_merged_rKtrim:
                 overwrite=true \
                 &> {log}; \
         else
+            adapter=$(echo $adapter | sed 's/^,//g' | sed 's/,$//g');
             bbduk.sh \
                 in={input} \
                 stats={output.stats} \
                 out={output.reads} \
                 minlength=40 \
                 overwrite=true \
-                ref={params.adapters} \
+                ref=$adapter \
                 {params.adaptertrimcommand} \
                 &> {log}; \
         fi; \
@@ -205,7 +208,7 @@ rule bbduk_trimming_PE_unmerged:
     Input: 
         A fastq file.
     Params: 
-        adapters=adapter-string if adapters should be removed.
+        adapters=adapter to be removed.
         adaptertrimcommand=trimming settings.
     Output: 
         reads=Trimmed reads.
@@ -219,7 +222,7 @@ rule bbduk_trimming_PE_unmerged:
         stats="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_unmerged_reads_trimmed_raw.txt",
         trimmed_read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_unmerged_reads_trimmed_raw.txt"
     params:     
-        adapters=config['adapters'], #config['adapters'],
+        adapters=','.join(list(metadata_dataframe.loc[metadata_dataframe['sample_id'] == wildcards.sample]['adapters'])),
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t" 
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/unmerged_reads_trimmed_raw.log"
@@ -227,7 +230,7 @@ rule bbduk_trimming_PE_unmerged:
     shell:
         """
         adapter={params.adapters};
-        if [[ -z ${{adapter/None/}} ]]; then
+        if [[ -z ${{adapter//NA/}} ]] || [[ ${{adapter//NA/}} == "," ]]; then
             bbduk.sh \
                 in={input} \
                 entropymask=t \
@@ -241,6 +244,7 @@ rule bbduk_trimming_PE_unmerged:
                 removeifeitherbad=f \
                 &> {log}; \
         else
+            adapter=$(echo $adapter | sed 's/^,//g' | sed 's/,$//g');
             bbduk.sh \
                 in={input} \
                 entropymask=t \
@@ -252,7 +256,7 @@ rule bbduk_trimming_PE_unmerged:
                 qtrim=rl \
                 overwrite=true \
                 removeifeitherbad=f \
-                ref={params.adapters} \
+                ref=$adapter \
                 {params.adaptertrimcommand} \
                 &> {log}; \
         fi; \
