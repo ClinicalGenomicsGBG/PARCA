@@ -1,3 +1,3 @@
-startdate,run_id,sample_1,sample_2
+start_date,run_id,sample_1,sample_2
 20201202,run_1,1,0
 20201202,run_2,,1
