@@ -3,33 +3,47 @@ import pandas as pd
 
 class ProcessRuninfoMetadata:
     @staticmethod
-    def generate_runinfo_dict(runinfo_path, run_id_col='run_id'):
+    def multiindex_pivot(df, index=None, columns=None, values=None):
+        if index is None:
+            names = list(df.index.names)
+            df = df.reset_index()
+        else:
+            names = index
+        list_index = df[names].values
+        tuples_index = [tuple(i) for i in list_index]
+        df = df.assign(tuples_index=tuples_index)
+        df = df.pivot(index="tuples_index", columns=columns, values=values)
+        tuples_index = df.index
+        index = pd.MultiIndex.from_tuples(tuples_index, names=names)
+        df.index = index
+        return df
+
+    @staticmethod
+    def generate_runinfo_dict(runinfo_path, info_col=['run_id', 'startdate']):
         run = pd.read_csv(runinfo_path)
-        runinfo_rotated = pd.melt(run,
-                                  id_vars=[run_id_col],
-                                  value_vars=[colname for colname
-                                              in list(run.columns)
-                                              if colname != run_id_col],
-                                  var_name='samples',
-                                  value_name='value').dropna()
 
-        runinfo_rotated['value'] = runinfo_rotated['value'].astype(int)
+        runinfo_melt = pd.melt(run,
+                               id_vars=info_col,
+                               value_vars=[colname for colname
+                                           in list(run.columns) if colname
+                                           not in info_col],
+                               var_name='samples',
+                               value_name='value').dropna()
+        runinfo_melt['value'] = runinfo_melt['value'].astype(int)
+        runinfo_melt['value'] = runinfo_melt['value'].replace({1: 'case',
+                                                               0: 'control'})
 
-        runinfo_rotated['value'] = runinfo_rotated['value'].replace(
-                                                                {1: 'case',
-                                                                 0: 'control'})
+        runinfo_pivot = runinfo_melt.pipe(multiindex_pivot,
+                                          index=info_col,
+                                          columns='value', values='samples')
+        runinfo_pivot = runinfo_pivot.reset_index()
 
-        runinfo_rotated = runinfo_rotated.pivot(index=run_id_col,
-                                                columns='value',
-                                                values='samples')
+        runinfo_dict = runinfo_pivot.apply(lambda x:
+                                           x.dropna().to_dict(),
+                                           axis=1)
+        runinfo_dict = list(runinfo_dict)
 
-        runinfo_rotated = runinfo_rotated.reset_index()
-
-        runinfo_dict = runinfo_rotated.apply(lambda x:
-                                             x.dropna().to_dict(),
-                                             axis=1)
-
-        return list(runinfo_dict)
+        return runinfo_dict
 
     @staticmethod
     def generate_metadata_dict(metadata_path,
