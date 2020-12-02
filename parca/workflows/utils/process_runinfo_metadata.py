@@ -19,7 +19,7 @@ class ProcessRuninfoMetadata:
         return df
 
     @staticmethod
-    def generate_runinfo_dict(runinfo_path, info_col=['run_id', 'startdate']):
+    def generate_runinfo_dict(runinfo_path, info_col=['run_id', 'start_date']):
         run = pd.read_csv(runinfo_path)
 
         runinfo_melt = pd.melt(run,
