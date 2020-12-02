@@ -12,15 +12,15 @@ rule pollux_SE_RNA:
         Error corrected reads.
     """ 
     input: 
-        "{outdir}/snakemake_results_{sample}/SE_RNA/stage1/trimming/trimmed_reads.fq"
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/trimming/trimmed_reads.fq"
     output: 
-        "{outdir}/snakemake_results_{sample}/SE_RNA/stage1/pollux/trimmed_reads.corrected.fq"
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/pollux/trimmed_reads.corrected.fq"
     params:
         pollux=config['pollux_path'], #config['pollux_path'],
-        outdir="{outdir}/snakemake_results_{sample}/SE_RNA/stage1/pollux",
-        corrected="{outdir}/snakemake_results_{sample}/SE_RNA/stage1/pollux/trimmed_reads.fq.corrected"
-    log: "{outdir}/snakemake_results_{sample}/logs_SE_RNA/stage1/pollux.log"
-    benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_SE_RNA/stage1/pollux.txt"
+        outdir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/pollux",
+        corrected="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/pollux/trimmed_reads.fq.corrected"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage1/pollux.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage1/pollux.txt"
     shell:
         """
         {params.pollux} \

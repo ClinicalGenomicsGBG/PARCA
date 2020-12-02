@@ -1,11 +1,11 @@
 
 checkpoint prepare_blast_input:
     input: 
-        kmer_input="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
-        higher="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/above_species_classed.txt"
+        kmer_input="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
+        higher="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/above_species_classed.txt"
     output: 
-        blast_infiles=directory("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/sliceblastin"),
-        read_count="{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_printedfiles_assembledreadlengths.txt"
+        blast_infiles=directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/sliceblastin"),
+        read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_printedfiles_assembledreadlengths.txt"
     params: 
         chunk_size=6000
     conda: "../../conda/biopython_env.yaml" #config['conda_environment'] 
@@ -15,15 +15,15 @@ checkpoint prepare_blast_input:
 
 rule blast_slices:
     input:
-        infile_slice="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/sliceblastin/{gi_slice}__{sliceiter}",
-        db_slice="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}.nal"
+        infile_slice="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/sliceblastin/{gi_slice}__{sliceiter}",
+        db_slice="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}.nal"
     output:
-        blast_out="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/sliceblastout/{gi_slice}__{sliceiter}"
+        blast_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/sliceblastout/{gi_slice}__{sliceiter}"
     params:
         blast_out_fmt="6 qseqid stitle evalue length nident sseqid bitscore staxids",
         e_val="1e-3",
         max_seqs="10",
-        db_dir="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}"
+        db_dir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}"
     conda: "../../conda/blast_env.yaml" #config['conda_environment'] 
     threads: 10
     shell:
@@ -44,7 +44,7 @@ def aggregate_sliceblast_input(wildcards):
     GI_SLICE=wildcard_obj.gi_slice
     SLICEITER=wildcard_obj.sliceiter
 
-    slice_blast_list=expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/sliceblastout/{gi_slice}__{sliceiter}", zip,
+    slice_blast_list=expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/sliceblastout/{gi_slice}__{sliceiter}", zip,
            outdir=[wildcards.outdir]*len(GI_SLICE),
            sample=[wildcards.sample]*len(GI_SLICE),
            sample_type=[wildcards.sample_type]*len(GI_SLICE),
@@ -66,7 +66,7 @@ rule merge_slice_blast_result:
     input: 
         blast_output=aggregate_sliceblast_input
     output: 
-        best_blast="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast.txt"
+        best_blast="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast.txt"
     conda: "../../conda/R_env.yaml" #config['conda_environment'] 
     script:
         "../../scripts/blast_processing/blast_postprocessing/merge_slice_blast_result.R"
@@ -84,9 +84,9 @@ rule taxonomic_lineage_best_blast:
             (Columns: taxid, rank, taxid lineage separated by ";")
     """
     input: 
-        best_blast="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast.txt"
+        best_blast="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast.txt"
     output:
-        tax_id_lineage="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_tax_id_lineage.txt"
+        tax_id_lineage="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_tax_id_lineage.txt"
     conda: "../../conda/taxonkit_env.yaml" #config['conda_environment']
     params:
         dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
@@ -121,11 +121,11 @@ rule reformat_blast_taxids:
         count_reads_tax_ids = Stats of how many unique taxids are found and how many reads that are classed.
     """
     input: 
-        best_blast="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast.txt",
-        tax_id_lineage="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_tax_id_lineage.txt"
+        best_blast="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast.txt",
+        tax_id_lineage="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_tax_id_lineage.txt"
     output: 
-        species_and_above="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_species_and_above.txt",
-        count_reads_tax_ids="{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_reads_taxid_SubsetBLAST.txt"
+        species_and_above="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_species_and_above.txt",
+        count_reads_tax_ids="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_reads_taxid_SubsetBLAST.txt"
     conda: "../../conda/R_env.yaml" #config['conda_environment'] 
     params:
         blast_type="SubsetBLAST",
@@ -135,11 +135,11 @@ rule reformat_blast_taxids:
 
 rule merge_kmer_classed_and_blast_classed:
     input: 
-        species="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/species_classed.txt",
-        species_and_above="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_species_and_above.txt"
+        species="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/species_classed.txt",
+        species_and_above="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_species_and_above.txt"
     output: 
-        kmer_blast="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/kmer_species_subsetblast_classed.txt",
-        count_kmer_blast="{outdir}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_kmer_SubsetBLAST.txt"
+        kmer_blast="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/kmer_species_subsetblast_classed.txt",
+        count_kmer_blast="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_kmer_SubsetBLAST.txt"
     shell: 
         """
         cat {input.species}  > {output.kmer_blast};
