@@ -47,6 +47,9 @@ class ProcessRuninfoMetadata:
                                              else "SE"))
 
         meta_PE_SE = pd.merge(meta, detect_PE_or_SE, on=[sample_id_col])
+
+        meta_PE_SE = meta_PE_SE.fillna('NA')
+
         meta_PE_SE = meta_PE_SE.to_dict('records')
 
         return meta_PE_SE
