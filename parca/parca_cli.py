@@ -7,12 +7,14 @@ import pandas as pd
 from workflows.utils.generate_outdir import GenerateOutdir
 from workflows.utils.process_runinfo_metadata import ProcessRuninfoMetadata
 
+
 @click.group()
 def main():
     """
     P a R C A - Pathogen Research in Clinical Applications
     """
     pass
+
 
 @main.command()
 @click.option('-m', '--metadata', 'metadata',
@@ -57,8 +59,8 @@ def run(metadata, runinfo, dryrun, outdir, generate_subdir):
 
     # print("STATUSCODE:", status)  # True or False
 
-    #clean up if error... do not use this since if the generate outdir is not used it will remove unnecessary things 
-    #return_code=subprocess.call(['rmdir', outdir])
+    # clean up if error... do not use this since if the generate outdir is not used it will remove unnecessary things 
+    # return_code=subprocess.call(['rmdir', outdir])
 
 
 @main.command()
@@ -86,7 +88,6 @@ if __name__ == '__main__':
     main()
 
 # snakemake -rp -s main.smk --cluster-config config/cluster.yaml --profile qsub_profile
+
 # snakemake --dag -s main.smk| dot -Tpng > dag.png
-
 # print dag functionality
-
