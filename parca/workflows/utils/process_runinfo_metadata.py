@@ -23,13 +23,13 @@ class ProcessRuninfoMetadata:
                                                 columns='value',
                                                 values='samples')
 
-        runinfo_dict_subset = runinfo_rotated.apply(lambda x:
-                                                    x.dropna().to_dict(),
-                                                    axis=1)
+        runinfo_rotated = runinfo_rotated.reset_index()
 
-        runinfo_dict = runinfo_dict_subset.to_dict()
+        runinfo_dict = runinfo_rotated.apply(lambda x:
+                                             x.dropna().to_dict(),
+                                             axis=1)
 
-        return runinfo_dict
+        return list(runinfo_dict)
 
     @staticmethod
     def generate_metadata_dict(metadata_path,

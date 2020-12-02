@@ -10,9 +10,7 @@ from workflows.utils.process_runinfo_metadata import ProcessRuninfoMetadata
 @click.group()
 def main():
     """
-    ~~~~~~~~ P a R C A ~~~~~~~~
-    **** Pathogen Research in Clinical Applications ****
-    **** PaRCA started for the following samples: ****
+    P a R C A - Pathogen Research in Clinical Applications
     """
     pass
 
@@ -30,7 +28,9 @@ def main():
               help='Generate a subfolder with date within outdir a given outdir')
 @click.option('-d', '--dryrun', 'dryrun', is_flag=True, help='dryrun')
 def run(metadata, runinfo, dryrun, outdir, generate_subdir):
-    """a"""
+    """
+    Run the PaRCA pipeline.
+    """
     if generate_subdir and outdir:
         base_outdir = outdir
         sub_outdir = GenerateOutdir.get_date_and_randomizer()
@@ -49,7 +49,7 @@ def run(metadata, runinfo, dryrun, outdir, generate_subdir):
                 'metadata_dict': metadata_dict,
                 'outdir': outdir}
 
-    status = snakemake.snakemake(snakefile=f'{work_dir}/Snakefile',
+    status = snakemake.snakemake(snakefile=f'{work_dir}/main.smk',
                                  config=config_dict_added,
                                  workdir=work_dir,
                                  latency_wait=30,

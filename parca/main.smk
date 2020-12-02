@@ -7,18 +7,17 @@ configfile: "config/config.yaml"
 
 singularity: config['singularity_image']
 
-#run_dict = config['run_dict']
-#metadata_dict = config['metadata_dict']
+run_dict = config['run_dict']
+metadata_dict = config['metadata_dict']
 
-run_dict = {'run_1': {'case': 'sample_1', 'control': 'sample_2'}, 'run_2': {'case': 'sample_2'}}
-metadata_dict = [{'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_1.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'rev', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_2.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_2', 'start_date': 20201104, 'nucleotide': 'DNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/a.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'SE'}]
+#run_dict = [{'run_id': 'run_1', 'case': 'sample_1', 'control': 'sample_2'}, {'run_id': 'run_2', 'case': 'sample_2'}]
+#metadata_dict = [{'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_1.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'rev', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_2.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_2', 'start_date': 20201104, 'nucleotide': 'DNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/a.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'SE'}]
+
 metadata_dataframe = pd.DataFrame.from_dict(metadata_dict)
-#print(metadata_dataframe)
 
-def generate_pipeline_input(dictionary_of_runs):
+def generate_pipeline_input(list_run_dictionary):
     pipeline_input=[]
-    for run_id in dictionary_of_runs:
-        run=dictionary_of_runs[run_id]
+    for run in list_run_dictionary:
         if "case" in run and "control" in run:
             case_sample_id = run['case']
             control_sample_id = run['control']
