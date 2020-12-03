@@ -33,7 +33,7 @@ class ProcessRuninfoMetadata:
         runinfo_melt['value'] = runinfo_melt['value'].replace({1: 'case',
                                                                0: 'control'})
 
-        runinfo_pivot = runinfo_melt.pipe(multiindex_pivot,
+        runinfo_pivot = runinfo_melt.pipe(ProcessRuninfoMetadata.multiindex_pivot,
                                           index=info_col,
                                           columns='value', values='samples')
         runinfo_pivot = runinfo_pivot.reset_index()
