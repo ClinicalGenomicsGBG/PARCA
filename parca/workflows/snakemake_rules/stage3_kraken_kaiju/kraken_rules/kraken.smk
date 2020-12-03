@@ -87,7 +87,7 @@ rule kraken_filter_classified_RNA:
         classified_filtered=Filtered Kraken classifications.
     """ 
     input:
-        files=expand("{{outdir}/{start_date}_{run_id}}/snakemake_results_{{sample}}/{{sample_type}}_RNA/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt", 
+        files=expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{{sample}}/{{sample_type}}_RNA/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt", 
             zip,
             kraken_db=config['krakendb_RNA'], 
             db_limits=config['krakendblimits_RNA'])
@@ -112,7 +112,7 @@ rule kraken_filter_classified_DNA:
         classified_filtered=Filtered kaiju classifications.
     """ 
     input:
-        files=expand("{{outdir}/{start_date}_{run_id}}/snakemake_results_{{sample}}/{{sample_type}}_DNA/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt", 
+        files=expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{{sample}}/{{sample_type}}_DNA/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt", 
             zip,
             kraken_db=config['krakendb_DNA'], 
             db_limits=config['krakendblimits_DNA'])

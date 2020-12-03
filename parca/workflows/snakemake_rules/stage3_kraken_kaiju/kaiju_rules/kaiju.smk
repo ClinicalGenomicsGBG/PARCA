@@ -44,7 +44,7 @@ rule kaiju_filter_classified_RNA:
         classified_filtered=Filtered kaiju classifications.
     """ 
     input:
-        files=expand("{{outdir}/{start_date}_{run_id}}/snakemake_results_{{sample}}/{{sample_type}}_RNA/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.txt",
+        files=expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{{sample}}/{{sample_type}}_RNA/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.txt",
             zip,
             kaiju_db=config['kaijudb_RNA'], 
             kaiju_score=config['kaijuscore_RNA'],
@@ -70,7 +70,7 @@ rule kaiju_filter_classified_DNA:
         classified_filtered=Filtered kaiju classifications.
     """ 
     input:
-        files=expand("{{outdir}/{start_date}_{run_id}}/snakemake_results_{{sample}}/{{sample_type}}_DNA/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.txt",
+        files=expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{{sample}}/{{sample_type}}_DNA/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.txt",
             zip,
             kaiju_db=config['kaijudb_DNA'], 
             kaiju_score=config['kaijuscore_DNA'],
