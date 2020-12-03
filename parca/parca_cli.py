@@ -25,31 +25,40 @@ def main():
               type=click.Path(exists=True))
 @click.option('-o', '--outdir', 'outdir', type=click.Path(exists=True),
               required=True,
-              help='Give a full path to a directory where all results will be placed')
-@click.option('-gs', '--generate_subdir', 'generate_subdir', is_flag=True,
-              help='Generate a subfolder with date within outdir a given outdir')
+              help='Give the absolute path to a directory where all results will be placed in a subforder named after date and runinfo')
+# @click.option('-gs', '--generate_subdir', 'generate_subdir', is_flag=True,
+#               help='Generate a subfolder with date within outdir a given outdir')
 @click.option('-d', '--dryrun', 'dryrun', is_flag=True, help='dryrun')
-def run(metadata, runinfo, dryrun, outdir, generate_subdir):
+def run(metadata, runinfo, dryrun, outdir):
     """
     Run the PaRCA pipeline.
     """
-    if generate_subdir and outdir:
-        base_outdir = outdir
-        sub_outdir = GenerateOutdir.get_date_and_randomizer()
-        outdir = os.path.join(base_outdir, sub_outdir)
+    # if generate_subdir and outdir:
+    #     base_outdir = outdir
+    #     sub_outdir = GenerateOutdir.get_date_and_randomizer()
+    #     outdir = os.path.join(base_outdir, sub_outdir)
 
-    if not dryrun and generate_subdir and outdir:
-        return_code = subprocess.call(['mkdir', outdir])
-        if return_code != 0:
-            raise SystemExit('Output directory could not be created')
+    # if not dryrun and generate_subdir and outdir:
+    #     return_code = subprocess.call(['mkdir', outdir])
+    #     if return_code != 0:
+    #         raise SystemExit('Output directory could not be created')
 
-    run_dict = ProcessRuninfoMetadata.generate_runinfo_dict(runinfo)
+    run_dict_list = ProcessRuninfoMetadata.generate_runinfo_dict(runinfo)
     metadata_dict = ProcessRuninfoMetadata.generate_metadata_dict(metadata)
 
     config_dict_added = {
-                'run_dict': run_dict,
+                'run_dict_list': run_dict_list,
                 'metadata_dict': metadata_dict,
                 'outdir': outdir}
+
+    if not dryrun:
+        outdir_runs = [os.path.join(outdir,
+                       f"{run['start_date']}_{run['run_id']}")
+                       for run in run_dict_list]
+        for one_run in outdir_runs:
+            return_code = subprocess.call(['mkdir', one_run])
+            if return_code != 0:
+                raise SystemExit('Output directory could not be created')
 
     status = snakemake.snakemake(snakefile=f'{work_dir}/main.smk',
                                  config=config_dict_added,
@@ -91,3 +100,5 @@ if __name__ == '__main__':
 
 # snakemake --dag -s main.smk| dot -Tpng > dag.png
 # print dag functionality
+
+# python3 parca_cli.py run -m /apps/bio/dev_repos/parca/demo/runinfo/metadata.csv -r /apps/bio/dev_repos/parca/demo/runinfo/runinfo.csv -o /apps/bio/dev_repos/parca/demo --dryrun
