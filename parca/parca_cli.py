@@ -38,11 +38,6 @@ def run(metadata, runinfo, dryrun, outdir):
     #     sub_outdir = GenerateOutdir.get_date_and_randomizer()
     #     outdir = os.path.join(base_outdir, sub_outdir)
 
-    # if not dryrun and generate_subdir and outdir:
-    #     return_code = subprocess.call(['mkdir', outdir])
-    #     if return_code != 0:
-    #         raise SystemExit('Output directory could not be created')
-
     run_dict_list = ProcessRuninfoMetadata.generate_runinfo_dict(runinfo)
     metadata_dict = ProcessRuninfoMetadata.generate_metadata_dict(metadata)
 
