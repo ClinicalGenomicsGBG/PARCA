@@ -19,7 +19,7 @@ rule bbduk_trimming_SE:
         stats= "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/trimming/bbduk_stats.txt",
         trimmed_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt"
     params:     
-        adapters=','.join(list(metadata_dataframe.loc[metadata_dataframe['sample_id'] == wildcards.sample]['adapters']))
+        adapters=','.join(list(metadata_dataframe.loc[metadata_dataframe['sample_id'] == '{sample}']['adapters'])),
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t"
     #threads: 23
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
@@ -109,7 +109,7 @@ rule bbduk_trimming_PE_merged_lKtrim:
         stats="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged_reads_lKtrim.txt",
         trimmed_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_lKtrim.txt"
     params:     
-        adapters=metadata_dataframe.loc[metadata_dataframe['sample_id'] == wildcards.sample]['adapters'],
+        adapters=','.join(list(metadata_dataframe.loc[metadata_dataframe['sample_id'] == '{sample}']['adapters'])),
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t"
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/merged_reads_lKtrim.log"
@@ -170,14 +170,14 @@ rule bbduk_trimming_PE_merged_rKtrim:
         stats="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged_reads_trimmed.txt",
         trimmed_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_trimmed.txt"
     params:     
-        adapters=','.join(list(metadata_dataframe.loc[metadata_dataframe['sample_id'] == wildcards.sample]['adapters'])),
+        adapters=','.join(list(metadata_dataframe.loc[metadata_dataframe['sample_id'] == '{sample}']['adapters'])),
         adaptertrimcommand="ktrim=r k=16 mink=11 hdist=1 rcomp=t" 
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/merged_reads_trimmed.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/merged_reads_trimmed.txt"
     shell:
         """
-        adapter={params.adapters};
+        adapter={params.adapters}; 
         if [[ -z ${{adapter//NA/}} ]] || [[ ${{adapter//NA/}} == "," ]]; then
             bbduk.sh \
                 in={input} \
@@ -222,7 +222,7 @@ rule bbduk_trimming_PE_unmerged:
         stats="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_unmerged_reads_trimmed_raw.txt",
         trimmed_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_unmerged_reads_trimmed_raw.txt"
     params:     
-        adapters=','.join(list(metadata_dataframe.loc[metadata_dataframe['sample_id'] == wildcards.sample]['adapters'])),
+        adapters=','.join(list(metadata_dataframe.loc[metadata_dataframe['sample_id'] == '{sample}']['adapters'])),
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t" 
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/unmerged_reads_trimmed_raw.log"
