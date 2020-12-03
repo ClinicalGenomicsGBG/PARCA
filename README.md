@@ -8,6 +8,11 @@
 * Pollux and Fiona are not available from conda and has to be manually downloaded
 * The workflow uses the singularity definition file in workflows/containers/parca_v1.def which should be built prior to running the pipeline.
 
+## **Pipeline wrapper**
+
+General:
+- the snakemake API could not import a nested divtionary and had to be converted to a list of dictionaries. The pipeline will then convert this list into a nested dictionary where the keys will be <start_date>_<run_id> encoded from the runinfo.
+
 ## **The pipeline**
 The pipeline is made for assigning sequencing reads to taxonomic identifiers.
 It handles four cases, see steps in `parca/dag/dag_all.png`:
