@@ -8,7 +8,7 @@ rule unzip_rename_SE:
         An unzipped fastq file.
     """
     input:
-        lambda wildcards: metadata_dataframe.loc[metadata_dataframe['sample_id'] == wildcards.sample]['path_to_file'].item()
+        metadata_df.loc[metadata_df['sample_id'] == '{sample}']['path_to_file'].item()
         #lambda wildcards: settings_dict[wildcards.sample][0][0]
     output:
         reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/samples/{sample}.fastq",
@@ -48,10 +48,10 @@ rule unzip_rename_PE:
         Forward and reverse unzipped fastq files.
     """
     input:
-        fwd = lambda wildcards: meta.loc[(meta['sample_id'] == 'sample_1') & (meta['fwd_or_rev'] == 'fwd')]['path_to_file'].item(),
-        rev = lambda wildcards: meta.loc[(meta['sample_id'] == 'sample_1') & (meta['fwd_or_rev'] == 'rev')]['path_to_file'].item() 
-        #lambda wildcards: settings_dict[wildcards.sample][0][0],
-        #lambda wildcards: settings_dict[wildcards.sample][0][1]
+        fwd = metadata_df.loc[metadata_df['sample_id'] == '{sample}' & (metadata_df['fwd_or_rev'] == 'fwd')]['path_to_file'].item(),
+        rev = metadata_df.loc[metadata_df['sample_id'] == '{sample}' & (metadata_df['fwd_or_rev'] == 'rev')]['path_to_file'].item()
+        # lambda wildcards: settings_dict[wildcards.sample][0][0],
+        # lambda wildcards: settings_dict[wildcards.sample][0][1]
     output:
         fwd = "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R1.fastq",
         rev = "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R2.fastq",
