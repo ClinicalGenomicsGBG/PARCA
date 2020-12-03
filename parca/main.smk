@@ -7,12 +7,15 @@ configfile: "config/config.yaml"
 
 singularity: config['singularity_image']
 
-run_dict = config['run_dict']
-metadata_dict = config['metadata_dict']
-
-metadata_dataframe = pd.DataFrame(metadata_dict)
-
-outdir = config['outdir']
+def nested_run_dict(list_run_dictionary):
+    run_dict_nested = {}
+    for run in list_run_dictionary:
+        start_date_tmp = run['start_date']
+        run_id_tmp = run['run_id']
+    
+        run_dict_nested[f'{start_date_tmp}_{run_id_tmp}'] = run
+    
+    return run_dict_nested
 
 def generate_pipeline_input(list_run_dictionary):
     pipeline_input=[]
@@ -28,15 +31,37 @@ def generate_pipeline_input(list_run_dictionary):
             pipeline_input.append(case_list)
     return pipeline_input
 
+run_dict_list = config['run_dict_list']
+run_dict = nested_run_dict(run_dict_list)
+
+metadata_dict = config['metadata_dict']
+metadata_df = pd.DataFrame(metadata_dict)
+
+outdir = config['outdir']
+
 rule all:
     run:
-        print(generate_pipeline_input(run_dict))
-
+        print("hello")
+        #print(generate_pipeline_input(run_dict))
 
 rule control_and_case:
     input:
-        case=expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt", 
-            outdir="", sample="", sample_type="", nucleotide="")
+        case = expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
+                      sample = run_dict['{start_date}_{run_id}']['case'],
+                      sample_type = metadata_df.loc[(metadata_df['sample_id'] == run_dict['{start_date}_{run_id}']['case'] )],
+                      nucleotide = metadata_df.loc[(metadata_df['sample_id'] == run_dict['{start_date}_{run_id}']['case'] )]
+                      ),
+        control = expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta"
+        
+        expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta", 
+               sample = [run_dict_nested['{start_date}_{run_id}'][key]
+                         for key in run_dict_nested['{start_date}_{run_id}']
+                         if key not in ['run_id','start_date']],
+               sample_type=list(set(
+                                metadata_df.loc[(metadata_df['sample_id'] == [run_dict['{start_date}_{run_id}']['case']] )] +
+                                [run_dict['{start_date}_{run_id}']['control']])[0],
+               nucleotide="")
+        # metadata_df.loc[(metadata_df['sample_id'] == 'sample_1') & (meta['fwd_or_rev'] == 'rev')]['path_to_file'].item() 
     output:
         "{outdir}/{start_date}_{run_id}/krona.txt"
     shell:
@@ -44,16 +69,16 @@ rule control_and_case:
         touch {output}
         """
 
-rule case:
-    output:
-        "{outdir}/case_{case}.txt"
-    shell:
-        """
-        touch {output}
-        """
+# rule case:
+#     output:
+#         "{outdir}/case_{case}.txt"
+#     shell:
+#         """
+#         touch {output}
+#         """
 
 # Rule all
-print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
+# print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
 #             zip,
 #             outdir=[config['outdir']]*len(sample_id_list),
 #             sample=sample_id_list,
