@@ -17,19 +17,23 @@ def nested_run_dict(list_run_dictionary):
     
     return run_dict_nested
 
-def generate_pipeline_input(list_run_dictionary):
+def generate_pipeline_input(run_dictionary):
     pipeline_input=[]
-    for run in list_run_dictionary:
-        if "case" in run and "control" in run:
-            case_sample_id = run['case']
-            control_sample_id = run['control']
-            case_control_list=expand(f'{outdir}/case_{case_sample_id}_control_{control_sample_id}')
-            pipeline_input.append(case_control_list)
-        elif "case" in run:
-            case_sample_id = run['case']
-            case_list=expand(f'{outdir}/case_{case_sample_id}')
-            pipeline_input.append(case_list)
+    for run_id in run_dictionary:
+        if run_dictionary[run_id].get("case") and run_dictionary[run_id].get("control"):
+            case_sample_id = run_dictionary[run_id].get("case")
+            control_sample_id = run_dictionary[run_id].get("control")
+            case_control_list=f'{outdir}/{run_id}/case_control_krona.txt'
+            pipeline_input.extend(case_control_list)
+        elif run_dictionary[run_id].get("case"):
+            case_sample_id = run_dictionary[run_id].get("case")
+            case_list=f'{outdir}/{run_id}/case_krona.txt'
+            pipeline_input.extend(case_list)
     return pipeline_input
+
+def get_column(df,run_id, case_or_control,column):
+    found_column = df.loc[df.get('sample_id') == run_dict.get(run_id).get(case_or_control) ].get(column)
+    return found_column
 
 run_dict_list = config['run_dict_list']
 run_dict = nested_run_dict(run_dict_list)
@@ -40,30 +44,36 @@ metadata_df = pd.DataFrame(metadata_dict)
 outdir = config['outdir']
 
 rule all:
-    run:
-        print("hello")
-        #print(generate_pipeline_input(run_dict))
+    input:
+        generate_pipeline_input(run_dict)[0]
 
 rule control_and_case:
     input:
+        # case = lambda wildcards: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta".format(        ,
+        #               outdir = wildcards.outdir,
+        #               start_date = wildcards.start_date,
+        #               run_id = wildcards.run_id,
+        #               sample = run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['case'],
+        #               sample_type = list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['case'] )]['PE_or_SE']))[0],
+        #               nucleotide = list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['case'] )]['nucleotide']))[0]
+        #               ),
+        # control = expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
+        #               sample = lambda wildcards: run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['control'],
+        #               sample_type = lambda wildcards: list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['control'] )]['PE_or_SE']))[0],
+        #               nucleotide = lambda wildcards: list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['control'] )]['nucleotide']))[0]
+        #               ),
         case = expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
-                      sample = run_dict['{start_date}_{run_id}']['case'],
-                      sample_type = metadata_df.loc[(metadata_df['sample_id'] == run_dict['{start_date}_{run_id}']['case'] )],
-                      nucleotide = metadata_df.loc[(metadata_df['sample_id'] == run_dict['{start_date}_{run_id}']['case'] )]
+                      sample = lambda wildcards: run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['case'],
+                      sample_type = lambda wildcards: list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['case'] )]['PE_or_SE']))[0],
+                      nucleotide = lambda wildcards: list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['case'] )]['nucleotide']))[0]
                       ),
-        control = expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta"
-        
-        expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta", 
-               sample = [run_dict_nested['{start_date}_{run_id}'][key]
-                         for key in run_dict_nested['{start_date}_{run_id}']
-                         if key not in ['run_id','start_date']],
-               sample_type=list(set(
-                                metadata_df.loc[(metadata_df['sample_id'] == [run_dict['{start_date}_{run_id}']['case']] )] +
-                                [run_dict['{start_date}_{run_id}']['control']])[0],
-               nucleotide="")
-        # metadata_df.loc[(metadata_df['sample_id'] == 'sample_1') & (meta['fwd_or_rev'] == 'rev')]['path_to_file'].item() 
+        control = expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
+                      sample = lambda wildcards: run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['control'],
+                      sample_type = lambda wildcards: list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['control'] )]['PE_or_SE']))[0],
+                      nucleotide = lambda wildcards: list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['control'] )]['nucleotide']))[0]
+                      ),
     output:
-        "{outdir}/{start_date}_{run_id}/krona.txt"
+        "{outdir}/{start_date}_{run_id}/case_control_krona.txt"
     shell:
         """
         touch {output}
@@ -76,6 +86,9 @@ rule control_and_case:
 #         """
 #         touch {output}
 #         """
+
+#run_dict = [{'run_id': 'run_1', 'case': 'sample_1', 'control': 'sample_2'}, {'run_id': 'run_2', 'case': 'sample_2'}]
+#metadata_dict = [{'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_1.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'rev', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_2.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_2', 'start_date': 20201104, 'nucleotide': 'DNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/a.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'SE'}]
 
 # Rule all
 # print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
@@ -154,7 +167,3 @@ include:
 ##STAGE 8
 include:
     "workflows/snakemake_rules/stage8_format_results/format_results.smk"
-
-
-#run_dict = [{'run_id': 'run_1', 'case': 'sample_1', 'control': 'sample_2'}, {'run_id': 'run_2', 'case': 'sample_2'}]
-#metadata_dict = [{'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_1.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'rev', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_2.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_2', 'start_date': 20201104, 'nucleotide': 'DNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/a.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'SE'}]
