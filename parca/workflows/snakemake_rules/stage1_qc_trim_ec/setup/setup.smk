@@ -1,3 +1,4 @@
+import pandas as pd 
 
 rule unzip_rename_SE:
     """
@@ -8,15 +9,18 @@ rule unzip_rename_SE:
         An unzipped fastq file.
     """
     input:
-        metadata_df.loc[metadata_df['sample_id'] == '{sample}']['path_to_file'].item()
+        lambda wildcards: metadata_df.loc[metadata_df['sample_id'] == wildcards.sample]['path_to_file'].item()
         #lambda wildcards: settings_dict[wildcards.sample][0][0]
     output:
         reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/samples/{sample}.fastq",
         read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/count_raw_reads.txt"
     threads: 4
     #conda: config['bbmap_environment']
+    params:
+        run_outdir='{outdir}/{start_date}_{run_id}'
     shell:
         """
+        if [[ ! -d {params.run_outdir} ]]; then mkdir {params.run_outdir}; fi;
         if [[ {input} =~ .*\.fastq\.gz$ || {input} =~ .*\.fq\.gz$ ]]; then \
             pigz -p {threads} -dc {input} > {output.reads}; \
         elif [[ {input} =~ .*\.fastq$ || {input} =~ .*\.fq$ ]]; then \
@@ -48,8 +52,8 @@ rule unzip_rename_PE:
         Forward and reverse unzipped fastq files.
     """
     input:
-        fwd = metadata_df.loc[metadata_df['sample_id'] == '{sample}' & (metadata_df['fwd_or_rev'] == 'fwd')]['path_to_file'].item(),
-        rev = metadata_df.loc[metadata_df['sample_id'] == '{sample}' & (metadata_df['fwd_or_rev'] == 'rev')]['path_to_file'].item()
+        fwd = lambda wildcards: metadata_df.loc[metadata_df['sample_id'] == wildcards.sample & (metadata_df['fwd_or_rev'] == 'fwd')]['path_to_file'].item(),
+        rev = lambda wildcards: metadata_df.loc[metadata_df['sample_id'] == wildcards.sample & (metadata_df['fwd_or_rev'] == 'rev')]['path_to_file'].item()
         # lambda wildcards: settings_dict[wildcards.sample][0][0],
         # lambda wildcards: settings_dict[wildcards.sample][0][1]
     output:
@@ -58,8 +62,11 @@ rule unzip_rename_PE:
         #read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/count_raw_reads.txt"
     threads: 4
     #conda: config['bbmap_environment']
+    params:
+        run_outdir='{outdir}/{start_date}_{run_id}'
     shell:
         """
+        if [[ ! -d {params.run_outdir} ]]; then mkdir {params.run_outdir}; fi;
         if [[ {input.fwd} =~ .*\.fastq\.gz$ || {input.fwd} =~ .*\.fq\.gz$ ]]; then \
             pigz -p {threads} -dc {input.fwd} > {output.fwd}; \
         elif [[ {input.fwd} =~ .*\.fastq$ || {input.fwd} =~ .*\.fq$ ]]; then \
