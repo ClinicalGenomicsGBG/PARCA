@@ -61,7 +61,14 @@ def run(metadata, runinfo, dryrun, outdir):
                                  workdir=work_dir,
                                  latency_wait=30,
                                  shadow_prefix="/medstore/logs/pipeline_logfiles",
-                                 dryrun=dryrun)
+                                 dryrun=dryrun,
+                                 cluster="qsub -S /bin/bash -pe mpi {cluster.threads} -q {cluster.queue} -S /bin/bash -N {wildcards.sample}_{rule} -V -cwd -l excl=1",
+                                 max_jobs_per_second=99,
+                                 use_conda=True,
+                                 cleanup_shadow=True,
+                                 conda_cleanup_envs=True,
+                                 use_singularity=True
+                                 )  # Double check if this can be replaced with qsub profile... could not find this...
 
     # print("STATUSCODE:", status)  # True or False
 
