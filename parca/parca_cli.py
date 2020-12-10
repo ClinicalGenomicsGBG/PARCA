@@ -4,7 +4,6 @@ import click
 import snakemake
 import subprocess
 import pandas as pd
-from workflows.utils.generate_outdir import GenerateOutdir
 from workflows.utils.process_runinfo_metadata import ProcessRuninfoMetadata
 
 
@@ -61,6 +60,7 @@ def run(metadata, runinfo, dryrun, outdir):
                                  config=config_dict_added,
                                  workdir=work_dir,
                                  latency_wait=30,
+                                 shadow_prefix="/medstore/logs/pipeline_logfiles",
                                  dryrun=dryrun)
 
     # print("STATUSCODE:", status)  # True or False

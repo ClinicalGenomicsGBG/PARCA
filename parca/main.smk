@@ -2,76 +2,77 @@
 import yaml
 import pandas as pd
 import numpy as np
+from workflows.utils.process_runinfo_metadata import ProcessRuninfoMetadata
 
 configfile: "config/config.yaml"
 
 singularity: config['singularity_image']
 
-def nested_run_dict(list_run_dictionary):
-    run_dict_nested = {}
-    for run in list_run_dictionary:
-        start_date_tmp = run['start_date']
-        run_id_tmp = run['run_id']
-    
-        run_dict_nested[f'{start_date_tmp}_{run_id_tmp}'] = run
-    
-    return run_dict_nested
 
-def generate_pipeline_input(run_dictionary):
+def generate_pipeline_input(run_dictionary, out_directory):
     pipeline_input=[]
     for run_id in run_dictionary:
         if run_dictionary[run_id].get("case") and run_dictionary[run_id].get("control"):
             case_sample_id = run_dictionary[run_id].get("case")
             control_sample_id = run_dictionary[run_id].get("control")
-            case_control_list=f'{outdir}/{run_id}/case_control_krona.txt'
-            pipeline_input.extend(case_control_list)
+            case_control_list=f'{out_directory}/{run_id}/case_control_krona.txt'
+            pipeline_input.append(case_control_list)
         elif run_dictionary[run_id].get("case"):
             case_sample_id = run_dictionary[run_id].get("case")
-            case_list=f'{outdir}/{run_id}/case_krona.txt'
-            pipeline_input.extend(case_list)
+            case_list=f'{out_directory}/{run_id}/case_krona.txt'
+            pipeline_input.append(case_list)
     return pipeline_input
 
-def get_column(df,run_id, case_or_control,column):
-    found_column = df.loc[df.get('sample_id') == run_dict.get(run_id).get(case_or_control) ].get(column)
-    return found_column
-
 run_dict_list = config['run_dict_list']
-run_dict = nested_run_dict(run_dict_list)
+run_dict = ProcessRuninfoMetadata.nested_run_dict(run_dict_list)
 
 metadata_dict = config['metadata_dict']
 metadata_df = pd.DataFrame(metadata_dict)
 
-outdir = config['outdir']
+print(run_dict)
+print(metadata_df)
+print(generate_pipeline_input(run_dict, out_directory=config['outdir']))
 
 rule all:
     input:
-        generate_pipeline_input(run_dict)[0]
+        print([generate_pipeline_input(run_dict, out_directory=config['outdir'])[0]])
+    run:
+        input
 
 rule control_and_case:
     input:
-        # case = lambda wildcards: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta".format(        ,
-        #               outdir = wildcards.outdir,
-        #               start_date = wildcards.start_date,
-        #               run_id = wildcards.run_id,
-        #               sample = run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['case'],
-        #               sample_type = list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['case'] )]['PE_or_SE']))[0],
-        #               nucleotide = list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['case'] )]['nucleotide']))[0]
-        #               ),
-        # control = expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
-        #               sample = lambda wildcards: run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['control'],
-        #               sample_type = lambda wildcards: list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['control'] )]['PE_or_SE']))[0],
-        #               nucleotide = lambda wildcards: list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['control'] )]['nucleotide']))[0]
-        #               ),
         case = expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
-                      sample = lambda wildcards: run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['case'],
-                      sample_type = lambda wildcards: list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['case'] )]['PE_or_SE']))[0],
-                      nucleotide = lambda wildcards: list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['case'] )]['nucleotide']))[0]
-                      ),
+                    sample = lambda wildcards: ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                                                 run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                                 case_or_control='case'), 
+                    sample_type = lambda wildcards: ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                                      run_dictionary=run_dict,
+                                                                                      run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                                      case_or_control="case",
+                                                                                      column="PE_or_SE",
+                                                                                      unique=True),
+                    nucleotide = lambda wildcards: ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                                     run_dictionary=run_dict,
+                                                                                     run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                                     case_or_control="case",
+                                                                                     column="nucleotide",
+                                                                                     unique=True) ),
         control = expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
-                      sample = lambda wildcards: run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['control'],
-                      sample_type = lambda wildcards: list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['control'] )]['PE_or_SE']))[0],
-                      nucleotide = lambda wildcards: list(set(metadata_df.loc[(metadata_df['sample_id'] == run_dict[f'{wildcards.start_date}_{wildcards.run_id}']['control'] )]['nucleotide']))[0]
-                      ),
+                    sample = lambda wildcards: ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                                                 run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                                 case_or_control='control'), 
+                    sample_type = lambda wildcards: ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                                      run_dictionary=run_dict,
+                                                                                      run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                                      case_or_control="control",
+                                                                                      column="PE_or_SE",
+                                                                                      unique=True),
+                    nucleotide = lambda wildcards: ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                                     run_dictionary=run_dict,
+                                                                                     run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                                     case_or_control="control",
+                                                                                     column="nucleotide",
+                                                                                     unique=True) ),
     output:
         "{outdir}/{start_date}_{run_id}/case_control_krona.txt"
     shell:

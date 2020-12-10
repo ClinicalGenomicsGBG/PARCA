@@ -68,6 +68,33 @@ class ProcessRuninfoMetadata:
 
         return meta_PE_SE
 
+    @staticmethod
+    def nested_run_dict(list_run_dictionary,
+                        start_date_col='start_date', run_id_col='run_id'):
+        run_dict_nested = {}
+        for run in list_run_dictionary:
+            start_date_tmp = run[start_date_col]
+            run_id_tmp = run[run_id_col]
+            run_dict_nested[f'{start_date_tmp}_{run_id_tmp}'] = run
+        return run_dict_nested
+
+    @staticmethod
+    def get_sample(run_dictionary, run_id, case_or_control):
+        found_sample = run_dictionary.get(run_id).get(case_or_control)
+        return found_sample
+
+    @staticmethod
+    def get_column(df, run_dictionary, run_id, case_or_control, column,
+                   sample_id_col='sample_id', unique=False):
+        found_column = df.loc[df.get(sample_id_col) == ProcessRuninfoMetadata.get_sample(run_dictionary, run_id, case_or_control)].get(column)
+        if unique:
+            found_column_list = found_column.unique().tolist()
+            if len(found_column_list) != 1:
+                return None
+            else:
+                return found_column_list[0]
+        return found_column
+
 
 if __name__ == '__main__':
     metadata = "/Users/pernillaericsson/Documents/medair1/apps/bio/dev_repos/parca/demo/runinfo/metadata.csv"

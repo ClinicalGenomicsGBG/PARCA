@@ -6,7 +6,7 @@
 #   - "None"
 
 outdir: 
-  "/apps/bio/dev_repos/parca/demo/200819_demo"
+  "/apps/bio/dev_repos/parca/demo"
 
 singularity_image:
   "workflows/containers/image_parca_v6.sif" #Build complete: /tmp/image-244526401 
