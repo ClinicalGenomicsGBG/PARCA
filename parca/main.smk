@@ -29,50 +29,46 @@ run_dict = ProcessRuninfoMetadata.nested_run_dict(run_dict_list)
 metadata_dict = config['metadata_dict']
 metadata_df = pd.DataFrame(metadata_dict)
 
-print(run_dict)
-print(metadata_df)
-print(generate_pipeline_input(run_dict, out_directory=config['outdir']))
-
 rule all:
     input:
-        print([generate_pipeline_input(run_dict, out_directory=config['outdir'])[0]])
+        generate_pipeline_input(run_dict, out_directory=config['outdir'])[0]
     run:
-        input
+        print(input)
 
 rule control_and_case:
     input:
-        case = expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
-                    sample = lambda wildcards: ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
-                                                                                 run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-                                                                                 case_or_control='case'), 
-                    sample_type = lambda wildcards: ProcessRuninfoMetadata.get_column(df=metadata_df, 
-                                                                                      run_dictionary=run_dict,
-                                                                                      run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-                                                                                      case_or_control="case",
-                                                                                      column="PE_or_SE",
-                                                                                      unique=True),
-                    nucleotide = lambda wildcards: ProcessRuninfoMetadata.get_column(df=metadata_df,
-                                                                                     run_dictionary=run_dict,
-                                                                                     run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-                                                                                     case_or_control="case",
-                                                                                     column="nucleotide",
-                                                                                     unique=True) ),
-        control = expand("{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
-                    sample = lambda wildcards: ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
-                                                                                 run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-                                                                                 case_or_control='control'), 
-                    sample_type = lambda wildcards: ProcessRuninfoMetadata.get_column(df=metadata_df,
-                                                                                      run_dictionary=run_dict,
-                                                                                      run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-                                                                                      case_or_control="control",
-                                                                                      column="PE_or_SE",
-                                                                                      unique=True),
-                    nucleotide = lambda wildcards: ProcessRuninfoMetadata.get_column(df=metadata_df,
-                                                                                     run_dictionary=run_dict,
-                                                                                     run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-                                                                                     case_or_control="control",
-                                                                                     column="nucleotide",
-                                                                                     unique=True) ),
+        case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        control = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='control'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="control",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="control",
+                                                                   column="nucleotide",
+                                                                   unique=True) )
     output:
         "{outdir}/{start_date}_{run_id}/case_control_krona.txt"
     shell:
