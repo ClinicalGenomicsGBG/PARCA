@@ -1,6 +1,6 @@
 
 # PaRCA
-![parca](.parca_logo.png)
+![parca](./parca_logo.png)
 ## Pathogen detection for Research and Clinical Applications
 
 ---
