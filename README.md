@@ -1,5 +1,5 @@
 
-<p align="center" width="80%">
+<p align="center">
   <img width="300" height="70" src="https://github.com/ClinicalGenomicsGBG/PARCA/blob/development/parca_logo.png">
 </p>
 
