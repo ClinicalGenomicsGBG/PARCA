@@ -8,6 +8,8 @@ configfile: "config/config.yaml"
 
 singularity: config['singularity_image']
 
+wildcard_constraints:
+    start_date="\d+"
 
 def generate_pipeline_input(run_dictionary, out_directory):
     pipeline_input=[]
@@ -29,8 +31,11 @@ run_dict = ProcessRuninfoMetadata.nested_run_dict(run_dict_list)
 metadata_dict = config['metadata_dict']
 metadata_df = pd.DataFrame(metadata_dict)
 
+# print(generate_pipeline_input(run_dict, out_directory=config['outdir'])[0])
+
 rule all:
     input:
+        #expand("{outdir}/{start_date}_{run_id}/case_control_krona.txt", outdir=config['outdir'], start_date="20201202", run_id="run_1")
         generate_pipeline_input(run_dict, out_directory=config['outdir'])
     run:
         print(input)
@@ -95,7 +100,7 @@ rule case:
                                                                    column="nucleotide",
                                                                    unique=True) )
     output:
-        "{outdir}/{start_date}_{run_id}/case_{case}.txt"
+        "{outdir}/{start_date}_{run_id}/case_krona.txt"
     shell:
         """
         touch {output}

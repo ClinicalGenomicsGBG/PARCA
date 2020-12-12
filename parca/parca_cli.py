@@ -45,15 +45,6 @@ def run(metadata, runinfo, dryrun, outdir):
                 'metadata_dict': metadata_dict,
                 'outdir': outdir}
 
-    # if not dryrun:
-    #     outdir_runs = [os.path.join(outdir,
-    #                    f"{run['start_date']}_{run['run_id']}")
-    #                    for run in run_dict_list]
-    #     for one_run in outdir_runs:
-    #         return_code = subprocess.call(['mkdir', one_run])
-    #         if return_code != 0:
-    #             raise SystemExit('Output directory could not be created')
-
     # snakemake -rp -s main.smk --cluster-config config/cluster.yaml --profile qsub_profile
     status = snakemake.snakemake(snakefile=f'{work_dir}/main.smk',
                                  cluster_config=f'{work_dir}/config/cluster.yaml',
@@ -61,9 +52,17 @@ def run(metadata, runinfo, dryrun, outdir):
                                  workdir=work_dir,
                                  latency_wait=30,
                                  shadow_prefix="/medstore/logs/pipeline_logfiles",
-                                 dryrun=dryrun)
+                                 dryrun=dryrun,
+                                 cluster="qsub -S /bin/bash -pe mpi {cluster.threads} -q {cluster.queue} -S /bin/bash -N {wildcards.sample}_{rule} -V -cwd -l excl=1",
+                                 max_jobs_per_second=99,
+                                 use_conda=True,
+                                 conda_prefix=outdir,
+                                 use_singularity=True)
+                                 # Double check if this can be replaced with qsub profile... could not find this...
+                                 #  cleanup_shadow=True)  
+                                 #  conda_cleanup_envs=True)
 
-    # print("STATUSCODE:", status)  # True or False
+    print("STATUSCODE:", status)  # True or False
 
     # clean up if error... do not use this since if the generate outdir is not used it will remove unnecessary things 
     # return_code=subprocess.call(['rmdir', outdir])
