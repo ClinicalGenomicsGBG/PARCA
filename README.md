@@ -1,5 +1,5 @@
 
-   ![parca](./parca_logo.png)
+![parca](./parca_logo.png?style=centerme)
 ## Pathogen detection for Research and Clinical Applications
 
 ---
