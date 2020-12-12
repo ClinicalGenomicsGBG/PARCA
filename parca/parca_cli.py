@@ -65,12 +65,13 @@ def run(metadata, runinfo, dryrun, outdir):
                                  cluster="qsub -S /bin/bash -pe mpi {cluster.threads} -q {cluster.queue} -S /bin/bash -N {wildcards.sample}_{rule} -V -cwd -l excl=1",
                                  max_jobs_per_second=99,
                                  use_conda=True,
-                                 cleanup_shadow=True,
-                                 conda_cleanup_envs=True,
-                                 use_singularity=True
-                                 )  # Double check if this can be replaced with qsub profile... could not find this...
+                                 conda_prefix=outdir,
+                                 use_singularity=True)
+                                 # Double check if this can be replaced with qsub profile... could not find this...
+                                 #  cleanup_shadow=True)  
+                                 #  conda_cleanup_envs=True)
 
-    # print("STATUSCODE:", status)  # True or False
+    print("STATUSCODE:", status)  # True or False
 
     # clean up if error... do not use this since if the generate outdir is not used it will remove unnecessary things 
     # return_code=subprocess.call(['rmdir', outdir])

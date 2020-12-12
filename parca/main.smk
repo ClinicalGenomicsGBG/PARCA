@@ -31,11 +31,12 @@ run_dict = ProcessRuninfoMetadata.nested_run_dict(run_dict_list)
 metadata_dict = config['metadata_dict']
 metadata_df = pd.DataFrame(metadata_dict)
 
-print(generate_pipeline_input(run_dict, out_directory=config['outdir']))
+# print(generate_pipeline_input(run_dict, out_directory=config['outdir'])[0])
 
 rule all:
     input:
-        generate_pipeline_input(run_dict, out_directory=config['outdir'])[0]
+        #expand("{outdir}/{start_date}_{run_id}/case_control_krona.txt", outdir=config['outdir'], start_date="20201202", run_id="run_1")
+        generate_pipeline_input(run_dict, out_directory=config['outdir'])
     run:
         print(input)
 
