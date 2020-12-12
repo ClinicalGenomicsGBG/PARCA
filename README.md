@@ -1,5 +1,8 @@
 
-![parca](./parca_logo.png?style=centerme)
+<p align="center">
+  <img src="https://github.com/ClinicalGenomicsGBG/PARCA/blob/development/parca_logo.png">
+</p>
+
 ## Pathogen detection for Research and Clinical Applications
 
 ---
