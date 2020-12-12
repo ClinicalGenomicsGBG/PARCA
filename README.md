@@ -1,6 +1,6 @@
 
 <p align="center" width="80%">
-  <img width="200" height="50" src="https://github.com/ClinicalGenomicsGBG/PARCA/blob/development/parca_logo.png">
+  <img width="300" height="70" src="https://github.com/ClinicalGenomicsGBG/PARCA/blob/development/parca_logo.png">
 </p>
 
 ## Pathogen detection for Research and Clinical Applications
