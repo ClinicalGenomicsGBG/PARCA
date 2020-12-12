@@ -45,15 +45,6 @@ def run(metadata, runinfo, dryrun, outdir):
                 'metadata_dict': metadata_dict,
                 'outdir': outdir}
 
-    # if not dryrun:
-    #     outdir_runs = [os.path.join(outdir,
-    #                    f"{run['start_date']}_{run['run_id']}")
-    #                    for run in run_dict_list]
-    #     for one_run in outdir_runs:
-    #         return_code = subprocess.call(['mkdir', one_run])
-    #         if return_code != 0:
-    #             raise SystemExit('Output directory could not be created')
-
     # snakemake -rp -s main.smk --cluster-config config/cluster.yaml --profile qsub_profile
     status = snakemake.snakemake(snakefile=f'{work_dir}/main.smk',
                                  cluster_config=f'{work_dir}/config/cluster.yaml',
