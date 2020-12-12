@@ -1,0 +1,4 @@
+sample_id,nucleotide,fwd_or_rev,path_to_file,adapters
+sample_1,RNA,fwd,/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_1.fastq.gz,
+sample_1,RNA,rev,/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_2.fastq.gz,
+sample_2,DNA,fwd,/apps/bio/dev_repos/parca/demo/raw_samples/a.fastq.gz,

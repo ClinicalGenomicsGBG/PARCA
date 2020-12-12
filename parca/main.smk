@@ -1,66 +1,135 @@
-import glob,re
-from workflows.utils.FileProcessing import ProcessFiles
-from workflows.utils.Setup import Setup
+#import glob,re
+import yaml
+import pandas as pd
+import numpy as np
+from workflows.utils.process_runinfo_metadata import ProcessRuninfoMetadata
 
 configfile: "config/config.yaml"
-#snakemake -rp -s main.smk --cluster-config config/cluster.yaml --profile qsub_profile
-#snakemake --dag -s main.smk| dot -Tpng > dag.png
 
-# Read the runinfo file containg parameters for the current run.
-runinfo = ProcessFiles(config['runinfo'])
-runinfo_dict=runinfo.readYaml()
-
-sample_paths_dict = runinfo_dict['samplePath']
-#RNA = runinfo_dict['RNA']
-singularity: runinfo_dict['singularity_image']
-
-# Generate settings with correct naming.
-SU=Setup(sample_paths_dict, runinfo_dict['generateSampleID'])
-settings_dict = SU.generateSettingsLists()
+singularity: config['singularity_image']
 
 
-print("\n\t\t~~~~~~~~ P a R C A ~~~~~~~~")
-print("\t**** Pathogen Research in Clinical Applications ****")
-print("\n**** PaRCA started for the following samples: ****")
-sample_id_list=[]
-sample_type_list=[]
-nucleotide_list=[]
-for key in settings_dict:
-    sample_id_list.append(key)
-    sample_type_list.append(settings_dict[key][1])
-    nucleotide_list.append(settings_dict[key][2])
-    print("SAMPLE ID:", key)
-    print("\tInput files:", settings_dict[key][0][0:2])
-    print("\tSample type:", settings_dict[key][1])
-    print("\tNucleotide:", settings_dict[key][2])
+def generate_pipeline_input(run_dictionary, out_directory):
+    pipeline_input=[]
+    for run_id in run_dictionary:
+        if run_dictionary[run_id].get("case") and run_dictionary[run_id].get("control"):
+            case_sample_id = run_dictionary[run_id].get("case")
+            control_sample_id = run_dictionary[run_id].get("control")
+            case_control_list=f'{out_directory}/{run_id}/case_control_krona.txt'
+            pipeline_input.append(case_control_list)
+        elif run_dictionary[run_id].get("case"):
+            case_sample_id = run_dictionary[run_id].get("case")
+            case_list=f'{out_directory}/{run_id}/case_krona.txt'
+            pipeline_input.append(case_list)
+    return pipeline_input
 
-print("\nResults are placed in:", runinfo_dict['outdir'], "\n")
+run_dict_list = config['run_dict_list']
+run_dict = ProcessRuninfoMetadata.nested_run_dict(run_dict_list)
 
-print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
-            zip,
-            outdir=[runinfo_dict['outdir']]*len(sample_id_list),
-            sample=sample_id_list,
-            sample_type=sample_type_list,
-            nucleotide=nucleotide_list
-            ))
-print(settings_dict)
+metadata_dict = config['metadata_dict']
+metadata_df = pd.DataFrame(metadata_dict)
 
 rule all:
     input:
-        # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
-        #     zip,
-        #     outdir=[runinfo_dict['outdir']]*len(sample_id_list),
-        #     sample= sample_id_list,
-        #     sample_type = sample_type_list,
-        #     nucleotide = nucleotide_list
-        #     )
-        expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
-            zip,
-            outdir=[runinfo_dict['outdir']]*len(sample_id_list),
-            sample=sample_id_list,
-            sample_type=sample_type_list,
-            nucleotide=nucleotide_list
-            )
+        generate_pipeline_input(run_dict, out_directory=config['outdir'])
+    run:
+        print(input)
+
+rule control_and_case:
+    input:
+        case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        control = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='control'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="control",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="control",
+                                                                   column="nucleotide",
+                                                                   unique=True) )
+    output:
+        "{outdir}/{start_date}_{run_id}/case_control_krona.txt"
+    shell:
+        """
+        touch {output}
+        """
+
+rule case:
+    input:
+        case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) )
+    output:
+        "{outdir}/{start_date}_{run_id}/case_{case}.txt"
+    shell:
+        """
+        touch {output}
+        """
+
+#run_dict = [{'run_id': 'run_1', 'case': 'sample_1', 'control': 'sample_2'}, {'run_id': 'run_2', 'case': 'sample_2'}]
+#metadata_dict = [{'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_1.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'rev', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_2.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_2', 'start_date': 20201104, 'nucleotide': 'DNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/a.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'SE'}]
+
+# Rule all
+# print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
+#             zip,
+#             outdir=[config['outdir']]*len(sample_id_list),
+#             sample=sample_id_list,
+#             sample_type=sample_type_list,
+#             nucleotide=nucleotide_list
+#             ))
+
+
+# rule all:
+#     input:
+#         # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
+#         #     zip,
+#         #     outdir=[config['outdir']]*len(sample_id_list),
+#         #     sample= sample_id_list,
+#         #     sample_type = sample_type_list,
+#         #     nucleotide = nucleotide_list
+#         #     )
+#         expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
+#             zip,
+#             outdir=[config['outdir']]*len(sample_id_list),
+#             sample=sample_id_list,
+#             sample_type=sample_type_list,
+#             nucleotide=nucleotide_list
+#             )
 
         
 
@@ -112,34 +181,3 @@ include:
 ##STAGE 8
 include:
     "workflows/snakemake_rules/stage8_format_results/format_results.smk"
-
-
-
-
-
-# rule add_negative_control:
-#     input: ""
-#     output: ""
-#     shell: ""
-
-
-# rule create_output_folder:
-#     output:
-#         "{outdir}/"
-#     params:
-#         output_folder_date = config['output_folder_date']
-#     run:
-#         if params.output_folder_date == "":
-#             from datetime import date
-#             today = date.today()
-#             y_m_d = today.strftime("%Y_%m_%d")
-#         else:
-#             y_m_d = params.output_folder_date
-#         shell("mkdir ")
-#
-# date_sample= "{date}_{sample}".format(date=y_m_d, sample=config['sample'])
-# run_outdir="{outdir}/{date_sample}".format(outdir=config['outdir'],date_sample=date_sample)
-
-
-
-

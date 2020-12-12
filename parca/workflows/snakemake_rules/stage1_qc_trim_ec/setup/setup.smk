@@ -1,3 +1,4 @@
+import pandas as pd 
 
 rule unzip_rename_SE:
     """
@@ -8,14 +9,18 @@ rule unzip_rename_SE:
         An unzipped fastq file.
     """
     input:
-        lambda wildcards: settings_dict[wildcards.sample][0][0]
+        lambda wildcards: metadata_df.loc[metadata_df['sample_id'] == wildcards.sample].get('path_to_file').item()
+        #lambda wildcards: settings_dict[wildcards.sample][0][0]
     output:
-        reads="{outdir}/snakemake_results_{sample}/SE_{nucleotide}/samples/{sample}.fastq",
-        read_count="{outdir}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/count_raw_reads.txt"
+        reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/samples/{sample}.fastq",
+        read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/count_raw_reads.txt"
     threads: 4
     #conda: config['bbmap_environment']
+    params:
+        run_outdir='{outdir}/{start_date}_{run_id}'
     shell:
         """
+        if [[ ! -d {params.run_outdir} ]]; then mkdir {params.run_outdir}; fi;
         if [[ {input} =~ .*\.fastq\.gz$ || {input} =~ .*\.fq\.gz$ ]]; then \
             pigz -p {threads} -dc {input} > {output.reads}; \
         elif [[ {input} =~ .*\.fastq$ || {input} =~ .*\.fq$ ]]; then \
@@ -47,16 +52,21 @@ rule unzip_rename_PE:
         Forward and reverse unzipped fastq files.
     """
     input:
-        fwd=lambda wildcards: settings_dict[wildcards.sample][0][0],
-        rev=lambda wildcards: settings_dict[wildcards.sample][0][1]
+        fwd = lambda wildcards: metadata_df.loc[(metadata_df['sample_id'] == wildcards.sample) & (metadata_df['fwd_or_rev'] == 'fwd')].get('path_to_file').item(),
+        rev = lambda wildcards: metadata_df.loc[(metadata_df['sample_id'] == wildcards.sample) & (metadata_df['fwd_or_rev'] == 'rev')].get('path_to_file').item()
+        # lambda wildcards: settings_dict[wildcards.sample][0][0],
+        # lambda wildcards: settings_dict[wildcards.sample][0][1]
     output:
-        fwd= "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R1.fastq",
-        rev= "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R2.fastq",
-        #read_count="{outdir}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/count_raw_reads.txt"
+        fwd = "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R1.fastq",
+        rev = "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R2.fastq",
+        #read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/count_raw_reads.txt"
     threads: 4
     #conda: config['bbmap_environment']
+    params:
+        run_outdir='{outdir}/{start_date}_{run_id}'
     shell:
         """
+        if [[ ! -d {params.run_outdir} ]]; then mkdir {params.run_outdir}; fi;
         if [[ {input.fwd} =~ .*\.fastq\.gz$ || {input.fwd} =~ .*\.fq\.gz$ ]]; then \
             pigz -p {threads} -dc {input.fwd} > {output.fwd}; \
         elif [[ {input.fwd} =~ .*\.fastq$ || {input.fwd} =~ .*\.fq$ ]]; then \
@@ -101,13 +111,13 @@ rule interleave_PE:
         An unzipped fastq file.
     """
     input: 
-        fwd= "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R1.fastq",
-        rev= "{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R2.fastq"
+        fwd= "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R1.fastq",
+        rev= "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R2.fastq"
     output: 
-        interleaved="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_interleaved.fastq",
-        read_count="{outdir}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/samples/count_raw_reads.txt"
-    log: "{outdir}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/{sample}_interleaved.log"
-    benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/{sample}_interleaved.txt"
+        interleaved="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_interleaved.fastq",
+        read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/samples/count_raw_reads.txt"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/{sample}_interleaved.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/{sample}_interleaved.txt"
     conda: "../../../conda/bbmap_env.yaml"
     shell:
         """

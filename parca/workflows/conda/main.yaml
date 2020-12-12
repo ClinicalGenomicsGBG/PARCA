@@ -1,0 +1,8 @@
+name: main_env
+channels:
+  - anaconda
+dependencies:
+  - click=v7.0
+  - subprocess
+  - pandas
+#  - snakemake

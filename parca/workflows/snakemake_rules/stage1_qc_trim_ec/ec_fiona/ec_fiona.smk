@@ -10,13 +10,13 @@ rule fiona_SE_RNA:
         Error corrected reads.
     """ 
     input: 
-        "{outdir}/snakemake_results_{sample}/SE_RNA/stage1/pollux/trimmed_reads.corrected.fq"
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/pollux/trimmed_reads.corrected.fq"
     output: 
-        "{outdir}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fa"
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fa"
     params:
-        fiona=runinfo_dict['fiona_path'] #config['fiona_path']
-    log:  "{outdir}/snakemake_results_{sample}/logs_SE_RNA/stage1/fiona.log"
-    benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_SE_RNA/stage1/fiona.txt"
+        fiona=config['fiona_path'] #config['fiona_path']
+    log:  "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage1/fiona.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage1/fiona.txt"
     threads: 110
     shell:
         """
@@ -38,13 +38,13 @@ rule fiona_SE_DNA:
         Error corrected reads.
     """ 
     input: 
-       "{outdir}/snakemake_results_{sample}/SE_DNA/stage1/trimming/trimmed_reads.fq"
+       "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_DNA/stage1/trimming/trimmed_reads.fq"
     output: 
-        "{outdir}/snakemake_results_{sample}/SE_DNA/stage1/fiona/trimmed_reads_fiona.fa"
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_DNA/stage1/fiona/trimmed_reads_fiona.fa"
     params:
-        fiona=runinfo_dict['fiona_path'] #config['fiona_path']
-    log:  "{outdir}/snakemake_results_{sample}/logs_SE_DNA/stage1/fiona.log"
-    benchmark: "{outdir}/snakemake_results_{sample}/benchmarks_SE_DNA/stage1/fiona.txt"
+        fiona=config['fiona_path'] #config['fiona_path']
+    log:  "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_DNA/stage1/fiona.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_DNA/stage1/fiona.txt"
     threads: 110
     shell:
         """

@@ -1,5 +1,9 @@
 .snakemake/
-demo/
+demo/200819_demo
+demo/raw_samples
+demo/ref
+demo/kraken_filtered_viruses.txt
+demo/mapped.sam
 parca/.cache/
 parca/.conda/
 parca/.config/

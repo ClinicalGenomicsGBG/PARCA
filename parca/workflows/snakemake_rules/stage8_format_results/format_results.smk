@@ -1,8 +1,8 @@
 rule rename_classified:
     input: 
-        kmer_blast_nt="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage7/kmer_species_subsetblast_blastnt_classed.txt",
+        kmer_blast_nt="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage7/kmer_species_subsetblast_blastnt_classed.txt",
     output: 
-        all_classed="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_scores.txt"
+        all_classed="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_scores.txt"
     shell: 
         """
         cp {input.kmer_blast_nt} {output.all_classed}
@@ -10,21 +10,21 @@ rule rename_classified:
 
 rule format_all_classified:
     input: 
-        all_classed="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_scores.txt"
+        all_classed="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_scores.txt"
     output: 
-        all_classed_read_taxid="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid.txt"
+        all_classed_read_taxid="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid.txt"
     conda: "../../conda/R_env.yaml" #config['conda_environment'] 
     script:
          "../../scripts/reformat_results/reformat_all_classed.R"
 
 rule add_taxon_names_all_classed:
     input: 
-        all_classed_read_taxid="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid.txt"
+        all_classed_read_taxid="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid.txt"
     output: 
-        all_classed_read_taxid_names="{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt"
+        all_classed_read_taxid_names="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt"
     conda: "../../conda/kaiju_env.yaml" #config['conda_environment'] 
     params: 
-        names_nodes_dmp_dir=runinfo_dict['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
+        names_nodes_dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
     shell:
         """
         kaiju-addTaxonNames \

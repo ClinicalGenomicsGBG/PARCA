@@ -2,12 +2,12 @@
 
 rule quality_control_raw_SE:
     input:
-        fastq="{outdir}/snakemake_results_{sample}/SE_{nucleotide}/samples/{sample}.fastq"
+        fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/samples/{sample}.fastq"
     output:
-        html="{outdir}/snakemake_results_{sample}/SE_{nucleotide}/stage1/qc_raw/{sample}_fastqc.html",
-        out_zip="{outdir}/snakemake_results_{sample}/SE_{nucleotide}/stage1/qc_raw/{sample}_fastqc.zip"
+        html="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/qc_raw/{sample}_fastqc.html",
+        out_zip="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/qc_raw/{sample}_fastqc.zip"
     params:
-        dir="{outdir}/snakemake_results_{sample}/SE_{nucleotide}/stage1/qc_raw/"
+        dir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/qc_raw/"
     threads: 4
     conda: "../../../conda/bbmap_env.yaml"
     shell:
@@ -19,15 +19,15 @@ rule quality_control_raw_SE:
 
 rule quality_control_raw_PE:
     input:
-        fwd="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R1.fastq",
-        rev="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R2.fastq"
+        fwd="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R1.fastq",
+        rev="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R2.fastq"
     output:
-        fwd_html="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/qc_raw/{sample}_R1_fastqc.html",
-        fwd_zip="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/qc_raw/{sample}_R1_fastqc.zip",
-        rev_html="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/qc_raw/{sample}_R2_fastqc.html",
-        rev_zip="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/qc_raw/{sample}_R2_fastqc.zip"
+        fwd_html="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/qc_raw/{sample}_R1_fastqc.html",
+        fwd_zip="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/qc_raw/{sample}_R1_fastqc.zip",
+        rev_html="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/qc_raw/{sample}_R2_fastqc.html",
+        rev_zip="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/qc_raw/{sample}_R2_fastqc.zip"
     params:
-        dir="{outdir}/snakemake_results_{sample}/PE_{nucleotide}/stage1/qc_raw/"
+        dir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/qc_raw/"
     threads: 4
     conda: "../../../conda/bbmap_env.yaml"
     shell:
