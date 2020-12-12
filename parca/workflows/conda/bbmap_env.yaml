@@ -5,5 +5,5 @@ channels:
 dependencies:
   - bbmap=38.79
   - megahit=1.2.9
-  - pandas=v1.1.3
+  - pandas=1.1.3
   #- fastqc=0.11.9
