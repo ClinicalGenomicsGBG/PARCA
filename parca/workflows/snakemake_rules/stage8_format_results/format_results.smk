@@ -12,7 +12,8 @@ rule format_all_classified:
     input: 
         all_classed="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_scores.txt"
     output: 
-        all_classed_read_taxid="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid.txt"
+        all_classed_read_taxid="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid.txt",
+        type_summary="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/type_summary.txt"
     conda: "../../conda/R_env.yaml" #config['conda_environment'] 
     script:
          "../../scripts/reformat_results/reformat_all_classed.R"
