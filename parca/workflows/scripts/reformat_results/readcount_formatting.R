@@ -1,6 +1,11 @@
-library(tidyverse)
-library(magrittr)
-library(data.table)
+# Author: Pernilla Ericsson (pernilla.ericsson@gu.se, clinicalgenomics@gu.se)
+# Date: 2020-12-14
+
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(magrittr)
+  library(data.table)
+} )
 
 classed_reads_path <- "/Users/pernillaericsson/Documents/medair1/apps/bio/dev_repos/parca/demo/200819_demo/snakemake_results_a/SE_RNA/stage8/all_classed_read_taxid_names.txt"
 
