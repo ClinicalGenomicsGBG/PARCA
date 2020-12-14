@@ -1,7 +1,7 @@
 
-<p align="center" >
+<h1 align="center" >
   PaRCA
-</p>
+</h1>
 
 ## Pathogen detection for Research and Clinical Applications
 
