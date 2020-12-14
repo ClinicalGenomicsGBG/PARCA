@@ -1,6 +1,6 @@
 
 <h1 align="center" >
-  PaRCA
+  P a R C A
 </h1>
 
 ## Pathogen detection for Research and Clinical Applications
