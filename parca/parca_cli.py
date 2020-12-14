@@ -25,10 +25,13 @@ def main():
 @click.option('-o', '--outdir', 'outdir', type=click.Path(exists=True),
               required=True,
               help='Give the absolute path to a directory where all results will be placed in a subforder named after date and runinfo')
+@click.option('-l', '--logdir', 'logdir', type=click.Path(exists=True),
+              default="/medstore/logs/pipeline_logfiles/PaRCA",
+              help='Path to a cluster log directory')
 # @click.option('-gs', '--generate_subdir', 'generate_subdir', is_flag=True,
 #               help='Generate a subfolder with date within outdir a given outdir')
 @click.option('-d', '--dryrun', 'dryrun', is_flag=True, help='dryrun')
-def run(metadata, runinfo, dryrun, outdir):
+def run(metadata, runinfo, dryrun, outdir, logdir):
     """
     Run the PaRCA pipeline.
     """
@@ -45,7 +48,8 @@ def run(metadata, runinfo, dryrun, outdir):
                 'metadata_dict': metadata_dict,
                 'outdir': outdir}
 
-    # snakemake -rp -s main.smk --cluster-config config/cluster.yaml --profile qsub_profile
+    cluster_settings = "qsub -S /bin/bash -pe mpi {cluster.threads} -q {cluster.queue} -S /bin/bash -N parca_{wildcards.sample}_{rule} -V -cwd -l excl=1 -j y -o " + logdir + "/{wildcards.start_date}_{wildcards.run_id}_{wildcards.sample}_{rule}.log"
+
     status = snakemake.snakemake(snakefile=f'{work_dir}/main.smk',
                                  cluster_config=f'{work_dir}/config/cluster.yaml',
                                  config=config_dict_added,
@@ -53,13 +57,13 @@ def run(metadata, runinfo, dryrun, outdir):
                                  latency_wait=30,
                                  shadow_prefix="/medstore/logs/pipeline_logfiles",
                                  dryrun=dryrun,
-                                 cluster="qsub -S /bin/bash -pe mpi {cluster.threads} -q {cluster.queue} -S /bin/bash -N {wildcards.sample}_{rule} -V -cwd -l excl=1",
+                                 cluster=cluster_settings,
                                  max_jobs_per_second=99,
                                  use_conda=True,
                                  conda_prefix=outdir,
                                  use_singularity=True)
                                  # Double check if this can be replaced with qsub profile... could not find this...
-                                 #  cleanup_shadow=True)  
+                                 #  cleanup_shadow=True)
                                  #  conda_cleanup_envs=True)
 
     print("STATUSCODE:", status)  # True or False

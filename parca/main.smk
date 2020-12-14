@@ -9,7 +9,7 @@ configfile: "config/config.yaml"
 singularity: config['singularity_image']
 
 wildcard_constraints:
-    start_date="\d+"
+    start_date="[\d-]+"
 
 def generate_pipeline_input(run_dictionary, out_directory):
     pipeline_input=[]
