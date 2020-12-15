@@ -46,16 +46,17 @@ df_reads_and_cov <- df_classed_reads %>%
            species_lower, Plus_reads, Minus_reads ) )
 
 df_readcount <- 
-  df_reads_and_cov %>% 
+  df_reads_and_cov %>%
   rowwise() %>%
   mutate(read_count = sum(Plus_reads, Minus_reads, na.rm = TRUE)) %>% 
-  mutate(read_count=ifelse(read_count==0, 1, read_count)) 
+  mutate(read_count=ifelse(read_count==0, 1, read_count)) %>% ungroup()
 
 df_krona <- 
   df_readcount %>% 
   group_by(superkingdom, phylum, order, family, genus, species) %>% 
-  tally() %>% 
-  select(n, everything()) %>% 
+  summarize(readcount=sum(read_count)) %>% 
+  select(readcount, everything()) %>% 
+  arrange(desc(readcount)) %>% 
   write_tsv(outfile,col_names = FALSE)
 
 
