@@ -31,7 +31,7 @@ run_dict = ProcessRuninfoMetadata.nested_run_dict(run_dict_list)
 metadata_dict = config['metadata_dict']
 metadata_df = pd.DataFrame(metadata_dict)
 
-# print(generate_pipeline_input(run_dict, out_directory=config['outdir'])[0])
+print(generate_pipeline_input(run_dict, out_directory=config['outdir']))
 
 rule all:
     input:
