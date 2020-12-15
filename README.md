@@ -67,12 +67,15 @@ It handles four cases, see steps in `parca/dag/dag_all.png`:
 ## Usage
 
 ```
-cd /apps/bio/dev_repos/parca/parca;
-snakemake \
-    -rp \
-    -s main.smk \
-    --cluster-config config/cluster.yaml \
-    --profile qsub_profile
+module load anaconda3;
+source activate /home/xerpey/.conda/envs/pernilla_general/envs/smk_tidy
+
+# Dryrun demo
+python3 /apps/bio/dev_repos/parca/parca/parca_cli.py run -m /apps/bio/dev_repos/parca/demo/runinfo/metadata.csv -r /apps/bio/dev_repos/parca/demo/runinfo/runinfo.csv -o /apps/bio/dev_repos/parca/demo --dryrun
+
+
+# Run demo
+python3 /apps/bio/dev_repos/parca/parca/parca_cli.py run -m /apps/bio/dev_repos/parca/demo/runinfo/metadata.csv -r /apps/bio/dev_repos/parca/demo/runinfo/runinfo.csv -o /apps/bio/dev_repos/parca/demo
 ```
 
 ### To-Do
