@@ -1,10 +1,18 @@
 
 rule readcount_RNA:
     input: 
-        cov="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_RNA/stage2/pileup/bbmap_cov.txt"
+        cov="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_RNA/stage2/pileup/bbmap_cov.txt",
+        all_classed_read_taxid_names="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_RNA/stage8/all_classed_read_taxid_names.txt"
     output: 
         readcount="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_RNA/stage8/readcount.tsv"
     script: "../../scripts/readcount_formatting_RNA.R" 
+
+# rule readcount_DNA:
+#     input: 
+#         all_classed_read_taxid_names="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_DNA/stage8/all_classed_read_taxid_names.txt"
+#     output: 
+#         readcount="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_DNA/stage8/readcount.tsv"
+#     script: "../../scripts/readcount_formatting_DNA.R" 
 
 rule generate_krona_plot:
     input:
