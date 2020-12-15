@@ -4,15 +4,21 @@ rule readcount_RNA:
         cov="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_RNA/stage2/pileup/bbmap_cov.txt"
     output: 
         readcount="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_RNA/stage8/readcount.tsv"
-    script: "../../scripts/readcount_formatting.R" 
+    script: "../../scripts/readcount_formatting_RNA.R" 
 
 rule generate_krona_plot:
     input:
-        ""
+        readcount="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/krona/readcount.tsv"
     output:
-        ""
+        krona_html="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/krona/text.krona.html"
     conda: "../../conda/krona.yaml"
     shell:
         """
-        ktImportText $kronaline -o $mainoutdir/text.krona.html
+        ktImportText {input.readcount} -o {output.krona_html};
         """
+# rule percent_calculation:
+#     input: 
+#         # all count
+#         read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_RNA/stage2/kmer_input/count_kmer_input.txt"
+#     output: 
+#     run: 
