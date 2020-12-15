@@ -61,6 +61,8 @@ def run(metadata, runinfo, dryrun, outdir, logdir):
                                  max_jobs_per_second=99,
                                  use_conda=True,
                                  conda_prefix=outdir,
+                                 printreason=True,
+                                 printshellcmds=True,
                                  use_singularity=True)
                                  # Double check if this can be replaced with qsub profile... could not find this...
                                  #  cleanup_shadow=True)
