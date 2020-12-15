@@ -48,7 +48,7 @@ def run(metadata, runinfo, dryrun, outdir, logdir):
                 'metadata_dict': metadata_dict,
                 'outdir': outdir}
 
-    cluster_settings = "qsub -S /bin/bash -pe mpi {cluster.threads} -q {cluster.queue} -S /bin/bash -N parca_{wildcards.sample}_{rule} -V -cwd -j y -o " + logdir + "/{wildcards.start_date}_{wildcards.run_id}_{wildcards.sample}_{rule}.log" #-l excl=1 
+    cluster_settings = "qsub -S /bin/bash -pe mpi {cluster.threads} -q {cluster.queue} -S /bin/bash -N parca_{rule}_{wildcards.sample} -V -cwd -j y -o " + logdir + "/{wildcards.start_date}_{wildcards.run_id}_{rule}_{wildcards.sample}.log" #-l excl=1 
 
     status = snakemake.snakemake(snakefile=f'{work_dir}/main.smk',
                                  cluster_config=f'{work_dir}/config/cluster.yaml',
