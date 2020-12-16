@@ -1,10 +1,12 @@
 
 import os
 import click
+import shutil
 import snakemake
 import subprocess
 import pandas as pd
 from workflows.utils.process_runinfo_metadata import ProcessRuninfoMetadata
+from snakemake.logging import logger
 
 
 @click.group()
@@ -25,13 +27,14 @@ def main():
 @click.option('-o', '--outdir', 'outdir', type=click.Path(exists=True),
               required=True,
               help='Give the absolute path to a directory where all results will be placed in a subforder named after date and runinfo')
-@click.option('-l', '--logdir', 'logdir', type=click.Path(exists=True),
-              default="/medstore/logs/pipeline_logfiles/PaRCA",
-              help='Path to a cluster log directory')
+@click.option('-cl', '--complete_log', 'complete_log',
+              type=click.Path(exists=True),
+              default="/medstore/logs/pipeline_logfiles/parca",
+              help='Path to a log directory')
 # @click.option('-gs', '--generate_subdir', 'generate_subdir', is_flag=True,
 #               help='Generate a subfolder with date within outdir a given outdir')
 @click.option('-d', '--dryrun', 'dryrun', is_flag=True, help='dryrun')
-def run(metadata, runinfo, dryrun, outdir, logdir):
+def run(metadata, runinfo, dryrun, outdir, complete_log):
     """
     Run the PaRCA pipeline.
     """
@@ -48,7 +51,15 @@ def run(metadata, runinfo, dryrun, outdir, logdir):
                 'metadata_dict': metadata_dict,
                 'outdir': outdir}
 
-    cluster_settings = "qsub -S /bin/bash -pe mpi {cluster.threads} -q {cluster.queue} -S /bin/bash -N parca_{rule}_{wildcards.sample} -V -cwd -j y -o " + logdir + "/{wildcards.start_date}_{wildcards.run_id}_{rule}_{wildcards.sample}.log" #-l excl=1 
+    cluster_settings = "".join(["qsub ",
+                                "-S /bin/bash ",
+                                "-pe mpi {cluster.threads} ",
+                                "-q {cluster.queue} ",
+                                "-S /bin/bash ",
+                                "-N parca-{rule}-{wildcards.run_id} ",
+                                "-V ",
+                                "-cwd ",
+                                "-j y -o {log}.cluster"])  #-l excl=1
 
     status = snakemake.snakemake(snakefile=f'{work_dir}/main.smk',
                                  cluster_config=f'{work_dir}/config/cluster.yaml',
@@ -63,12 +74,24 @@ def run(metadata, runinfo, dryrun, outdir, logdir):
                                  conda_prefix=outdir,
                                  printreason=True,
                                  printshellcmds=True,
-                                 use_singularity=True)
+                                 use_singularity=True,
+                                 singularity_args=" --cleanenv ")
                                  # Double check if this can be replaced with qsub profile... could not find this...
                                  #  cleanup_shadow=True)
                                  #  conda_cleanup_envs=True)
 
     print("STATUSCODE:", status)  # True or False
+
+    if not dryrun:
+        run_ids = "_".join([f"{run_dict.get('start_date')}-{run_dict.get('run_id')}" for run_dict in run_dict_list])
+
+        logfile_path = logger.logfile
+        new_log_dst = os.path.join(complete_log, f'{run_ids}_snakemake.log')
+        if os.path.exists(new_log_dst):
+            os.remove(new_log_dst)
+
+        shutil.copy(logfile_path, new_log_dst)
+
 
     # clean up if error... do not use this since if the generate outdir is not used it will remove unnecessary things 
     # return_code=subprocess.call(['rmdir', outdir])
