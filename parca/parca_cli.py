@@ -65,17 +65,17 @@ def run(metadata, runinfo, dryrun, outdir, complete_log):
                                  cluster_config=f'{work_dir}/config/cluster.yaml',
                                  config=config_dict_added,
                                  workdir=work_dir,
-                                 latency_wait=30,
+                                 latency_wait=60,
                                  shadow_prefix="/medstore/logs/pipeline_logfiles",
                                  dryrun=dryrun,
                                  cluster=cluster_settings,
                                  max_jobs_per_second=99,
                                  use_conda=True,
-                                 conda_prefix=outdir,
+                                 # conda_prefix=f'{outdir}/conda',
                                  printreason=True,
                                  printshellcmds=True,
-                                 use_singularity=True,
-                                 singularity_args=" --cleanenv ")
+                                 use_singularity=True)
+                                 # singularity_args=" --cleanenv ")
                                  # Double check if this can be replaced with qsub profile... could not find this...
                                  #  cleanup_shadow=True)
                                  #  conda_cleanup_envs=True)

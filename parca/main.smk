@@ -36,7 +36,8 @@ print(generate_pipeline_input(run_dict, out_directory=config['outdir']))
 rule all:
     input:
         #expand("{outdir}/{start_date}_{run_id}/case_control_krona.txt", outdir=config['outdir'], start_date="20201202", run_id="run_1")
-        generate_pipeline_input(run_dict, out_directory=config['outdir'])
+        # call the fastqc rule too
+        generate_pipeline_input(run_dict, out_directory=config['outdir'])[0]
     run:
         print(input)
 
@@ -106,6 +107,23 @@ rule case:
         touch {output}
         """
 
+
+
+# rule all2:
+#     input: "{outdir}/201216_test/test.tsv".format(outdir="/apps/bio/dev_repos/parca/demo")
+
+
+# rule test_create_outdir:
+#     output: 
+#         "{outdir}/201216_test/test.tsv"
+#     log: "{outdir}/201216_test/log/test.log"
+#     shell:
+#         """
+#         mkdir -p {wildcards.outdir}/201216_test
+#         touch {output}
+#         """
+
+
 #run_dict = [{'run_id': 'run_1', 'case': 'sample_1', 'control': 'sample_2'}, {'run_id': 'run_2', 'case': 'sample_2'}]
 #metadata_dict = [{'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_1.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'rev', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_2.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_2', 'start_date': 20201104, 'nucleotide': 'DNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/a.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'SE'}]
 
@@ -117,25 +135,6 @@ rule case:
 #             sample_type=sample_type_list,
 #             nucleotide=nucleotide_list
 #             ))
-
-
-# rule all:
-#     input:
-#         # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
-#         #     zip,
-#         #     outdir=[config['outdir']]*len(sample_id_list),
-#         #     sample= sample_id_list,
-#         #     sample_type = sample_type_list,
-#         #     nucleotide = nucleotide_list
-#         #     )
-#         expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
-#             zip,
-#             outdir=[config['outdir']]*len(sample_id_list),
-#             sample=sample_id_list,
-#             sample_type=sample_type_list,
-#             nucleotide=nucleotide_list
-#             )
-
         
 
 ##STAGE 1
