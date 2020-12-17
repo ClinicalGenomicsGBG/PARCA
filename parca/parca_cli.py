@@ -61,8 +61,8 @@ def run(metadata, runinfo, dryrun, outdir, complete_log):
                                 "-cwd ",
                                 "-j y -o {log}.cluster"])  #-l excl=1
 
-    os.environ['SINGULARITYENV_CONDA_PKGS_DIRS'] = "/medstore/logs/pipeline_logfiles/parca/test"
-    os.environ['CONDA_PKGS_DIRS'] = "/medstore/logs/pipeline_logfiles/parca/test"
+    #os.environ['SINGULARITYENV_CONDA_PKGS_DIRS'] = "/medstore/logs/pipeline_logfiles/parca/test"
+    #os.environ['CONDA_PKGS_DIRS'] = "/medstore/logs/pipeline_logfiles/parca/test"
 
     status = snakemake.snakemake(snakefile=f'{work_dir}/main.smk',
                                  dryrun=dryrun,
@@ -76,8 +76,7 @@ def run(metadata, runinfo, dryrun, outdir, complete_log):
                                  # conda settings
                                  use_conda=True,
                                  conda_prefix=f'{outdir}/conda',
-                                 # conda_cleanup_envs=True,
-                                 conda_create_envs_only=True,
+                                 # conda_create_envs_only=True,
                                  # Singularity settings 
                                  singularity_args=" --cleanenv ",
                                  use_singularity=True )
@@ -85,10 +84,10 @@ def run(metadata, runinfo, dryrun, outdir, complete_log):
                                  #cluster_config=f'{work_dir}/config/cluster.yaml',
                                  #cluster=cluster_settings,
                                  #max_jobs_per_second=99)
+                                 # conda_cleanup_envs=True,
+                                 #  cleanup_shadow=True
 
                                  # Double check if this can be replaced with qsub profile... could not find this...
-                                 #  cleanup_shadow=True)
-                                 #  conda_cleanup_envs=True)
 
     print("STATUSCODE:", status)  # True or False
 
