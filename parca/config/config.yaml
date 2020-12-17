@@ -2,18 +2,11 @@
 #run_dict_list: [{'run_id': 'run_1', 'start_date': 20201202, 'case': 'sample_1', 'control': 'sample_2'}, {'run_id': 'run_2', 'start_date': 20201202, 'case': 'sample_2'}]
 #metadata_dict: [{'sample_id': 'sample_1', 'nucleotide': 'RNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_1.fastq.gz', 'adapters': 'NA', 'PE_or_SE': 'PE'}, {'sample_id': 'sample_1', 'nucleotide': 'RNA', 'fwd_or_rev': 'rev', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_2.fastq.gz', 'adapters': 'NA', 'PE_or_SE': 'PE'}, {'sample_id': 'sample_2', 'nucleotide': 'DNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/a.fastq.gz', 'adapters': 'NA', 'PE_or_SE': 'SE'}]
 
-# adapters:
-#   - "None"
-
 outdir: 
   "/apps/bio/dev_repos/parca/demo"
 
 singularity_image:
-  "workflows/containers/image_parca_v6.sif" #Build complete: /tmp/image-244526401 
-  #pyyaml tored in directory: /tmp/pip-ephem-wheel-cache-rz6n2chl/wheels/13/90/db/290ab3a34f2ef0b5a0f89235dc2d40fea83e77de84ed2dc05c
-
-## Set to False if keys from samplePath should be used. If these should be generated, set to True.
-generateSampleID: True
+  "workflows/containers/image_parca_v6.sif" 
 
 
 ## PROGRAMS NOT AVAILABLE IN CONDA
