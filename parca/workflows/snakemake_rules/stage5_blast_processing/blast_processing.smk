@@ -110,6 +110,8 @@ def aggregate_blast_slices(wildcards):
     checkpoint_output = checkpoints.all_gislices.get(**wildcards).output[0]
     return expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}.nal",
            outdir=wildcards.outdir,
+           start_date=wildcards.start_date,
+           run_id=wildcards.run_id,
            sample=wildcards.sample,
            sample_type=wildcards.sample_type,
            nucleotide=wildcards.nucleotide,

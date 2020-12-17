@@ -52,6 +52,8 @@ def aggregate_ntblast_input(wildcards):
 
     slice_blast_list=expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage7/ntblastout/ntblast__{sliceiter}", 
            outdir=wildcards.outdir,
+           start_date=wildcards.start_date,
+           run_id=wildcards.run_id,
            sample=wildcards.sample,
            sample_type=wildcards.sample_type,
            nucleotide=wildcards.nucleotide,

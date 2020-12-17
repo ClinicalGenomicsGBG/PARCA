@@ -46,6 +46,8 @@ def aggregate_sliceblast_input(wildcards):
 
     slice_blast_list=expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/sliceblastout/{gi_slice}__{sliceiter}", zip,
            outdir=[wildcards.outdir]*len(GI_SLICE),
+           start_date=[wildcards.start_date]*len(GI_SLICE),
+           run_id=[wildcards.run_id]*len(GI_SLICE),
            sample=[wildcards.sample]*len(GI_SLICE),
            sample_type=[wildcards.sample_type]*len(GI_SLICE),
            nucleotide=[wildcards.nucleotide]*len(GI_SLICE),
