@@ -37,13 +37,13 @@ rule all:
     input:
         #expand("{outdir}/{start_date}_{run_id}/case_control_krona.txt", outdir=config['outdir'], start_date="20201202", run_id="run_1")
         # call the fastqc rule too
-        generate_pipeline_input(run_dict, out_directory=config['outdir'])[0]
+        generate_pipeline_input(run_dict, out_directory=config['outdir'])
     run:
         print(input)
 
 rule control_and_case:
     input:
-        case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta".format(
+        case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -84,7 +84,7 @@ rule control_and_case:
 
 rule case:
     input:
-        case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta".format(
+        case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -106,26 +106,6 @@ rule case:
         """
         touch {output}
         """
-
-
-
-# rule all2:
-#     input: "{outdir}/201216_test/test.tsv".format(outdir="/apps/bio/dev_repos/parca/demo")
-
-
-# rule test_create_outdir:
-#     output: 
-#         "{outdir}/201216_test/test.tsv"
-#     log: "{outdir}/201216_test/log/test.log"
-#     shell:
-#         """
-#         mkdir -p {wildcards.outdir}/201216_test
-#         touch {output}
-#         """
-
-
-#run_dict = [{'run_id': 'run_1', 'case': 'sample_1', 'control': 'sample_2'}, {'run_id': 'run_2', 'case': 'sample_2'}]
-#metadata_dict = [{'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_1.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'rev', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_2.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_2', 'start_date': 20201104, 'nucleotide': 'DNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/a.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'SE'}]
 
 # Rule all
 # print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
