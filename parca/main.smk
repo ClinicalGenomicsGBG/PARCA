@@ -37,7 +37,7 @@ rule all:
     input:
         #expand("{outdir}/{start_date}_{run_id}/case_control_krona.txt", outdir=config['outdir'], start_date="20201202", run_id="run_1")
         # call the fastqc rule too
-        generate_pipeline_input(run_dict, out_directory=config['outdir'])
+        generate_pipeline_input(run_dict, out_directory=config['outdir'])[0]
     run:
         print(input)
 
@@ -59,7 +59,7 @@ rule control_and_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        control = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta".format(
+        control = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='control'), 
