@@ -177,7 +177,7 @@ rule bbduk_trimming_PE_merged_rKtrim:
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/merged_reads_trimmed.txt"
     shell:
         """
-        adapter={params.adapters}; 
+        adapter={params.adapters};
         if [[ -z ${{adapter//NA/}} ]] || [[ ${{adapter//NA/}} == "," ]]; then
             bbduk.sh \
                 in={input} \
