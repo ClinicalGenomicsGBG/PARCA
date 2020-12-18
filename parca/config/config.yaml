@@ -60,3 +60,6 @@ nt_db_dir: "/medstore/Development/Metagenomics/PathFinder43b/databases/nt"
 
 # Primates file
 primates_file: "/medstore/Development/Metagenomics/PathFinder43b/databases/primates_taxids.txt"
+
+# Krona plot min count
+krona_plot_min_count: 9
