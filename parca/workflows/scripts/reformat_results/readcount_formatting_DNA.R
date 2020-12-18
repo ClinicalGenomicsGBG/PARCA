@@ -6,7 +6,7 @@ suppressPackageStartupMessages({
 } )
 
 # classed_reads_path <- "/Users/pernillaericsson/Documents/medair1/apps/bio/dev_repos/parca/demo/200819_demo/snakemake_results_a/SE_RNA/stage8/all_classed_read_taxid_names.txt"
-# mincount <- 9  
+# mincount <- 9
 # outfile_readcount <- "/Users/pernillaericsson/Desktop/readcount.tsv"
 # outfile_krona <- "/Users/pernillaericsson/Desktop/readcount_krona.tsv"
 
@@ -36,7 +36,11 @@ df_classed_reads %<>% separate("taxon_names",
                                sep=";") %>% select(-other) %>% 
   mutate_if(is.character, str_trim) %>% 
   mutate_all(na_if,"NA") %>% mutate_all(na_if,"") %>% 
-  mutate(species_lower=tolower(str_replace_all(species, " ", "_")) )
+  mutate(sgft_lower = pmap_chr(.l = list(species, genus, family, as.character(tax_id) ),
+                                              .f = ~ first(discard(c(s=..1, g=..2 , f=..3, t=..4), ~is.na(.x) ) ) ) ) %>% 
+  mutate(sgft_lower=tolower(str_replace_all(sgft_lower, " ", "_")) ) %>% 
+  mutate(tax_id_sgft_lower=paste(tax_id,sgft_lower,sep="_") )
+
 
 df_readcount <- 
   df_classed_reads %>%
@@ -45,12 +49,9 @@ df_readcount <-
 
 df_krona <- 
   df_readcount %>% 
-  group_by(superkingdom, phylum, order, family, genus, species, species_lower) %>% 
+  group_by(superkingdom, phylum, order, family, genus, species) %>% 
   summarize(readcount=sum(read_count)) %>% 
   select(readcount, everything()) %>% 
   arrange(desc(readcount)) %>% 
   filter(readcount > mincount) %>% 
   write_tsv(outfile_krona,col_names = FALSE)
-
-
-

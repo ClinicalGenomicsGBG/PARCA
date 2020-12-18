@@ -7,7 +7,7 @@ suppressPackageStartupMessages({
 
 # classed_reads_path <- "/Users/pernillaericsson/Documents/medair1/apps/bio/dev_repos/parca/demo/200819_demo/snakemake_results_a/SE_RNA/stage8/all_classed_read_taxid_names.txt"
 # coverage_path <- "/Users/pernillaericsson/Documents/medair1/apps/bio/dev_repos/parca/demo/200819_demo/snakemake_results_a/SE_RNA/stage2/pileup/bbmap_cov.txt"
-# mincount <- 9  
+# mincount <- 9
 # outfile_readcount <- "/Users/pernillaericsson/Desktop/readcount.tsv"
 # outfile_krona <- "/Users/pernillaericsson/Desktop/readcount_krona.tsv"
 
@@ -38,7 +38,11 @@ df_classed_reads %<>% separate("taxon_names",
                                sep=";") %>% select(-other) %>% 
   mutate_if(is.character, str_trim) %>% 
   mutate_all(na_if,"NA") %>% mutate_all(na_if,"") %>% 
-  mutate(species_lower=tolower(str_replace_all(species, " ", "_")) )
+  mutate(sgft_lower = pmap_chr(.l = list(species, genus, family, as.character(tax_id) ),
+                               .f = ~ first(discard(c(s=..1, g=..2 , f=..3, t=..4), ~is.na(.x) ) ) ) ) %>% 
+  mutate(sgft_lower=tolower(str_replace_all(sgft_lower, " ", "_")) ) %>% 
+  mutate(tax_id_sgft_lower=paste(tax_id,sgft_lower,sep="_") )
+
 
 df_coverage <- data.table::fread(file = coverage_path, 
                                  fill=TRUE, 
@@ -49,13 +53,15 @@ df_coverage <- data.table::fread(file = coverage_path,
 df_coverage %<>% separate("#ID", into = c("seq_id", "flag", "multi", "len"),
                           extra = "merge", sep = " ") 
 
-df_reads_and_cov <- df_classed_reads %>% 
-  left_join(df_coverage, by="seq_id") %>% 
-  select(c(seq_id, tax_id, superkingdom, phylum, order, family, genus, species,
-           species_lower, Plus_reads, Minus_reads ) )
+df_reads_and_cov <- 
+  df_classed_reads %>% 
+  left_join(df_coverage, by="seq_id") 
 
 df_readcount <- 
   df_reads_and_cov %>%
+  select(c( classified, seq_id, tax_id, score, taxid_score, superkingdom, 
+            phylum, order, family, genus, species, sgft_lower,
+            tax_id_sgft_lower, Plus_reads, Minus_reads ) ) %>% 
   rowwise() %>%
   mutate(read_count = sum(Plus_reads, Minus_reads, na.rm = TRUE)) %>% 
   mutate(read_count=ifelse(read_count==0, 1, read_count)) %>% ungroup() %>% 
@@ -64,7 +70,7 @@ df_readcount <-
 
 df_krona <- 
   df_readcount %>% 
-  group_by(superkingdom, phylum, order, family, genus, species, species_lower) %>% 
+  group_by(superkingdom, phylum, order, family, genus, species) %>% 
   summarize(readcount=sum(read_count)) %>% 
   select(readcount, everything()) %>% 
   arrange(desc(readcount)) %>% 
