@@ -63,3 +63,6 @@ primates_file: "/medstore/Development/Metagenomics/PathFinder43b/databases/prima
 
 # Krona plot min count
 krona_plot_min_count: 9
+
+# Tableview min count
+tableview_min_count: 4
