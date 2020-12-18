@@ -38,9 +38,9 @@ df_classed_reads %<>% separate("taxon_names",
                                sep=";") %>% select(-other) %>% 
   mutate_if(is.character, str_trim) %>% 
   mutate_all(na_if,"NA") %>% mutate_all(na_if,"") %>% 
-  mutate(sgft_lower = pmap_chr(.l = list(species, genus, family, as.character(tax_id) ),
+  mutate(sgft = pmap_chr(.l = list(species, genus, family, as.character(tax_id) ),
                                .f = ~ first(discard(c(s=..1, g=..2 , f=..3, t=..4), ~is.na(.x) ) ) ) ) %>% 
-  mutate(sgft_lower=tolower(str_replace_all(sgft_lower, " ", "_")) ) %>% 
+  mutate(sgft_lower=tolower(str_replace_all(sgft, " ", "_")) ) %>% 
   mutate(tax_id_sgft_lower=paste(tax_id,sgft_lower,sep="_") )
 
 
@@ -60,7 +60,7 @@ df_reads_and_cov <-
 df_readcount <- 
   df_reads_and_cov %>%
   select(c( classified, seq_id, tax_id, score, taxid_score, superkingdom, 
-            phylum, order, family, genus, species, sgft_lower,
+            phylum, order, family, genus, species, sgft, sgft_lower,
             tax_id_sgft_lower, Plus_reads, Minus_reads ) ) %>% 
   rowwise() %>%
   mutate(read_count = sum(Plus_reads, Minus_reads, na.rm = TRUE)) %>% 
