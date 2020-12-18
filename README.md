@@ -63,6 +63,8 @@ It handles four cases, see steps in `parca/dag/dag_all.png`:
 
 ### Stage 8: Format results
 * `workflows/snakemake_rules/stage8_format_results/format_results.smk`
+* `workflows/snakemake_rules/stage8_format_results/krona_plot.smk`
+  * The krona plot is filtered to show organisms with more than nine reads. This can be modified in the `config/config.yaml`.
 
 ## Usage
 
