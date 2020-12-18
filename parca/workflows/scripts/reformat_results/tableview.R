@@ -7,6 +7,8 @@ suppressPackageStartupMessages({
 
 # read_count <- "/Users/pernillaericsson/Desktop/readcount.tsv"
 # read_total <- 1104870
+# mincount <- 4
+# organism_dfs_dir <- "/Users/pernillaericsson/Desktop/test_df_out"
 
 read_count <- snakemake@input[['read_count_df']]
 
@@ -15,6 +17,18 @@ mincount <- snakemake@params[['mincount']]
 
 tableview_out <- snakemake@output[['tableview']]
 organism_dfs_dir <- snakemake@output[['organism_dfs_dir']]
+
+
+read_count_df <-data.table::fread(file = read_count, 
+                  fill=TRUE, 
+                  sep = "\t",
+                  header=TRUE) %>% as_tibble()
+
+if(nrow(read_count_df)==0){
+  system(paste("if [ ! -d", organism_dfs_dir," ]; then mkdir", organism_dfs_dir, ";fi;") )
+  write_tsv(tibble(), tableview_out)
+  quit(save = "no", status = 0)
+}
 
 if (SE_or_PE == "SE") {
   trimmed_read_count <- snakemake@input[['trimmed_read_count']]
@@ -31,10 +45,6 @@ if (SE_or_PE == "SE") {
   quit(save="no", status=0)
 }
 
-read_count_df <-data.table::fread(file = read_count, 
-                  fill=TRUE, 
-                  sep = "\t",
-                  header=TRUE) %>% as_tibble()
 
 tableview <- 
   read_count_df %>% 
@@ -52,3 +62,13 @@ organism_df_list <-
 
 tableview %>% 
   write_tsv(tableview_out, col_names = TRUE)
+
+# Function to save the df with the name of the tax_id_sgft_lower 
+save_by_taxid <- function(organism_df, outfile){
+  out_name <- paste0(organism_dfs_dir,"/",outfile)
+  write_tsv(organism_df, out_name, col_names = TRUE) 
+}
+
+system(paste("if [ ! -d",organism_dfs_dir," ]; then \nmkdir",organism_dfs_dir, ";fi;") )
+
+map2(organism_df_list, names(organism_df_list), ~save_by_taxid(.x, .y) )
