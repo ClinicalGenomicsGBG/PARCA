@@ -18,33 +18,32 @@ mincount <- snakemake@params[['mincount']]
 tableview_out <- snakemake@output[['tableview']]
 organism_dfs_dir <- snakemake@output[['organism_dfs_dir']]
 
+if (SE_or_PE == "SE") {
+  trimmed_read_count <- snakemake@input[['trimmed_read_count']]
+  read_total <- read_tsv(trimmed_read_count) %>% pull(count)
+
+} elif (SE_or_PE == "PE"){
+  trimmed_read_count_unmerged <- snakemake@input[['trimmed_read_count_unmerged']]
+  trimmed_read_count_merged <- snakemake@input[['trimmed_read_count_merged']]
+
+  read_total <- 
+    c(trimmed_read_count_unmerged, trimmed_read_count_merged) %>% 
+    map_dfr(~read_tsv(.x)) %>% select(count) %>% colSums() %>% unname()
+
+} else {
+  quit(save="no", status=0)
+}
 
 read_count_df <-data.table::fread(file = read_count, 
-                  fill=TRUE, 
-                  sep = "\t",
-                  header=TRUE) %>% as_tibble()
+                                  fill=TRUE, 
+                                  sep = "\t",
+                                  header=TRUE) %>% as_tibble()
 
 if(nrow(read_count_df)==0){
   system(paste("if [ ! -d", organism_dfs_dir," ]; then mkdir", organism_dfs_dir, ";fi;") )
   write_tsv(tibble(), tableview_out)
   quit(save = "no", status = 0)
 }
-
-if (SE_or_PE == "SE") {
-  trimmed_read_count <- snakemake@input[['trimmed_read_count']]
-  read_total <- read_tsv(trimmed_read_count) %>% pull(count)
-  
-} elif (SE_or_PE == "PE"){
-  trimmed_read_count_unmerged <- snakemake@input[['trimmed_read_count_unmerged']]
-  trimmed_read_count_merged <- snakemake@input[['trimmed_read_count_merged']]
-  
-  read_total <- 
-    c(trimmed_read_count_unmerged, trimmed_read_count_merged) %>% 
-    map_dfr(~read_tsv(.x)) %>% select(count) %>% colSums() %>% unname()
-} else {
-  quit(save="no", status=0)
-}
-
 
 tableview <- 
   read_count_df %>% 
