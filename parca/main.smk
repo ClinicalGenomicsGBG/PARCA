@@ -37,7 +37,7 @@ rule all:
     input:
         #expand("{outdir}/{start_date}_{run_id}/case_control_krona.txt", outdir=config['outdir'], start_date="20201202", run_id="run_1")
         # call the fastqc rule too
-        generate_pipeline_input(run_dict, out_directory=config['outdir'])[0]
+        generate_pipeline_input(run_dict, out_directory=config['outdir'])
     run:
         print(input)
 
