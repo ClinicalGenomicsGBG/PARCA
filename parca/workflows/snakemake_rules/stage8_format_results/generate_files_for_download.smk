@@ -1,5 +1,5 @@
 
-rule tableview_SE:
+checkpoint tableview_SE:
     input: 
         read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/readcount.tsv",
         trimmed_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt"
@@ -14,7 +14,7 @@ rule tableview_SE:
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/tableview_splitting.R"
 
-rule tableview_PE:
+checkpoint tableview_PE:
     input: 
         read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/readcount.tsv",
         trimmed_read_count_unmerged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_unmerged_reads_trimmed_raw.txt",
@@ -140,4 +140,66 @@ rule zip_filtered_fastq_unclassified:
         pigz -p {threads} -k {input.fastq};
         """ 
 
+def filter_fastq_according_to_classification_SE(wildcards):
+    checkpoint_output_organism = checkpoints.tableview_SE.get(**wildcards).output['organism_dir']
+    organism_list = expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq.gz",
+           outdir=wildcards.outdir,
+           start_date=wildcards.start_date,
+           run_id=wildcards.run_id,
+           sample=wildcards.sample,
+           nucleotide=wildcards.nucleotide,
+           taxid=glob_wildcards(os.path.join(checkpoint_output_organism, "{taxid, \d+}")).taxid)
+
+    checkpoint_output_kingdom = checkpoints.tableview_SE.get(**wildcards).output['kingdom_dir']
+    kingdom_list = expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/tableview/kingdom_fastq/{kingdom}.fastq.gz",
+           outdir=wildcards.outdir,
+           start_date=wildcards.start_date,
+           run_id=wildcards.run_id,
+           sample=wildcards.sample,
+           nucleotide=wildcards.nucleotide,
+           kingdom=glob_wildcards(os.path.join(checkpoint_output_kingdom, "{kingdom, \d+}")).kingdom)
+
+    organism_kingdom_list = organism_list + kingdom_list
+    return organism_kingdom_list
+
+def filter_fastq_according_to_classification_PE(wildcards):
+    checkpoint_output_organism = checkpoints.tableview_PE.get(**wildcards).output['organism_dir']
+    organism_list = expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq.gz",
+           outdir=wildcards.outdir,
+           start_date=wildcards.start_date,
+           run_id=wildcards.run_id,
+           sample=wildcards.sample,
+           nucleotide=wildcards.nucleotide,
+           taxid=glob_wildcards(os.path.join(checkpoint_output_organism, "{taxid, \d+}")).taxid)
+
+    checkpoint_output_kingdom = checkpoints.tableview_PE.get(**wildcards).output['kingdom_dir']
+    kingdom_list = expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/tableview/kingdom_fastq/{kingdom}.fastq.gz",
+           outdir=wildcards.outdir,
+           start_date=wildcards.start_date,
+           run_id=wildcards.run_id,
+           sample=wildcards.sample,
+           nucleotide=wildcards.nucleotide,
+           kingdom=glob_wildcards(os.path.join(checkpoint_output_kingdom, "{kingdom, \d+}")).kingdom)
+
+    organism_kingdom_list = organism_list + kingdom_list
+    return organism_kingdom_list
+
+
+rule call_filter_fastqs_SE:
+    input:
+        filter_fastq_according_to_classification_SE,
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}stage8/tableview/unclassified_fastq/unclassified.fastq.gz"
+    output:
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}stage8/tableview/fastq_filtering_done"
+    shell:
+        "touch {output}"
+
+rule call_filter_fastqs_PE:
+    input:
+        filter_fastq_according_to_classification_PE,
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}stage8/tableview/unclassified_fastq/unclassified.fastq.gz"
+    output:
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}stage8/tableview/fastq_filtering_done"
+    shell:
+        "touch {output}"
 
