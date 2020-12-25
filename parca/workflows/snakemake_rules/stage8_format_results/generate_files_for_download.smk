@@ -38,7 +38,7 @@ rule tableview_PE:
 #         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/{rank}_fastq/{taxid}.fastq"
 #     params:
 #         SE_or_PE="SE",
-#         negate_query="FALSE"
+#         negate_query="FALSE"  # The string should be in uppercase letters for R to interpret this.
 #     conda: "../../conda/R_env.yaml"
 #     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -51,7 +51,7 @@ rule tableview_PE:
 #         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/{rank}_fastq/{taxid}.fastq"
 #     params:
 #         SE_or_PE="PE",
-#         negate_query="FALSE"
+#         negate_query="FALSE"  # The string should be in uppercase letters for R to interpret this.
 #     conda: "../../conda/R_env.yaml"
 #     script: "../../scripts/reformat_results/filter_fastq.R"
 
