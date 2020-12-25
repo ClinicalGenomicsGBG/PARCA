@@ -85,7 +85,7 @@ if(nrow(best_classifications)==0) {
 }
 
 best_classifications %<>%
-  group_by(seq_id) %>% arrange(desc(matches)) %>% slice(1) %>% ungroup() %>% 
+  group_by(seq_id) %>% arrange(desc(matches)) %>% dplyr::slice(1) %>% ungroup() %>% 
   write_tsv(path = output_file) %>% 
   #print() %>%
   group_by(type) %>%

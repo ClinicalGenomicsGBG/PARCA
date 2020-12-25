@@ -5,6 +5,8 @@ suppressPackageStartupMessages({
   library(tidyverse);library(magrittr);library(data.table);library(ShortRead)
 } )
 
+# trimmed_read_count <-"/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1/snakemake_results_sample_1/stats_PE_RNA/stage1/trimming/count_bbduk_unmerged_reads_trimmed_raw.txt"
+# 
 # trimmed_read_count_unmerged <-"/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1/snakemake_results_sample_1/stats_PE_RNA/stage1/trimming/count_bbduk_unmerged_reads_trimmed_raw.txt"
 # trimmed_read_count_merged <- "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1/snakemake_results_sample_1/stats_PE_RNA/stage1/trimming/count_bbduk_merged_reads_trimmed.txt"
 # 
@@ -16,7 +18,8 @@ suppressPackageStartupMessages({
 # tableview_out <- "/Users/pernillaericsson/Desktop/parca_tests/tableview.tsv"
 # classified_reads_mincount <- "/Users/pernillaericsson/Desktop/parca_tests/classified_reads_mincount.tsv"
 # organism_dir <- "/Users/pernillaericsson/Desktop/parca_tests/organism_dir"
-
+# kingdom_dir <- "/Users/pernillaericsson/Desktop/parca_tests/kingdom_dir"
+ 
 
 read_count <- snakemake@input[['read_count']]
 
@@ -77,6 +80,7 @@ if(nrow(tableview)==0){
   quit(save = "no", status = 0)
 } else {
   if(!dir.exists(organism_dir)) dir.create(organism_dir, recursive = TRUE)
+  if(!dir.exists(kingdom_dir)) dir.create(kingdom_dir, recursive = TRUE)
 }
 
 tableview %>% 
