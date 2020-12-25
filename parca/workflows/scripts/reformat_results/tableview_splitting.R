@@ -24,9 +24,10 @@ SE_or_PE <- snakemake@params[['SE_or_PE']]
 mincount <- snakemake@params[['mincount']]
 
 tableview_out <- snakemake@output[['tableview']]
-classified_reads_mincount <- snakemake@output[['classified_reads_mincount']]
+#classified_reads_mincount <- snakemake@output[['classified_reads_mincount']]
 
 organism_dir <- snakemake@output[['organism_dir']]
+kingdom_dir <- snakemake@output[['kingdom_dir']]
 
 # Read in the read count stats with regard to PE or SE
 if (SE_or_PE == "SE") {
@@ -52,8 +53,9 @@ read_count_df <-data.table::fread(file = read_count, fill=TRUE, sep = "\t",
 
 if(nrow(read_count_df)==0){
   if(!dir.exists(organism_dir)) dir.create(organism_dir, recursive = TRUE)
+  if(!dir.exists(kingdom_dir)) dir.create(kingdom_dir, recursive = TRUE)
   write_tsv(tibble(), tableview_out)
-  write_tsv(tibble(), classified_reads_mincount)
+  #write_tsv(tibble(), classified_reads_mincount)
   quit(save = "no", status = 0)
 }
 
@@ -69,8 +71,9 @@ tableview <-
 
 if(nrow(tableview)==0){
   if(!dir.exists(organism_dir)) dir.create(organism_dir, recursive = TRUE)
+  if(!dir.exists(kingdom_dir)) dir.create(kingdom_dir, recursive = TRUE)
   write_tsv(tibble(), tableview_out)
-  write_tsv(tibble(), classified_reads_mincount)
+  #write_tsv(tibble(), classified_reads_mincount)
   quit(save = "no", status = 0)
 } else {
   if(!dir.exists(organism_dir)) dir.create(organism_dir, recursive = TRUE)
@@ -81,23 +84,26 @@ tableview %>%
 
 # Find read ids at a taxid with number of reads higher than mincount and write to a file.
 unique_tax_id <- tableview %>% pull(tax_id)
+outfile_unclassified <- glue::glue("{kingdom_dir}/kingdom_unclassified.tsv")
 classified_df <-
   read_count_df %>% select(tax_id, seq_id, superkingdom, organism) %>% 
   filter(tax_id %in% unique_tax_id) %>% 
-  write_tsv(classified_reads_mincount, col_names = TRUE)
+  write_tsv(outfile_unclassified, col_names = TRUE)
 
 # Create filed called after taxid containing read names
 organism_df_list <- 
   classified_df %$% 
   split(., tax_id)
-
 imap(organism_df_list, ~{
-    kingdom <- .x %>% pull(superkingdom) %>%  unique()
-
-    if (length(kingdom) != 1){
-      quit(save="no", status=0)
-    }
-    outfile_organism <- glue::glue("{organism_dir}/taxid_{.y}_kingdom_{kingdom}.tsv")
-    
+    outfile_organism <- glue::glue("{organism_dir}/organism_{.y}.tsv")
     write_tsv(.x, path = outfile_organism, col_names = TRUE)
   })
+
+# Create filed called after kingdom containing read names
+kingdom_df_list <- 
+  classified_df %$% 
+  split(., superkingdom)
+imap(kingdom_df_list, ~{
+  outfile_kingdom <- glue::glue("{kingdom_dir}/kingdom_{.y}.tsv")
+  write_tsv(.x, path = outfile_kingdom, col_names = TRUE)
+})
