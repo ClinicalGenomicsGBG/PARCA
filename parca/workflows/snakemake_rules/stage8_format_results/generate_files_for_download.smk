@@ -106,3 +106,38 @@ rule filter_fastq_unclassified_PE:
         negate_query="TRUE"  # The string should be in uppercase letters for R to interpret this.
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/filter_fastq.R"
+
+rule zip_filtered_fastq_organism:
+    input: 
+        fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq"
+    output: 
+        fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq.gz"
+    threads: 4
+    shell:
+        """
+        pigz -p {threads} -k {input.fastq};
+        """ 
+
+rule zip_filtered_fastq_kingdom:
+    input: 
+        fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq"
+    output: 
+        fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq.gz"
+    threads: 4
+    shell:
+        """
+        pigz -p {threads} -k {input.fastq};
+        """ 
+
+rule zip_filtered_fastq_unclassified:
+    input: 
+        fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq"
+    output: 
+        fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}stage8/tableview/unclassified_fastq/unclassified.fastq.gz"
+    threads: 8
+    shell:
+        """
+        pigz -p {threads} -k {input.fastq};
+        """ 
+
+
