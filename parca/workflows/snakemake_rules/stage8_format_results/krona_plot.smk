@@ -35,6 +35,12 @@ rule readcount_DNA:
 #         ktImportText {input.readcount_krona},"case" -o {output.krona_html};
 #         """
 
+rule name:
+    input: 
+    output: 
+    script: "../../scripts/reformat_results/tableview_case_control" 
+
+
 # rule generate_krona_plot_case_control:
 #     input:
 #         readcount_krona_case="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/krona/readcount_krona.tsv"
