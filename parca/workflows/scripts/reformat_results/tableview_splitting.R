@@ -28,6 +28,7 @@ mincount <- snakemake@params[['mincount']]
 
 tableview_out <- snakemake@output[['tableview']]
 classified_reads_mincount <- snakemake@output[['classified_reads_mincount']]
+read_count_out <- snakemake@output[['read_count']]
 
 organism_dir <- snakemake@output[['organism_dir']]
 kingdom_dir <- snakemake@output[['kingdom_dir']]
@@ -59,6 +60,7 @@ if(nrow(read_count_df)==0){
   if(!dir.exists(kingdom_dir)) dir.create(kingdom_dir, recursive = TRUE)
   write_tsv(tibble(), tableview_out)
   write_tsv(tibble(), classified_reads_mincount)
+  write_tsv(tibble(count=0), read_count_out)
   quit(save = "no", status = 0)
 }
 
@@ -77,6 +79,7 @@ if(nrow(tableview)==0){
   if(!dir.exists(kingdom_dir)) dir.create(kingdom_dir, recursive = TRUE)
   write_tsv(tibble(), tableview_out)
   write_tsv(tibble(), classified_reads_mincount)
+  write_tsv(tibble(count=0), read_count_out)
   quit(save = "no", status = 0)
 } else {
   if(!dir.exists(organism_dir)) dir.create(organism_dir, recursive = TRUE)
@@ -85,6 +88,10 @@ if(nrow(tableview)==0){
 
 tableview %>% 
   write_tsv(tableview_out, col_names = TRUE)
+
+tableview %>% select(read_count) %>%
+  dplyr::rename("count"="read_count") %>%  colSums() %>% 
+  write_tsv(read_count_out, col_names = TRUE)
 
 # Find read ids at a taxid with number of reads higher than mincount and write to a file.
 unique_tax_id <- tableview %>% pull(tax_id)
