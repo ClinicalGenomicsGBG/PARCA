@@ -207,4 +207,3 @@ rule call_filter_fastqs_PE:
         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}stage8/tableview/fastq_filtering_done"
     shell:
         "touch {output}"
-
