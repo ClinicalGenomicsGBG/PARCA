@@ -43,7 +43,7 @@ rule generate_krona_plot_case:
                                                                    column="nucleotide",
                                                                    unique=True) )
     output:
-        krona_html="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/krona/text.krona.html"
+        krona_html="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/krona/case.krona.html"
     conda: "../../conda/krona.yaml"
     shell:
         """
@@ -86,7 +86,7 @@ rule generate_krona_plot_case_control:
                                                                    unique=True) )
 
     output:
-        krona_html="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/krona/text.krona.html"
+        krona_html="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/krona/case_control.krona.html"
     conda: "../../conda/krona.yaml"
     shell:
         """
@@ -94,7 +94,7 @@ rule generate_krona_plot_case_control:
         """
 
 
-rule name:
+rule tableview_case_control:
     input: 
     output: 
     conda: "../../conda/R_env.yaml"
