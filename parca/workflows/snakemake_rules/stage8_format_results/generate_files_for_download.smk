@@ -193,9 +193,9 @@ def filter_fastq_according_to_classification_PE(wildcards):
 rule call_filter_fastqs_SE:
     input:
         filter_fastq_according_to_classification_SE,
-        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}stage8/tableview/unclassified_fastq/unclassified.fastq.gz"
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}stage8/tableview/unclassified_fastq/unclassified.fastq.gz"
     output:
-        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}stage8/tableview/fastq_filtering_done"
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}stage8/tableview/fastq_filtering_done"
     shell:
         "touch {output}"
 
