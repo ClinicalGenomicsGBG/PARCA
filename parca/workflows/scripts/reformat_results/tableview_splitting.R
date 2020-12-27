@@ -17,11 +17,13 @@ suppressPackageStartupMessages({
 # 
 # tableview_out <- "/Users/pernillaericsson/Desktop/parca_tests/tableview.tsv"
 # classified_reads_mincount <- "/Users/pernillaericsson/Desktop/parca_tests/classified_reads_mincount.tsv"
+# read_count_out <- "/Users/pernillaericsson/Desktop/parca_tests/classified_reads_count.tsv"
 # organism_dir <- "/Users/pernillaericsson/Desktop/parca_tests/organism_dir"
 # kingdom_dir <- "/Users/pernillaericsson/Desktop/parca_tests/kingdom_dir"
  
 
 read_count <- snakemake@input[['read_count']]
+trimmed_read_count <- snakemake@input[['trimmed_read_count']]
 
 SE_or_PE <- snakemake@params[['SE_or_PE']]
 mincount <- snakemake@params[['mincount']]
@@ -34,22 +36,25 @@ organism_dir <- snakemake@output[['organism_dir']]
 kingdom_dir <- snakemake@output[['kingdom_dir']]
 
 # Read in the read count stats with regard to PE or SE
-if (SE_or_PE == "SE") {
-  trimmed_read_count <- snakemake@input[['trimmed_read_count']]
-  
-  read_total <- read_tsv(trimmed_read_count) %>% pull(count)
-  
-} else if (SE_or_PE == "PE"){
-  trimmed_read_count_unmerged <- snakemake@input[['trimmed_read_count_unmerged']]
-  trimmed_read_count_merged <- snakemake@input[['trimmed_read_count_merged']]
-  
-  read_total <- 
-    c(trimmed_read_count_unmerged, trimmed_read_count_merged) %>% 
-    map_dfr(~read_tsv(.x)) %>% select(count) %>% colSums() %>% unname()
-  
-} else {
-  quit(save="no", status=0)
-}
+# if (SE_or_PE == "SE") {
+#   trimmed_read_count <- snakemake@input[['trimmed_read_count']]
+#   
+#   read_total <- read_tsv(trimmed_read_count) %>% pull(count)
+#   
+# } else if (SE_or_PE == "PE"){
+#   trimmed_read_count_unmerged <- snakemake@input[['trimmed_read_count_unmerged']]
+#   trimmed_read_count_merged <- snakemake@input[['trimmed_read_count_merged']]
+#   
+#   read_total <- 
+#     c(trimmed_read_count_unmerged, trimmed_read_count_merged) %>% 
+#     map_dfr(~read_tsv(.x)) %>% select(count) %>% colSums() %>% unname()
+#   
+# } else {
+#   quit(save="no", status=0)
+# }
+
+
+read_total <- read_tsv(trimmed_read_count) %>% pull(count)
 
 # Read in the classified reads dataframe with readcount included.
 read_count_df <-data.table::fread(file = read_count, fill=TRUE, sep = "\t",
@@ -90,7 +95,7 @@ tableview %>%
   write_tsv(tableview_out, col_names = TRUE)
 
 tableview %>% select(read_count) %>%
-  dplyr::rename("count"="read_count") %>%  colSums() %>% 
+  summarize(count=sum(read_count)) %>% 
   write_tsv(read_count_out, col_names = TRUE)
 
 # Find read ids at a taxid with number of reads higher than mincount and write to a file.
