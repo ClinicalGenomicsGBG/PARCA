@@ -10,7 +10,7 @@ checkpoint tableview:
         organism_dir=directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/organism_dir"),
         kingdom_dir=directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/kingdom_dir")
     params:
-        #SE_or_PE="SE",
+        # SE_or_PE="SE",
         mincount=config['tableview_min_count']
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/tableview_splitting.R"
@@ -117,7 +117,7 @@ rule zip_filtered_fastq_unclassified:
     input: 
         fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq"
     output: 
-        fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}stage8/tableview/unclassified_fastq/unclassified.fastq.gz",
+        fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq.gz",
         read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt"
     threads: 8
     shell:
@@ -138,7 +138,7 @@ def filter_fastq_according_to_classification(wildcards):
            taxid=glob_wildcards(os.path.join(checkpoint_output_organism, "{taxid, \d+}")).taxid)
 
     checkpoint_output_kingdom = checkpoints.tableview_SE.get(**wildcards).output['kingdom_dir']
-    kingdom_list = expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/tableview/kingdom_fastq/{kingdom}.fastq.gz",
+    kingdom_list = expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq.gz",
            outdir=wildcards.outdir,
            start_date=wildcards.start_date,
            run_id=wildcards.run_id,
@@ -152,9 +152,9 @@ def filter_fastq_according_to_classification(wildcards):
 rule call_filter_fastqs:
     input:
         filter_fastq_according_to_classification,
-        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}stage8/tableview/unclassified_fastq/unclassified.fastq.gz"
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq.gz"
     output:
-        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}stage8/tableview/fastq_filtering_done"
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done"
     shell:
         "touch {output}"
 
