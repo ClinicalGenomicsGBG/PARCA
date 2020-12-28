@@ -25,7 +25,7 @@ suppressPackageStartupMessages({
 read_count <- snakemake@input[['read_count']]
 trimmed_read_count <- snakemake@input[['trimmed_read_count']]
 
-SE_or_PE <- snakemake@params[['SE_or_PE']]
+#SE_or_PE <- snakemake@params[['SE_or_PE']]
 mincount <- snakemake@params[['mincount']]
 
 tableview_out <- snakemake@output[['tableview']]
