@@ -108,19 +108,26 @@ rule all:
 rule call_case:
     input: 
         tableview="{outdir}/{start_date}_{run_id}/tableview/case_readcount_tableview.tsv",
-        krona_html="{outdir}/{start_date}_{run_id}/krona/case.krona.html"
-    output: ""
-    shell: ""
-
+        krona_html="{outdir}/{start_date}_{run_id}/krona/case.krona.html",
+        main_page_stats="{outdir}/{start_date}_{run_id}/main_page_stats.tsv"
+    output: 
+        "{outdir}/{start_date}_{run_id}/call_case_done"
+    shell: 
+        """
+        touch {output}
+        """
 
 rule call_case_control:
     input: 
         tableview="{outdir}/{start_date}_{run_id}/tableview/case_control_readcount_tableview.tsv",
-        krona_html="{outdir}/{start_date}_{run_id}/krona/case_control.krona.html"
-    output: ""
-    shell: ""
-
-
+        krona_html="{outdir}/{start_date}_{run_id}/krona/case_control.krona.html",
+        main_page_stats="{outdir}/{start_date}_{run_id}/main_page_stats.tsv"
+    output:
+        "{outdir}/{start_date}_{run_id}/call_case_control_done"
+    shell: 
+        """
+        touch {output}
+        """
 
 rule generate_krona_plot_case:
     input:
@@ -193,7 +200,7 @@ rule generate_krona_plot_case_control:
 
 rule tableview_case_control:
     input: 
-        case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}stage8/tableview/readcount_tableview.tsv".format(
+        case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/readcount_tableview.tsv".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -241,15 +248,19 @@ rule tableview_case:
         cp {input.case} {output.case}
         """  
 
-rule name:
+rule create_main_page_stats:
     input: 
         raw_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt",
         trimmed_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt",
         classified_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_classified_reads.txt",
         unclassified_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt",
-        fastq_fitering="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}stage8/tableview/fastq_filtering_done"
-    output: "{outdir}/{start_date}_{run_id}"
-    run: 
+        fastq_fitering="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done"
+    output: 
+        stats="{outdir}/{start_date}_{run_id}/main_page_stats.tsv"
+    shell: 
+        """
+        echo "{wildcards.start_date}_{wildcards.run_id}"
+        """
 
 ##STAGE 1
 include:
