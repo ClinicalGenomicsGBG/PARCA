@@ -17,11 +17,11 @@ def generate_pipeline_input(run_dictionary, out_directory):
         if run_dictionary[run_id].get("case") and run_dictionary[run_id].get("control"):
             case_sample_id = run_dictionary[run_id].get("case")
             control_sample_id = run_dictionary[run_id].get("control")
-            case_control_list=f'{out_directory}/{run_id}/case_control_krona.txt'
+            case_control_list=f'{out_directory}/{run_id}/call_case_control_done'
             pipeline_input.append(case_control_list)
         elif run_dictionary[run_id].get("case"):
             case_sample_id = run_dictionary[run_id].get("case")
-            case_list=f'{out_directory}/{run_id}/case_krona.txt'
+            case_list=f'{out_directory}/{run_id}/call_case_done'
             pipeline_input.append(case_list)
     return pipeline_input
 
@@ -35,7 +35,7 @@ print(generate_pipeline_input(run_dict, out_directory=config['outdir']))
 
 rule all:
     input:
-        #expand("{outdir}/{start_date}_{run_id}/case_control_krona.txt", outdir=config['outdir'], start_date="20201202", run_id="run_1")
+        #expand("{outdir}/{start_date}_{run_id}/call_case_control_done", outdir=config['outdir'], start_date="20201202", run_id="run_1")
         # call the fastqc rule too
         generate_pipeline_input(run_dict, out_directory=config['outdir'])
 
