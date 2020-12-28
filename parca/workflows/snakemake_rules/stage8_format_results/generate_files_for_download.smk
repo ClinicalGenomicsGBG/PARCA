@@ -129,7 +129,7 @@ rule zip_filtered_fastq_unclassified:
 
 def filter_fastq_according_to_classification(wildcards):
     checkpoint_output_organism = checkpoints.tableview.get(**wildcards).output['organism_dir']
-    organism_list = expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq.gz",
+    organism_list = expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq.gz",
            outdir=wildcards.outdir,
            start_date=wildcards.start_date,
            run_id=wildcards.run_id,
@@ -138,7 +138,7 @@ def filter_fastq_according_to_classification(wildcards):
            taxid=glob_wildcards(os.path.join(checkpoint_output_organism, "{taxid, \d+}")).taxid)
 
     checkpoint_output_kingdom = checkpoints.tableview_SE.get(**wildcards).output['kingdom_dir']
-    kingdom_list = expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/tableview/kingdom_fastq/{kingdom}.fastq.gz",
+    kingdom_list = expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/tableview/kingdom_fastq/{kingdom}.fastq.gz",
            outdir=wildcards.outdir,
            start_date=wildcards.start_date,
            run_id=wildcards.run_id,
