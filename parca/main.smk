@@ -132,6 +132,16 @@ rule generate_krona_plot_case_control:
         ktImportText {input.readcount_krona_case},"case" {input.readcount_krona_control},"control" -o {output.krona_html};
         """
 
+rule tableview_case:
+    input: 
+        case="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/readcount_tableview.tsv"
+    output: 
+        case="{outdir}/{start_date}_{run_id}/tableview/case_readcount_tableview.tsv"
+    shell: 
+        """
+        cp {input.case} {output.case}
+        """  
+
 rule tableview_case_control:
     input: 
         case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/readcount_tableview.tsv".format(
@@ -172,16 +182,6 @@ rule tableview_case_control:
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/tableview_case_control.R"   
 
-rule tableview_case:
-    input: 
-        case="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/readcount_tableview.tsv"
-    output: 
-        case="{outdir}/{start_date}_{run_id}/tableview/case_readcount_tableview.tsv"
-    shell: 
-        """
-        cp {input.case} {output.case}
-        """  
-
 rule create_main_page_stats:
     input: 
         raw_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt",
@@ -193,8 +193,18 @@ rule create_main_page_stats:
         stats="{outdir}/{start_date}_{run_id}/main_page_stats.tsv"
     shell: 
         """
-        echo "{wildcards.start_date}_{wildcards.run_id}"
+        echo -e "name\traw_reads\ttrimmed_reads\tclassified_reads\tunclassified_reads" > {output.stats}
+        echo -e "{wildcards.start_date}_{wildcards.run_id}\t$(grep "^[0-9]" {input.raw_read_count})\t$(grep "^[0-9]" {input.trimmed_read_count})\t$(grep "^[0-9]" {input.classified_read_count})\t$(grep "^[0-9]" {input.unclassified_read_count})" >> {output.stats}
         """
+
+# rule link_results_:
+#     input: 
+#         stats="{outdir}/{start_date}_{run_id}/main_page_stats.tsv",
+#         tableview="{outdir}/{start_date}_{run_id}/tableview/case_control_readcount_tableview.tsv",
+#         krona_html="{outdir}/{start_date}_{run_id}/krona/case_control.krona.html",
+#         main_page_stats="{outdir}/{start_date}_{run_id}/main_page_stats.tsv"
+#     output: 
+#     run: 
 
 # rule control_and_case:
 #     input:
