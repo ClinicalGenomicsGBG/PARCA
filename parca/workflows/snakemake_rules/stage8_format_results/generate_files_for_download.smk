@@ -17,8 +17,8 @@ checkpoint tableview:
 
 rule filter_fastq_organism_SE:
     input: 
-        organism_tableview="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/organism_dir/taxid_{taxid}.tsv",
-        reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/trimming/trimmed_reads.fq"
+        organism_tableview="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/organism_dir/organism_{taxid}.tsv",
+        trimmed_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/trimming/trimmed_reads.fq"
     output: 
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq"
     params:
@@ -29,9 +29,9 @@ rule filter_fastq_organism_SE:
 
 rule filter_fastq_organism_PE:
     input: 
-        organism_tableview="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/organism_fastq/taxid_{taxid}.tsv",
-        unmerged_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.fq",
-        merged_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_trimmed.fq"
+        organism_tableview="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/organism_dir/organism_{taxid}.tsv",
+        trimmed_reads_unmerged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.fq",
+        trimmed_reads_merged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_trimmed.fq"
     output: 
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq"
     params:
@@ -44,7 +44,7 @@ rule filter_fastq_organism_PE:
 rule filter_fastq_kingdom_SE:
     input: 
         organism_tableview="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/kingdom_dir/kingdom_{kingdom}.tsv",
-        reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/trimming/trimmed_reads.fq"
+        trimmed_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/trimming/trimmed_reads.fq"
     output: 
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq"
     params:
@@ -55,9 +55,9 @@ rule filter_fastq_kingdom_SE:
 
 rule filter_fastq_kingdom_PE:
     input: 
-        organism_tableview="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/kingdom_fastq/kingdom_{kingdom}.tsv",
-        unmerged_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.fq",
-        merged_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_trimmed.fq"
+        organism_tableview="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/kingdom_dir/kingdom_{kingdom}.tsv",
+        trimmed_reads_unmerged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.fq",
+        trimmed_reads_merged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_trimmed.fq"
     output: 
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq"
     params:
@@ -69,26 +69,28 @@ rule filter_fastq_kingdom_PE:
 rule filter_fastq_unclassified_SE:
     input: 
         organism_tableview="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/classified_reads_mincount.tsv",
-        reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/trimming/trimmed_reads.fq"
+        trimmed_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/trimming/trimmed_reads.fq"
     output: 
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq"
     params:
         SE_or_PE="SE",
         negate_query="TRUE"  # The string should be in uppercase letters for R to interpret this.
     conda: "../../conda/R_env.yaml"
+    threads: 10
     script: "../../scripts/reformat_results/filter_fastq.R"
 
 rule filter_fastq_unclassified_PE:
     input: 
         organism_tableview="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/classified_reads_mincount.tsv",
-        unmerged_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.fq",
-        merged_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_trimmed.fq"
+        trimmed_reads_unmerged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.fq",
+        trimmed_reads_merged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_trimmed.fq"
     output: 
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq"
     params:
         SE_or_PE="PE",
         negate_query="TRUE"  # The string should be in uppercase letters for R to interpret this.
     conda: "../../conda/R_env.yaml"
+    threads: 10
     script: "../../scripts/reformat_results/filter_fastq.R"
 
 rule zip_filtered_fastq_organism:
@@ -134,17 +136,19 @@ def filter_fastq_according_to_classification(wildcards):
            start_date=wildcards.start_date,
            run_id=wildcards.run_id,
            sample=wildcards.sample,
+           sample_type=wildcards.sample_type,
            nucleotide=wildcards.nucleotide,
-           taxid=glob_wildcards(os.path.join(checkpoint_output_organism, "{taxid, \d+}")).taxid)
+           taxid=glob_wildcards(os.path.join(checkpoint_output_organism, "organism_{taxid, \d+}.tsv")).taxid)
 
-    checkpoint_output_kingdom = checkpoints.tableview_SE.get(**wildcards).output['kingdom_dir']
+    checkpoint_output_kingdom = checkpoints.tableview.get(**wildcards).output['kingdom_dir']
     kingdom_list = expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq.gz",
            outdir=wildcards.outdir,
            start_date=wildcards.start_date,
            run_id=wildcards.run_id,
            sample=wildcards.sample,
+           sample_type=wildcards.sample_type,
            nucleotide=wildcards.nucleotide,
-           kingdom=glob_wildcards(os.path.join(checkpoint_output_kingdom, "{kingdom, \d+}")).kingdom)
+           kingdom=glob_wildcards(os.path.join(checkpoint_output_kingdom, "kingdom_{kingdom}.tsv")).kingdom)
 
     organism_kingdom_list = organism_list + kingdom_list
     return organism_kingdom_list
