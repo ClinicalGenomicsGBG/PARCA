@@ -41,9 +41,37 @@ rule all:
 
 rule call_case:
     input: 
-        tableview="{outdir}/{start_date}_{run_id}/tableview/case_readcount_tableview.tsv",
-        krona_html="{outdir}/{start_date}_{run_id}/krona/case.krona.html",
-        main_page_stats="{outdir}/{start_date}_{run_id}/main_page_stats.tsv"
+        tableview=lambda wildcards: "{webinterface}/{start_date}_{run_id}/tableview/case_readcount_tableview.tsv".format(
+            webinterface=config['webinterface'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id
+            ),
+        krona_html=lambda wildcards: "{webinterface}/{start_date}_{run_id}/krona/case.krona.html".format(
+            webinterface=config['webinterface'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id
+            ),
+        main_page_stats=lambda wildcards: "{webinterface}/{start_date}_{run_id}/main_page_stats.tsv".format(
+            webinterface=config['webinterface'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id
+            ),
+        fastqs=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) )
     output: 
         case="{outdir}/{start_date}_{run_id}/call_case_done"
     shell: 
@@ -53,15 +81,116 @@ rule call_case:
 
 rule call_case_control:
     input: 
-        tableview="{outdir}/{start_date}_{run_id}/tableview/case_control_readcount_tableview.tsv",
-        krona_html="{outdir}/{start_date}_{run_id}/krona/case_control.krona.html",
-        main_page_stats="{outdir}/{start_date}_{run_id}/main_page_stats.tsv"
+        tableview=lambda wildcards: "{webinterface}/{start_date}_{run_id}/tableview/case_control_readcount_tableview.tsv".format(
+            webinterface=config['webinterface'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id
+            ),
+        krona_html=lambda wildcards: "{webinterface}/{start_date}_{run_id}/krona/case_control.krona.html".format(
+            webinterface=config['webinterface'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id
+            ),
+        main_page_stats=lambda wildcards: "{webinterface}/{start_date}_{run_id}/main_page_stats.tsv".format(
+            webinterface=config['webinterface'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id
+            ),
+        fastqs_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        fastqs_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='control'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="control",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="control",
+                                                                   column="nucleotide",
+                                                                   unique=True) )
     output:
         case_control="{outdir}/{start_date}_{run_id}/call_case_control_done"
     shell: 
         """
         touch {output.case_control}
         """
+
+rule link_case_webinterface:
+    input: 
+        main_page_stats= lambda wildcards:  "{outdir}/{start_date}_{run_id}/main_page_stats.tsv".format(
+            outdir=config['outdir'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id 
+            ),
+        tableview= lambda wildcards:  "{outdir}/{start_date}_{run_id}/tableview/case_readcount_tableview.tsv".format(
+            outdir=config['outdir'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id 
+            ),
+        krona_html= lambda wildcards: "{outdir}/{start_date}_{run_id}/krona/case.krona.html".format(
+            outdir=config['outdir'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id 
+            )
+    output: 
+        main_page_stats= "{webinterface}/{start_date}_{run_id}/main_page_stats.tsv",
+        tableview= "{webinterface}/{start_date}_{run_id}/tableview/case_readcount_tableview.tsv",
+        krona_html= "{webinterface}/{start_date}_{run_id}/krona/case.krona.html"
+    shell:
+        """
+        ln -s {input.main_page_stats} {output.main_page_stats}
+        ln -s {input.tableview} {output.tableview}
+        ln -s {input.krona_html} {output.krona_html}
+        """
+
+rule link_case_control_webinterface:
+    input: 
+        main_page_stats= lambda wildcards:  "{outdir}/{start_date}_{run_id}/main_page_stats.tsv".format(
+            outdir=config['outdir'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id 
+            ),
+        tableview= lambda wildcards:  "{outdir}/{start_date}_{run_id}/tableview/case_control_readcount_tableview.tsv".format(
+            outdir=config['outdir'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id 
+            ),
+        krona_html= lambda wildcards: "{outdir}/{start_date}_{run_id}/krona/case_control.krona.html".format(
+            outdir=config['outdir'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id 
+            )
+    output: 
+        main_page_stats= "{webinterface}/{start_date}_{run_id}/main_page_stats.tsv",
+        tableview= "{webinterface}/{start_date}_{run_id}/tableview/case_control_readcount_tableview.tsv",
+        krona_html= "{webinterface}/{start_date}_{run_id}/krona/case_control.krona.html"
+    shell:
+        """
+        ln -s {input.main_page_stats} {output.main_page_stats}
+        ln -s {input.tableview} {output.tableview}
+        ln -s {input.krona_html} {output.krona_html}
+        """
+
 
 rule generate_krona_plot_case:
     input:
@@ -197,14 +326,8 @@ rule create_main_page_stats:
         echo -e "{wildcards.start_date}_{wildcards.run_id}\t$(grep "^[0-9]" {input.raw_read_count})\t$(grep "^[0-9]" {input.trimmed_read_count})\t$(grep "^[0-9]" {input.classified_read_count})\t$(grep "^[0-9]" {input.unclassified_read_count})" >> {output.stats}
         """
 
-# rule link_results_:
-#     input: 
-#         stats="{outdir}/{start_date}_{run_id}/main_page_stats.tsv",
-#         tableview="{outdir}/{start_date}_{run_id}/tableview/case_control_readcount_tableview.tsv",
-#         krona_html="{outdir}/{start_date}_{run_id}/krona/case_control.krona.html",
-#         main_page_stats="{outdir}/{start_date}_{run_id}/main_page_stats.tsv"
-#     output: 
-#     run: 
+
+
 
 # rule control_and_case:
 #     input:
