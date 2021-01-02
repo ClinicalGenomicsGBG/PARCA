@@ -5,6 +5,9 @@
 outdir: 
   "/apps/bio/dev_repos/parca/demo"
 
+webinterface: 
+  "/medstore/logs/pipeline_logfiles/parca/webinterface"
+
 singularity_image:
   "workflows/containers/image_parca_v6.sif" 
 
