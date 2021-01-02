@@ -51,7 +51,7 @@ rule call_case:
             start_date=wildcards.start_date,
             run_id=wildcards.run_id
             ),
-        main_page_stats=lambda wildcards: "{webinterface}/{start_date}_{run_id}/main_page_stats.tsv".format(
+        main_page_stats=lambda wildcards: "{webinterface}/{start_date}_{run_id}/main_page_stats_case.tsv".format(
             webinterface=config['webinterface'],
             start_date=wildcards.start_date,
             run_id=wildcards.run_id
@@ -91,7 +91,7 @@ rule call_case_control:
             start_date=wildcards.start_date,
             run_id=wildcards.run_id
             ),
-        main_page_stats=lambda wildcards: "{webinterface}/{start_date}_{run_id}/main_page_stats.tsv".format(
+        main_page_stats=lambda wildcards: "{webinterface}/{start_date}_{run_id}/main_page_stats_case_control.tsv".format(
             webinterface=config['webinterface'],
             start_date=wildcards.start_date,
             run_id=wildcards.run_id
@@ -311,15 +311,15 @@ rule tableview_case_control:
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/tableview_case_control.R"   
 
-rule create_main_page_stats:
+rule create_main_page_stats_case:
     input: 
-        raw_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt",
-        trimmed_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt",
-        classified_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_classified_reads.txt",
-        unclassified_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt",
-        fastq_fitering="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done"
+        raw_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt",
+        trimmed_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt",
+        classified_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_classified_reads.txt",
+        unclassified_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt",
+        fastq_fitering="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done"
     output: 
-        stats="{outdir}/{start_date}_{run_id}/main_page_stats.tsv"
+        stats="{outdir}/{start_date}_{run_id}/main_page_stats_case.tsv"
     shell: 
         """
         echo -e "name\traw_reads\ttrimmed_reads\tclassified_reads\tunclassified_reads" > {output.stats}
@@ -327,6 +327,20 @@ rule create_main_page_stats:
         """
 
 
+rule create_main_page_stats_case_control:
+    input: 
+        raw_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt",
+        trimmed_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt",
+        classified_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_classified_reads.txt",
+        unclassified_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt",
+        fastq_fitering="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done"
+    output: 
+        stats="{outdir}/{start_date}_{run_id}/main_page_stats_case_control.tsv"
+    shell: 
+        """
+        echo -e "name\traw_reads\ttrimmed_reads\tclassified_reads\tunclassified_reads" > {output.stats}
+        echo -e "{wildcards.start_date}_{wildcards.run_id}\t$(grep "^[0-9]" {input.raw_read_count})\t$(grep "^[0-9]" {input.trimmed_read_count})\t$(grep "^[0-9]" {input.classified_read_count})\t$(grep "^[0-9]" {input.unclassified_read_count})" >> {output.stats}
+        """
 
 
 # rule control_and_case:
