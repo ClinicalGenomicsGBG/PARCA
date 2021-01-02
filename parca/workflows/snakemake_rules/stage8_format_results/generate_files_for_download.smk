@@ -90,7 +90,7 @@ rule filter_fastq_unclassified_PE:
         SE_or_PE="PE",
         negate_query="TRUE"  # The string should be in uppercase letters for R to interpret this.
     conda: "../../conda/R_env.yaml"
-    threads: 10
+    threads: 8
     script: "../../scripts/reformat_results/filter_fastq.R"
 
 rule zip_filtered_fastq_organism:
@@ -129,10 +129,66 @@ rule zip_filtered_fastq_unclassified:
         pigz -p {threads} -k {input.fastq};
         """ 
 
+########
+rule mv_filtered_fastq_organism:
+    input: 
+        fastq= lambda wildcards: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq.gz".format(
+            outdir=config['outdir']
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id,
+            sample=wildcards.sample,
+            sample_type=wildcards.sample_type,
+            nucleotide=wildcards.nucleotide,
+            taxid=wildcards.taxid
+        )
+    output: 
+        fastq="{webinterface}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq.gz"
+    shell:
+        """
+        ln -s {input.fastq} {output.fastq}
+        """ 
+
+rule mv_filtered_fastq_kingdom:
+    input: 
+        fastq= lambda wildcards: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq.gz".format(
+            outdir=config['outdir']
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id,
+            sample=wildcards.sample,
+            sample_type=wildcards.sample_type,
+            nucleotide=wildcards.nucleotide,
+            taxid=wildcards.taxid
+        )
+    output: 
+        fastq="{webinterface}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq.gz"
+    shell:
+        """
+        ln -s {input.fastq} {output.fastq}
+        """ 
+
+rule mv_filtered_fastq_unclassified:
+    input: 
+        fastq= lambda wildcards: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq.gz".format(
+            outdir=config['outdir']
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id,
+            sample=wildcards.sample,
+            sample_type=wildcards.sample_type,
+            nucleotide=wildcards.nucleotide,
+            taxid=wildcards.taxid
+        )
+    output: 
+        fastq="{webinterface}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq.gz"
+    shell:
+        """
+        ln -s {input.fastq} {output.fastq}
+        """ 
+
+
 def filter_fastq_according_to_classification(wildcards):
     checkpoint_output_organism = checkpoints.tableview.get(**wildcards).output['organism_dir']
-    organism_list = expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq.gz",
-           outdir=wildcards.outdir,
+    organism_list = expand("{webinterface}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq.gz",
+           webinterface=config['webinterface'],
            start_date=wildcards.start_date,
            run_id=wildcards.run_id,
            sample=wildcards.sample,
@@ -141,8 +197,8 @@ def filter_fastq_according_to_classification(wildcards):
            taxid=glob_wildcards(os.path.join(checkpoint_output_organism, "organism_{taxid, \d+}.tsv")).taxid)
 
     checkpoint_output_kingdom = checkpoints.tableview.get(**wildcards).output['kingdom_dir']
-    kingdom_list = expand("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq.gz",
-           outdir=wildcards.outdir,
+    kingdom_list = expand("{webinterface}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq.gz",
+           webinterface=config['webinterface'],
            start_date=wildcards.start_date,
            run_id=wildcards.run_id,
            sample=wildcards.sample,
