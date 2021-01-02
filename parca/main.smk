@@ -263,7 +263,22 @@ rule generate_krona_plot_case_control:
 
 rule tableview_case:
     input: 
-        case="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/readcount_tableview.tsv"
+        case="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/readcount_tableview.tsv".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) )
     output: 
         case="{outdir}/{start_date}_{run_id}/tableview/case_readcount_tableview.tsv"
     shell: 
@@ -313,10 +328,70 @@ rule tableview_case_control:
 
 rule create_main_page_stats_case:
     input: 
-        raw_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt",
-        trimmed_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt",
-        classified_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_classified_reads.txt",
-        unclassified_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt",
+        raw_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        trimmed_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        classified_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_classified_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        unclassified_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
         fastq_fitering="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done"
     output: 
         stats="{outdir}/{start_date}_{run_id}/main_page_stats_case.tsv"
@@ -326,89 +401,149 @@ rule create_main_page_stats_case:
         echo -e "{wildcards.start_date}_{wildcards.run_id}\t$(grep "^[0-9]" {input.raw_read_count})\t$(grep "^[0-9]" {input.trimmed_read_count})\t$(grep "^[0-9]" {input.classified_read_count})\t$(grep "^[0-9]" {input.unclassified_read_count})" >> {output.stats}
         """
 
-
 rule create_main_page_stats_case_control:
     input: 
-        raw_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt",
-        trimmed_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt",
-        classified_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_classified_reads.txt",
-        unclassified_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt",
-        fastq_fitering="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done"
+        case_raw_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        case_trimmed_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        case_classified_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_classified_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        case_unclassified_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+
+        control_raw_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='control'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="control",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="control",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        control_trimmed_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='control'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="control",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="control",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        control_classified_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_classified_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='control'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="control",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="control",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        control_unclassified_read_count="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='control'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="control",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="control",
+                                                                   column="nucleotide",
+                                                                   unique=True) )
     output: 
         stats="{outdir}/{start_date}_{run_id}/main_page_stats_case_control.tsv"
     shell: 
         """
+        raw_read_count=$(echo $(grep "^[0-9]" {input.case_raw_read_count})+$(grep "^[0-9]" {input.control_raw_read_count})|bc)
+        trimmed_read_count=$(echo $(grep "^[0-9]" {input.case_trimmed_read_count})+$(grep "^[0-9]" {input.control_trimmed_read_count})|bc)
+        classified_read_count=$(echo $(grep "^[0-9]" {input.case_classified_read_count})+$(grep "^[0-9]" {input.control_classified_read_count})|bc)
+        unclassified_read_count=$(echo $(grep "^[0-9]" {input.case_unclassified_read_count})+$(grep "^[0-9]" {input.control_unclassified_read_count})|bc)
+        
         echo -e "name\traw_reads\ttrimmed_reads\tclassified_reads\tunclassified_reads" > {output.stats}
-        echo -e "{wildcards.start_date}_{wildcards.run_id}\t$(grep "^[0-9]" {input.raw_read_count})\t$(grep "^[0-9]" {input.trimmed_read_count})\t$(grep "^[0-9]" {input.classified_read_count})\t$(grep "^[0-9]" {input.unclassified_read_count})" >> {output.stats}
+        echo -e "{wildcards.start_date}_{wildcards.run_id}\t$raw_read_count\t$trimmed_read_count\t$classified_read_count\t$unclassified_read_count" >> {output.stats}
         """
-
-
-# rule control_and_case:
-#     input:
-#         case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/readcount_tableview.tsv".format(
-#                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
-#                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-#                                                                case_or_control='case'), 
-#                     sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
-#                                                                     run_dictionary=run_dict,
-#                                                                     run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-#                                                                     case_or_control="case",
-#                                                                     column="PE_or_SE",
-#                                                                     unique=True),
-#                     nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
-#                                                                    run_dictionary=run_dict,
-#                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-#                                                                    case_or_control="case",
-#                                                                    column="nucleotide",
-#                                                                    unique=True) ),
-#         control = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/organism_dfs".format(
-#                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
-#                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-#                                                                case_or_control='control'), 
-#                     sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df,
-#                                                                     run_dictionary=run_dict,
-#                                                                     run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-#                                                                     case_or_control="control",
-#                                                                     column="PE_or_SE",
-#                                                                     unique=True),
-#                     nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
-#                                                                    run_dictionary=run_dict,
-#                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-#                                                                    case_or_control="control",
-#                                                                    column="nucleotide",
-#                                                                    unique=True) )
-#     output:
-#         "{outdir}/{start_date}_{run_id}/case_control_krona.txt"
-#     shell:
-#         """
-#         touch {output}
-#         """
-
-# rule case:
-#     input:
-#         case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt".format(
-#                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
-#                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-#                                                                case_or_control='case'), 
-#                     sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
-#                                                                     run_dictionary=run_dict,
-#                                                                     run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-#                                                                     case_or_control="case",
-#                                                                     column="PE_or_SE",
-#                                                                     unique=True),
-#                     nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
-#                                                                    run_dictionary=run_dict,
-#                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
-#                                                                    case_or_control="case",
-#                                                                    column="nucleotide",
-#                                                                    unique=True) )
-#     output:
-#         "{outdir}/{start_date}_{run_id}/case_krona.txt"
-#     shell:
-#         """
-#         touch {output}
-#         """
-
 
 ##STAGE 1
 include:
