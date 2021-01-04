@@ -228,7 +228,7 @@ rule call_filter_fastqs:
 
 rule tableview_case:
     input: 
-        case=lambda wildcards: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/readcount_tableview.tsv".format(
+        case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/readcount_tableview.tsv".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
