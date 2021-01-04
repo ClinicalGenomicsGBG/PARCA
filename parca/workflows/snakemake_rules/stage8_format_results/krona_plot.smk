@@ -1,5 +1,6 @@
-from ...utils.process_runinfo_metadata import ProcessRuninfoMetadata
-
+#from ...utils.process_runinfo_metadata import ProcessRuninfoMetadata
+import sys
+sys.path.append("../..") 
 
 rule readcount_RNA:
     input: 

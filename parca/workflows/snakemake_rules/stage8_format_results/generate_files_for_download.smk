@@ -1,4 +1,6 @@
-from ...utils.process_runinfo_metadata import ProcessRuninfoMetadata
+# from ...utils.process_runinfo_metadata import ProcessRuninfoMetadata
+import sys
+sys.path.append("../..") 
 
 checkpoint tableview:
     input: 
@@ -142,7 +144,7 @@ rule link_filtered_fastq_organism:
             taxid=wildcards.taxid
         )
     output: 
-        fastq="{webinterface}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/organism_fastq/{taxid}.fastq.gz"
+        fastq="{webinterface}/{start_date}_{run_id}_web/snakemake_results_{sample}/{sample_type}_{nucleotide}/organism_fastq/{taxid}.fastq.gz"
     shell:
         """
         ln -s {input.fastq} {output.fastq}
@@ -160,7 +162,7 @@ rule link_filtered_fastq_kingdom:
             kingdom=wildcards.kingdom
         )
     output: 
-        fastq="{webinterface}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/kingdom_fastq/{kingdom}.fastq.gz"
+        fastq="{webinterface}/{start_date}_{run_id}_web/snakemake_results_{sample}/{sample_type}_{nucleotide}/kingdom_fastq/{kingdom}.fastq.gz"
     shell:
         """
         ln -s {input.fastq} {output.fastq}
@@ -177,7 +179,7 @@ rule link_filtered_fastq_unclassified:
             nucleotide=wildcards.nucleotide
         )
     output: 
-        fastq="{webinterface}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/unclassified_fastq/unclassified.fastq.gz"
+        fastq="{webinterface}/{start_date}_{run_id}_web/snakemake_results_{sample}/{sample_type}_{nucleotide}/unclassified_fastq/unclassified.fastq.gz"
     shell:
         """
         ln -s {input.fastq} {output.fastq}
@@ -186,7 +188,7 @@ rule link_filtered_fastq_unclassified:
 
 def filter_fastq_according_to_classification(wildcards):
     checkpoint_output_organism = checkpoints.tableview.get(**wildcards).output['organism_dir']
-    organism_list = expand("{webinterface}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/organism_fastq/{taxid}.fastq.gz",
+    organism_list = expand("{webinterface}/{start_date}_{run_id}_web/snakemake_results_{sample}/{sample_type}_{nucleotide}/organism_fastq/{taxid}.fastq.gz",
            webinterface=config['webinterface'],
            start_date=wildcards.start_date,
            run_id=wildcards.run_id,
@@ -196,7 +198,7 @@ def filter_fastq_according_to_classification(wildcards):
            taxid=glob_wildcards(os.path.join(checkpoint_output_organism, "organism_{taxid, \d+}.tsv")).taxid)
 
     checkpoint_output_kingdom = checkpoints.tableview.get(**wildcards).output['kingdom_dir']
-    kingdom_list = expand("{webinterface}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/kingdom_fastq/{kingdom}.fastq.gz",
+    kingdom_list = expand("{webinterface}/{start_date}_{run_id}_web/snakemake_results_{sample}/{sample_type}_{nucleotide}/kingdom_fastq/{kingdom}.fastq.gz",
            webinterface=config['webinterface'],
            start_date=wildcards.start_date,
            run_id=wildcards.run_id,
@@ -211,7 +213,7 @@ def filter_fastq_according_to_classification(wildcards):
 rule call_filter_fastqs:
     input:
         classified_fastqs=filter_fastq_according_to_classification,
-        unclassified_fastqs=lambda wildcards: "{webinterface}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/unclassified_fastq/unclassified.fastq.gz".format(
+        unclassified_fastqs=lambda wildcards: "{webinterface}/{start_date}_{run_id}_web/snakemake_results_{sample}/{sample_type}_{nucleotide}/unclassified_fastq/unclassified.fastq.gz".format(
             webinterface=config['webinterface'],
             start_date=wildcards.start_date,
             run_id=wildcards.run_id,
@@ -226,7 +228,7 @@ rule call_filter_fastqs:
 
 rule tableview_case:
     input: 
-        case="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/readcount_tableview.tsv".format(
+        case=lambda wildcards: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/readcount_tableview.tsv".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
