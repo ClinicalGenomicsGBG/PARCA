@@ -1,3 +1,4 @@
+from ...utils.process_runinfo_metadata import ProcessRuninfoMetadata
 
 checkpoint tableview:
     input: 
@@ -223,3 +224,67 @@ rule call_filter_fastqs:
     shell:
         "touch {output}"
 
+rule tableview_case:
+    input: 
+        case="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/readcount_tableview.tsv".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) )
+    output: 
+        case="{outdir}/{start_date}_{run_id}/tableview/case_readcount_tableview.tsv"
+    shell: 
+        """
+        cp {input.case} {output.case}
+        """  
+
+rule tableview_case_control:
+    input: 
+        case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/readcount_tableview.tsv".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        control = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/readcount_tableview.tsv".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='control'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="control",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="control",
+                                                                   column="nucleotide",
+                                                                   unique=True) )
+
+    output: 
+        case_control="{outdir}/{start_date}_{run_id}/tableview/case_control_readcount_tableview.tsv"
+    conda: "../../conda/R_env.yaml"
+    script: "../../scripts/reformat_results/tableview_case_control.R"   
