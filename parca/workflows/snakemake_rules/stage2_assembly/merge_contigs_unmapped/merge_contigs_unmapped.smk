@@ -14,8 +14,8 @@ rule create_kmer_classifier_input_SE_RNA:
         contigs="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/megahit/RNA.contigs.fa",
         unmapped_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/bbwrap_alignment/unmapped_reads.fasta"
     output:
-        kmer_input="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/kmer_input/kmer_input.fasta",
-        read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_RNA/stage2/kmer_input/count_kmer_input.txt"
+        kmer_input=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/kmer_input/kmer_input.fasta"),
+        read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_RNA/stage2/kmer_input/count_kmer_input.txt")
     shell:
         """
         cat {input.contigs} {input.unmapped_reads} > {output.kmer_input};
@@ -37,8 +37,8 @@ rule create_kmer_classifier_input_SE_DNA:
     input:
         fasta="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_DNA/stage1/fiona/trimmed_reads_fiona.fa"
     output:
-        kmer_input="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_DNA/stage2/kmer_input/kmer_input.fasta",
-        read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_DNA/stage2/kmer_input/count_kmer_input.txt"
+        kmer_input=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_DNA/stage2/kmer_input/kmer_input.fasta"),
+        read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_DNA/stage2/kmer_input/count_kmer_input.txt")
     shell:
         """
         cp {input.fasta} {output.kmer_input};
@@ -56,7 +56,7 @@ rule join_unmerged_PE_RNA:
     input:
         fasta="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/unmerged_reads_unmapped.fasta"
     output:
-        fasta="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/unmerged_reads_unmapped_joined.fasta"
+        fasta=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/unmerged_reads_unmapped_joined.fasta")
     run:
         reformatted=[]
         with open(input['fasta'], 'r') as filehandle:
@@ -94,8 +94,8 @@ rule create_kmer_classifier_input_PE_RNA:
         contigs="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/megahit/RNA.contigs.fa",
         merged_reads_mapped="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/merged_reads_unmapped.fasta"
     output: 
-        kmer_input="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/kmer_input/kmer_input.fasta",
-        read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_RNA/stage2/kmer_input/count_kmer_input.txt"
+        kmer_input=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/kmer_input/kmer_input.fasta"),
+        read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_RNA/stage2/kmer_input/count_kmer_input.txt")
     shell:
         """
         cat {input} > {output.kmer_input};
@@ -113,7 +113,7 @@ rule join_unmerged_PE_DNA:
     input:
         fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage1/trimming/unmerged_reads_trimmed.fq"
     output:
-        fasta="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/unmerged_reads_joined.fasta"
+        fasta=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/unmerged_reads_joined.fasta")
     run:
         reformatted=[]
         with open(input['fastq'], 'r') as filehandle:
@@ -150,7 +150,7 @@ rule convert_fasta_to_fastq_PE_DNA:
     input: 
         fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage1/trimming/merged_reads_trimmed.fq"
     output:
-        fasta="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/merged_reads_trimmed.fa"
+        fasta=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/merged_reads_trimmed.fa")
     conda: "../../../conda/bbmap_env.yaml"
     shell: 
         """
@@ -174,8 +174,8 @@ rule create_kmer_classifier_input_PE_DNA:
         unmerged_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/unmerged_reads_joined.fasta",
         merged_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/merged_reads_trimmed.fa"
     output: 
-        kmer_input="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/kmer_input.fasta",
-        read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_DNA/stage2/kmer_input/count_kmer_input.txt"
+        kmer_input=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/kmer_input.fasta"),
+        read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_DNA/stage2/kmer_input/count_kmer_input.txt")
     shell:
         """
         cat {input} > {output.kmer_input};

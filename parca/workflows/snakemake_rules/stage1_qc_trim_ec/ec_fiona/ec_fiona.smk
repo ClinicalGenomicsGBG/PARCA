@@ -12,7 +12,7 @@ rule fiona_SE_RNA:
     input: 
         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/pollux/trimmed_reads.corrected.fq"
     output: 
-        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fa"
+        temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fa")
     params:
         fiona=config['fiona_path'] #config['fiona_path']
     log:  "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage1/fiona.log"
@@ -40,7 +40,7 @@ rule fiona_SE_DNA:
     input: 
        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_DNA/stage1/trimming/trimmed_reads.fq"
     output: 
-        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_DNA/stage1/fiona/trimmed_reads_fiona.fa"
+        temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_DNA/stage1/fiona/trimmed_reads_fiona.fa")
     params:
         fiona=config['fiona_path'] #config['fiona_path']
     log:  "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_DNA/stage1/fiona.log"

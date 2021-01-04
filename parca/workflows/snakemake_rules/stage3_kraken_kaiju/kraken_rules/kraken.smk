@@ -13,7 +13,7 @@ rule kraken:
     input: 
         kmer_input="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta"
     output:  
-        kraken="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.txt"
+        kraken=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.txt")
     params:
         #kraken_path=config['kraken_path'],
         kraken_path=config['kraken_path'],
@@ -53,7 +53,7 @@ rule kraken_filter_score:
     input: 
         kraken="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.txt"
     output:  
-        filtered="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt"
+        filtered=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.txt")
     params:
         #kraken_path=config['kraken_path'],
         kraken_path=config['kraken_path'],
@@ -92,8 +92,8 @@ rule kraken_filter_classified_RNA:
             kraken_db=config['krakendb_RNA'], 
             db_limits=config['krakendblimits_RNA'])
     output:
-        classified_filtered="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_RNA/stage3/kraken/kraken_filtered_classified.txt",
-        read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_RNA/stage3/kraken/count_kraken_filtered_classified.txt"
+        classified_filtered=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_RNA/stage3/kraken/kraken_filtered_classified.txt"),
+        read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_RNA/stage3/kraken/count_kraken_filtered_classified.txt")
     params:
         program="kraken"
     conda: "../../../conda/R_env.yaml" #config['conda_environment']
@@ -117,8 +117,8 @@ rule kraken_filter_classified_DNA:
             kraken_db=config['krakendb_DNA'], 
             db_limits=config['krakendblimits_DNA'])
     output:
-        classified_filtered="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_DNA/stage3/kraken/kraken_filtered_classified.txt",
-        read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_DNA/stage3/kraken/count_kraken_filtered_classified.txt"
+        classified_filtered=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_DNA/stage3/kraken/kraken_filtered_classified.txt"),
+        read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_DNA/stage3/kraken/count_kraken_filtered_classified.txt")
     params:
         program="kraken"
     conda: "../../../conda/R_env.yaml" #config['conda_environment']

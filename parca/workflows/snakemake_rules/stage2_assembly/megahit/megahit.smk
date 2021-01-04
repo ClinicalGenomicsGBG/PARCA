@@ -19,12 +19,12 @@ rule megahit_SE_RNA:
     input:
         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fa"
     output:
-        done_file="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/megahit/done",
-        intermediate_contigs_dir=directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/megahit/intermediate_contigs"),
-        opts="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/megahit/options.json",
-        contigs= "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/megahit/RNA.contigs.fa",
-        log="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/megahit/RNA.log",
-        read_count= "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_RNA/stage2/megahit/count_assembled_contigs.txt"
+        done_file=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/megahit/done"),
+        intermediate_contigs_dir=temp(directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/megahit/intermediate_contigs")),
+        opts=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/megahit/options.json"),
+        contigs= temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/megahit/RNA.contigs.fa"),
+        log=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/megahit/RNA.log"),
+        read_count= temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_RNA/stage2/megahit/count_assembled_contigs.txt")
     params:     
         out_prefix="RNA",
         outdir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/megahit",
@@ -66,12 +66,12 @@ rule megahit_PE_RNA:
         unmerged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage1/trimming/unmerged_reads_trimmed.fq",
         merged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage1/trimming/merged_reads_trimmed.fq"
     output:
-        done_file="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/megahit/done",
-        intermediate_contigs_dir=directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/megahit/intermediate_contigs"),
-        opts="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/megahit/options.json",
-        contigs="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/megahit/RNA.contigs.fa",
-        log="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/megahit/RNA.log",
-        read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_RNA/stage2/megahit/count_assembled_contigs.txt"
+        done_file=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/megahit/done"),
+        intermediate_contigs_dir=temp(directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/megahit/intermediate_contigs")),
+        opts=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/megahit/options.json"),
+        contigs=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/megahit/RNA.contigs.fa"),
+        log=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/megahit/RNA.log"),
+        read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_RNA/stage2/megahit/count_assembled_contigs.txt")
     params:     
         out_prefix="RNA",
         outdir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/megahit",

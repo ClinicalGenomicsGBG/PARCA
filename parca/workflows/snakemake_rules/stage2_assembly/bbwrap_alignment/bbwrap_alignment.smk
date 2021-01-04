@@ -14,10 +14,10 @@ rule bbwrap_alignment_SE_RNA:
         ref="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/megahit/RNA.contigs.fa",
         reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/fiona/trimmed_reads_fiona.fa"
     output:
-        mapped="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/bbwrap_alignment/aln.sam.gz",
-        unmapped="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/bbwrap_alignment/unmapped_reads.fasta",
-        scafstats="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_RNA/stage2/bbwrap_alignment/bbmap_scafstats.txt",
-        stats="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_RNA/stage2/bbwrap_alignment/bbmap_stats.txt"
+        mapped=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/bbwrap_alignment/aln.sam.gz"),
+        unmapped=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/bbwrap_alignment/unmapped_reads.fasta"),
+        scafstats=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_RNA/stage2/bbwrap_alignment/bbmap_scafstats.txt"),
+        stats=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_RNA/stage2/bbwrap_alignment/bbmap_stats.txt")
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage2/bbwrap_alignment.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage2/bbwrap.txt"
@@ -51,7 +51,7 @@ rule pileup_SE_RNA:
     input:
         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/bbwrap_alignment/aln.sam.gz"
     output:
-        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/pileup/bbmap_cov.txt"
+        temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/pileup/bbmap_cov.txt")
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage2/pileup.log"
     shell:
@@ -78,10 +78,10 @@ rule bbwrap_alignment_PE_RNA:
         ref="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/megahit/RNA.contigs.fa",
         reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage1/trimming/{group}_reads_trimmed.fq"
     output: 
-        mapped="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/{group}_aln.sam.gz",
-        unmapped="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/{group}_reads_unmapped.fasta",
-        scafstats="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_RNA/stage2/bbwrap_alignment/{group}_bbmap_scafstats.txt",
-        stats="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_RNA/stage2/bbwrap_alignment/{group}_bbmap_stats.txt"
+        mapped=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/{group}_aln.sam.gz"),
+        unmapped=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/{group}_reads_unmapped.fasta"),
+        scafstats=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_RNA/stage2/bbwrap_alignment/{group}_bbmap_scafstats.txt"),
+        stats=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_RNA/stage2/bbwrap_alignment/{group}_bbmap_stats.txt")
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_RNA/stage2/{group}_bbwrap_alignment.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_RNA/stage2/{group}_bbwrap.txt"
@@ -118,7 +118,7 @@ rule pileup_PE_RNA:
     input:
         aln="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/{group}_aln.sam.gz"
     output:
-        cov="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/pileup/{group}_bbmap_cov.txt"
+        cov=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/pileup/{group}_bbmap_cov.txt")
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_RNA/stage2/{group}_pileup.log"
     wildcard_constraints:
@@ -137,7 +137,7 @@ rule merge_pileup_files_PE_RNA:
         merged_cov="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/pileup/merged_bbmap_cov.txt",
         unmerged_cov="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/pileup/unmerged_bbmap_cov.txt"
     output: 
-        cov="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/pileup/bbmap_cov.txt"
+        cov=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/pileup/bbmap_cov.txt")
     shell: 
         """
         cat {input.merged_cov} {input.unmerged_cov} > {output.cov}

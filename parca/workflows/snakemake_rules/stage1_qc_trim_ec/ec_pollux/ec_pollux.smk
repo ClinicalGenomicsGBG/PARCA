@@ -14,7 +14,7 @@ rule pollux_SE_RNA:
     input: 
         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/trimming/trimmed_reads.fq"
     output: 
-        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/pollux/trimmed_reads.corrected.fq"
+        temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/pollux/trimmed_reads.corrected.fq")
     params:
         pollux=config['pollux_path'], #config['pollux_path'],
         outdir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/pollux",

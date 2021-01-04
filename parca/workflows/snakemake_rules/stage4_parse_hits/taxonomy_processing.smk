@@ -20,7 +20,7 @@ rule add_taxon_names_doublets:
     input:
         combined="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju.txt"
     output:
-        named="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju_names_unfiltered.txt"
+        named=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju_names_unfiltered.txt")
     params:
         names_nodes_dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
         #nodes=config['nodes'],
@@ -58,8 +58,8 @@ rule filter_SGF_empty:
         kaiju_doublets="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/kaiju_doublets.txt",
         singletons="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/comparison/singletons.txt",
     output: 
-        combined_SGF_empty_filter="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_kraken_kaiju_names.txt",
-        singletons_added_SGF_empty="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_added_SGF_empty.txt"
+        combined_SGF_empty_filter=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_kraken_kaiju_names.txt"),
+        singletons_added_SGF_empty=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_added_SGF_empty.txt")
     conda: "../../conda/R_env.yaml" #config['conda_environment']
     script:
         "../../scripts/taxonomy_processing/filter_SGF_empty.R" 
@@ -77,7 +77,7 @@ rule get_taxonomic_lineage_singletons:
     input: 
         singletons_added_SGF_empty="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_added_SGF_empty.txt",
     output:
-        tax_id_lineage="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_tax_id_lineage.txt"
+        tax_id_lineage=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_tax_id_lineage.txt")
     conda: "../../conda/taxonkit_env.yaml" #config['conda_environment']
     params:
         dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
@@ -108,8 +108,8 @@ rule singletons_species_to_genus:
         singletons_added_SGF_empty="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_added_SGF_empty.txt",
         tax_id_lineage="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_tax_id_lineage.txt"
     output: 
-        singletons_genus="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus.txt",
-        read_count_singletons_genus = "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_singletons_genus.txt"
+        singletons_genus=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus.txt"),
+        read_count_singletons_genus = temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_singletons_genus.txt")
     conda: "../../conda/R_env.yaml" #config['conda_environment']
     script: 
         "../../scripts/taxonomy_processing/filter_taxonomy.R" 
@@ -124,7 +124,7 @@ rule add_taxon_names_singletons:
     input: 
         singletons_genus="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus.txt",
     output: 
-        singletons_genus_names="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names.txt",
+        singletons_genus_names=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names.txt"),
     params:
         names_nodes_dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
         #nodes=config['nodes'],
@@ -150,7 +150,7 @@ rule reformat_singletons:
     input: 
         singletons_genus_names="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names.txt"
     output: 
-        singletons_genus_names_reformat="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names_reformat.txt"
+        singletons_genus_names_reformat=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names_reformat.txt")
     conda: "../../conda/R_env.yaml" #config['conda_environment']
     script:
         "../../scripts/taxonomy_processing/reformat_taxonomy.R"  
@@ -166,7 +166,7 @@ rule merge_combined_with_singletons:
         singletons_genus_names_reformat="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names_reformat.txt",
         combined_SGF_empty_filter="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_kraken_kaiju_names.txt"
     output: 
-        combined_doublets_singletons="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt"
+        combined_doublets_singletons=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt")
     shell: 
         """
         cat {input.singletons_genus_names_reformat} > {output.combined_doublets_singletons};
@@ -183,8 +183,8 @@ rule genus_species_split:
     input: 
         combined_doublets_singletons="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt"
     output:
-        species="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/species_classed.txt",
-        higher="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/above_species_classed.txt",
-        read_count = "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_species_genus_higher.txt"
+        species=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/species_classed.txt"),
+        higher=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/above_species_classed.txt"),
+        read_count = temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_species_genus_higher.txt")
     conda: "../../conda/R_env.yaml" #config['conda_environment']
     script: "../../scripts/taxonomy_processing/genus_species_split.R" 

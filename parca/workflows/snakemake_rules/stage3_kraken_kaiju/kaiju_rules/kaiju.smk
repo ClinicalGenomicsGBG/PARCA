@@ -12,7 +12,7 @@ rule kaiju:
     input: 
         kmer_input="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta"
     output:
-        kaiju="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.txt"
+        kaiju=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.txt")
     params:
         kaiju_db_base_path=config['kaiju_db_base_path'], #config['kaiju_db_base_path'],
         kaijunames=config['kaiju_names'] #config['kaiju_names']
@@ -50,8 +50,8 @@ rule kaiju_filter_classified_RNA:
             kaiju_score=config['kaijuscore_RNA'],
             kaiju_matches=config['kaijumatches_RNA'] ) 
     output:
-        classified_filtered="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_RNA/stage3/kaiju/kaiju_filtered_classified.txt",
-        read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_RNA/stage3/kaiju/count_kaiju_filtered_classified.txt"
+        classified_filtered=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_RNA/stage3/kaiju/kaiju_filtered_classified.txt"),
+        read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_RNA/stage3/kaiju/count_kaiju_filtered_classified.txt")
     params:
         program="kaiju"
     conda: "../../../conda/R_env.yaml" #config['conda_environment']
@@ -76,8 +76,8 @@ rule kaiju_filter_classified_DNA:
             kaiju_score=config['kaijuscore_DNA'],
             kaiju_matches=config['kaijumatches_DNA'] ) 
     output:
-        classified_filtered="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_DNA/stage3/kaiju/kaiju_filtered_classified.txt",
-        read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_DNA/stage3/kaiju/count_kaiju_filtered_classified.txt"
+        classified_filtered=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_DNA/stage3/kaiju/kaiju_filtered_classified.txt"),
+        read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_DNA/stage3/kaiju/count_kaiju_filtered_classified.txt")
     params:
         program="kaiju"
     conda: "../../../conda/R_env.yaml" #config['conda_environment']

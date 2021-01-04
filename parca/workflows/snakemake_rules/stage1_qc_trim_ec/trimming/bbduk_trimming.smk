@@ -15,9 +15,9 @@ rule bbduk_trimming_SE:
     input:
         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/samples/{sample}.fastq"
     output:
-        reads= "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/trimming/trimmed_reads.fq",
-        stats= "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/trimming/bbduk_stats.txt",
-        trimmed_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt"
+        reads= temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/trimming/trimmed_reads.fq"),
+        stats= temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/trimming/bbduk_stats.txt"),
+        trimmed_read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt")
     params:     
         adapters=','.join(list(metadata_df.loc[metadata_df['sample_id'] == '{sample}']['adapters'])),
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t"
@@ -72,8 +72,8 @@ rule bbduk_merging_PE:
     input: 
         interleaved="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_interleaved.fastq"
     output: 
-        merged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads.fastq",
-        unmerged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads.fastq"
+        merged=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads.fastq"),
+        unmerged=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads.fastq")
     params:     
         mininsert=17
     conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
@@ -105,9 +105,9 @@ rule bbduk_trimming_PE_merged_lKtrim:
     input:
         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads.fastq"
     output:
-        reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_lKtrim.fq",
-        stats="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged_reads_lKtrim.txt",
-        trimmed_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_lKtrim.txt"
+        reads=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_lKtrim.fq"),
+        stats=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged_reads_lKtrim.txt"),
+        trimmed_read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_lKtrim.txt")
     params:     
         adapters=','.join(list(metadata_df.loc[metadata_df['sample_id'] == '{sample}']['adapters'])),
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t"
@@ -166,9 +166,9 @@ rule bbduk_trimming_PE_merged_rKtrim:
     input:
         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_lKtrim.fq"
     output:
-        reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_trimmed.fq",
-        stats="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged_reads_trimmed.txt",
-        trimmed_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_trimmed.txt"
+        reads=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_trimmed.fq"),
+        stats=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_merged_reads_trimmed.txt"),
+        trimmed_read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_trimmed.txt")
     params:     
         adapters=','.join(list(metadata_df.loc[metadata_df['sample_id'] == '{sample}']['adapters'])),
         adaptertrimcommand="ktrim=r k=16 mink=11 hdist=1 rcomp=t" 
@@ -218,9 +218,9 @@ rule bbduk_trimming_PE_unmerged:
     input:
         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads.fastq"
     output:
-        reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed_raw.fq",
-        stats="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_unmerged_reads_trimmed_raw.txt",
-        trimmed_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_unmerged_reads_trimmed_raw.txt"
+        reads=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed_raw.fq"),
+        stats=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/bbduk_stats_unmerged_reads_trimmed_raw.txt"),
+        trimmed_read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_unmerged_reads_trimmed_raw.txt")
     params:     
         adapters=','.join(list(metadata_df.loc[metadata_df['sample_id'] == '{sample}']['adapters'])),
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t" 
@@ -268,7 +268,7 @@ rule reformat_unmerged_PE:
     input: 
         reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed_raw.fq"
     output: 
-        reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.fq"
+        reads=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.fq")
     run: 
         reformatted=[]
         with open(input['reads'], 'r') as filehandle:
@@ -297,21 +297,12 @@ rule total_trimmed_reads_PE:
         trimmed_read_count_unmerged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_unmerged_reads_trimmed_raw.txt",
         trimmed_read_count_merged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_trimmed.txt" 
     output:
-        trimmed_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt" 
+        trimmed_read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt") 
     shell:
         """
         echo count > {output.trimmed_read_count};
         echo $(grep "^[0-9]" {input.trimmed_read_count_unmerged})+$(grep "^[0-9]" {input.trimmed_read_count_merged})|bc >> {output.trimmed_read_count};
         """ 
-
-# rule count_trimmed_reads_PE:
-#     input: 
-#         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads_paired.txt",
-#         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads_merged.txt"
-#     output: 
-#     shell:
-#         """
-#         """
 
  
 # bbduk.sh

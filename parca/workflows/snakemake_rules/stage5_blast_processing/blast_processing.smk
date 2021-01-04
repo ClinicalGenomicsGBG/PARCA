@@ -3,9 +3,9 @@ rule existing_slices_split:
     input: 
         higher="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/above_species_classed.txt",
     output: 
-        detected="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/detected_slices.txt",
-        missing="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/missing_slices.txt",
-        read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_detected_missing_slices.txt"
+        detected=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/detected_slices.txt"),
+        missing=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/missing_slices.txt"),
+        read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_detected_missing_slices.txt")
     params: 
         existing_slice_path=config['existing_slice_path'], #config['existing_slice_path'],
         min_tax_id_count=2
@@ -74,7 +74,7 @@ checkpoint all_gislices:
         created_slice_dir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices_acc",
         existing_slices="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/existing_slices"
     output: 
-        all_slices=directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/all_gislices")
+        all_slices=temp(directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/all_gislices"))
     params: 
         splitaccdump_dir=config['splitaccdump_dir'] #config['splitaccdump_dir']
     shell: 
@@ -95,7 +95,7 @@ rule create_blastdb_alias:
     input:
         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/all_gislices/{gi_slice}"
     output:
-        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}.nal"
+        temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}.nal")
     params: 
         nt_db_dir=config['nt_db_dir'], #config['nt_db_dir'],
         out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}"
@@ -123,7 +123,7 @@ rule call_create_blastdb_alias:
     input:
         aggregate_blast_slices
     output:
-        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/alias_done"
+        temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/alias_done")
     shell:
         "touch {output}"
 
