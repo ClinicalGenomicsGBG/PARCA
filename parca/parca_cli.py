@@ -27,6 +27,9 @@ def main():
 @click.option('-o', '--outdir', 'outdir', type=click.Path(exists=True),
               required=True,
               help='Give the absolute path to a directory where all results will be placed in a subforder named after date and runinfo')
+@click.option('-w', '--webinterface', 'webinterface', type=click.Path(exists=True),
+              required=True,
+              help='Give the absolute path to a directory where all final results will be linked')
 @click.option('-cl', '--complete_log', 'complete_log',
               type=click.Path(exists=True),
               default="/medstore/logs/pipeline_logfiles/parca",
@@ -34,7 +37,7 @@ def main():
 # @click.option('-gs', '--generate_subdir', 'generate_subdir', is_flag=True,
 #               help='Generate a subfolder with date within outdir a given outdir')
 @click.option('-d', '--dryrun', 'dryrun', is_flag=True, help='dryrun')
-def run(metadata, runinfo, dryrun, outdir, complete_log):
+def run(metadata, runinfo, dryrun, outdir, webinterface, complete_log):
     """
     Run the PaRCA pipeline.
     """
@@ -49,7 +52,8 @@ def run(metadata, runinfo, dryrun, outdir, complete_log):
     config_dict_added = {
                 'run_dict_list': run_dict_list,
                 'metadata_dict': metadata_dict,
-                'outdir': outdir}
+                'outdir': outdir,
+                'webinterface': webinterface}
 
     cluster_settings = "".join(["qsub ",
                                 "-S /bin/bash ",
@@ -71,7 +75,7 @@ def run(metadata, runinfo, dryrun, outdir, complete_log):
                                  latency_wait=60,
                                  printreason=True,
                                  printshellcmds=True,
-                                 verbose=True,
+                                 # verbose=True,
                                  cores=40,
                                  # conda settings
                                  use_conda=True,
@@ -134,4 +138,4 @@ if __name__ == '__main__':
 # print dag functionality
 # snakemake --dag -s main.smk| dot -Tpng > dag.png
 
-# python3 parca_cli.py run -m /apps/bio/dev_repos/parca/demo/runinfo/metadata.csv -r /apps/bio/dev_repos/parca/demo/runinfo/runinfo.csv -o /medstore/logs/pipeline_logfiles/parca --dryrun
+# python3 parca_cli.py run -m /apps/bio/dev_repos/parca/demo/runinfo/metadata.csv -r /apps/bio/dev_repos/parca/demo/runinfo/runinfo.csv -o /medstore/logs/pipeline_logfiles/parca -w /medstore/logs/pipeline_logfiles/parca/webinterface --dryrun
