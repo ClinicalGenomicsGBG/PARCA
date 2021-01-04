@@ -93,7 +93,7 @@ if (nrow(df_doublets)==0) {
     filter(seq_id %in% vec_SGF_empty_only ) %>%
     arrange(seq_id, desc(matches)) %>%
     group_by(seq_id) %>%
-    slice(1) %>% ungroup() %>% 
+    dplyr::slice(1) %>% ungroup() %>% 
     mutate(tax_id=as.character(tax_id))
   
   df_singletons_SGF_empty <- 

@@ -17,11 +17,11 @@ def generate_pipeline_input(run_dictionary, out_directory):
         if run_dictionary[run_id].get("case") and run_dictionary[run_id].get("control"):
             case_sample_id = run_dictionary[run_id].get("case")
             control_sample_id = run_dictionary[run_id].get("control")
-            case_control_list=f'{out_directory}/{run_id}/case_control_krona.txt'
+            case_control_list=f'{out_directory}/{run_id}/call_case_control_done'
             pipeline_input.append(case_control_list)
         elif run_dictionary[run_id].get("case"):
             case_sample_id = run_dictionary[run_id].get("case")
-            case_list=f'{out_directory}/{run_id}/case_krona.txt'
+            case_list=f'{out_directory}/{run_id}/call_case_done'
             pipeline_input.append(case_list)
     return pipeline_input
 
@@ -31,18 +31,72 @@ run_dict = ProcessRuninfoMetadata.nested_run_dict(run_dict_list)
 metadata_dict = config['metadata_dict']
 metadata_df = pd.DataFrame(metadata_dict)
 
-# print(generate_pipeline_input(run_dict, out_directory=config['outdir'])[0])
+# print(generate_pipeline_input(run_dict, out_directory=config['outdir']))
 
 rule all:
     input:
-        #expand("{outdir}/{start_date}_{run_id}/case_control_krona.txt", outdir=config['outdir'], start_date="20201202", run_id="run_1")
+        #expand("{outdir}/{start_date}_{run_id}/call_case_control_done", outdir=config['outdir'], start_date="20201202", run_id="run_1")
+        # call the fastqc rule too
         generate_pipeline_input(run_dict, out_directory=config['outdir'])
-    run:
-        print(input)
 
-rule control_and_case:
-    input:
-        case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta".format(
+rule call_case:
+    input: 
+        tableview=lambda wildcards: "{webinterface}/{start_date}_{run_id}_web/tableview/case_readcount_tableview.tsv".format(
+            webinterface=config['webinterface'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id
+            ),
+        krona_html=lambda wildcards: "{webinterface}/{start_date}_{run_id}_web/krona/case.krona.html".format(
+            webinterface=config['webinterface'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id
+            ),
+        main_page_stats=lambda wildcards: "{webinterface}/{start_date}_{run_id}_web/main_page_stats_case.tsv".format(
+            webinterface=config['webinterface'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id
+            ),
+        fastqs=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) )
+    output: 
+        case="{outdir}/{start_date}_{run_id}/call_case_done"
+    shell: 
+        """
+        touch {output.case}
+        """
+
+rule call_case_control:
+    input: 
+        tableview=lambda wildcards: "{webinterface}/{start_date}_{run_id}_web/tableview/case_control_readcount_tableview.tsv".format(
+            webinterface=config['webinterface'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id
+            ),
+        krona_html=lambda wildcards: "{webinterface}/{start_date}_{run_id}_web/krona/case_control.krona.html".format(
+            webinterface=config['webinterface'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id
+            ),
+        main_page_stats=lambda wildcards: "{webinterface}/{start_date}_{run_id}_web/main_page_stats_case_control.tsv".format(
+            webinterface=config['webinterface'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id
+            ),
+        fastqs_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -58,11 +112,11 @@ rule control_and_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        control = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta".format(
+        fastqs_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='control'), 
-                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
                                                                     run_dictionary=run_dict,
                                                                     run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                     case_or_control="control",
@@ -75,15 +129,118 @@ rule control_and_case:
                                                                    column="nucleotide",
                                                                    unique=True) )
     output:
-        "{outdir}/{start_date}_{run_id}/case_control_krona.txt"
-    shell:
+        case_control="{outdir}/{start_date}_{run_id}/call_case_control_done"
+    shell: 
         """
-        touch {output}
+        touch {output.case_control}
         """
 
-rule case:
-    input:
-        case = lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta".format(
+rule link_case_webinterface:
+    input: 
+        main_page_stats= lambda wildcards:  "{outdir}/{start_date}_{run_id}/main_page_stats_case.tsv".format(
+            outdir=config['outdir'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id 
+            ),
+        tableview= lambda wildcards:  "{outdir}/{start_date}_{run_id}/tableview/case_readcount_tableview.tsv".format(
+            outdir=config['outdir'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id 
+            ),
+        krona_html= lambda wildcards: "{outdir}/{start_date}_{run_id}/krona/case.krona.html".format(
+            outdir=config['outdir'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id 
+            )
+    output: 
+        main_page_stats= "{webinterface}/{start_date}_{run_id}_web/main_page_stats_case.tsv",
+        tableview= "{webinterface}/{start_date}_{run_id}_web/tableview/case_readcount_tableview.tsv",
+        krona_html= "{webinterface}/{start_date}_{run_id}_web/krona/case.krona.html"
+    shell:
+        """
+        ln -s {input.main_page_stats} {output.main_page_stats}
+        ln -s {input.tableview} {output.tableview}
+        ln -s {input.krona_html} {output.krona_html}
+        """
+
+rule link_case_control_webinterface:
+    input: 
+        main_page_stats= lambda wildcards:  "{outdir}/{start_date}_{run_id}/main_page_stats_case_control.tsv".format(
+            outdir=config['outdir'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id 
+            ),
+        tableview= lambda wildcards:  "{outdir}/{start_date}_{run_id}/tableview/case_control_readcount_tableview.tsv".format(
+            outdir=config['outdir'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id 
+            ),
+        krona_html= lambda wildcards: "{outdir}/{start_date}_{run_id}/krona/case_control.krona.html".format(
+            outdir=config['outdir'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id 
+            )
+    output: 
+        main_page_stats= "{webinterface}/{start_date}_{run_id}_web/main_page_stats_case_control.tsv",
+        tableview= "{webinterface}/{start_date}_{run_id}_web/tableview/case_control_readcount_tableview.tsv",
+        krona_html= "{webinterface}/{start_date}_{run_id}_web/krona/case_control.krona.html"
+    shell:
+        """
+        ln -s {input.main_page_stats} {output.main_page_stats}
+        ln -s {input.tableview} {output.tableview}
+        ln -s {input.krona_html} {output.krona_html}
+        """
+rule create_main_page_stats_case:
+    input: 
+        raw_read_count=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        trimmed_read_count=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        classified_read_count=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_classified_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        unclassified_read_count=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -99,44 +256,157 @@ rule case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) )
-    output:
-        "{outdir}/{start_date}_{run_id}/case_krona.txt"
-    shell:
+    output: 
+        stats="{outdir}/{start_date}_{run_id}/main_page_stats_case.tsv"
+    shell: 
         """
-        touch {output}
+        echo -e "name\traw_reads\ttrimmed_reads\tclassified_reads\tunclassified_reads" > {output.stats}
+        echo -e "{wildcards.start_date}_{wildcards.run_id}\t$(grep "^[0-9]" {input.raw_read_count})\t$(grep "^[0-9]" {input.trimmed_read_count})\t$(grep "^[0-9]" {input.classified_read_count})\t$(grep "^[0-9]" {input.unclassified_read_count})" >> {output.stats}
         """
 
-#run_dict = [{'run_id': 'run_1', 'case': 'sample_1', 'control': 'sample_2'}, {'run_id': 'run_2', 'case': 'sample_2'}]
-#metadata_dict = [{'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_1.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_1', 'start_date': 20201104, 'nucleotide': 'RNA', 'fwd_or_rev': 'rev', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/SRR1761912_2.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'PE'}, {'sample_id': 'sample_2', 'start_date': 20201104, 'nucleotide': 'DNA', 'fwd_or_rev': 'fwd', 'path_to_file': '/apps/bio/dev_repos/parca/demo/raw_samples/a.fastq.gz', 'adapters': np.nan, 'PE_or_SE': 'SE'}]
+rule create_main_page_stats_case_control:
+    input: 
+        case_raw_read_count=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        case_trimmed_read_count=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        case_classified_read_count=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_classified_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        case_unclassified_read_count=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='case'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="case",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="case",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
 
-# Rule all
-# print(expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
-#             zip,
-#             outdir=[config['outdir']]*len(sample_id_list),
-#             sample=sample_id_list,
-#             sample_type=sample_type_list,
-#             nucleotide=nucleotide_list
-#             ))
-
-
-# rule all:
-#     input:
-#         # expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage2/kmer_input/kmer_input.fasta",
-#         #     zip,
-#         #     outdir=[config['outdir']]*len(sample_id_list),
-#         #     sample= sample_id_list,
-#         #     sample_type = sample_type_list,
-#         #     nucleotide = nucleotide_list
-#         #     )
-#         expand("{outdir}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt",
-#             zip,
-#             outdir=[config['outdir']]*len(sample_id_list),
-#             sample=sample_id_list,
-#             sample_type=sample_type_list,
-#             nucleotide=nucleotide_list
-#             )
-
+        control_raw_read_count=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='control'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="control",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="control",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        control_trimmed_read_count=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='control'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="control",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="control",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        control_classified_read_count=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_classified_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='control'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="control",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="control",
+                                                                   column="nucleotide",
+                                                                   unique=True) ),
+        control_unclassified_read_count=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt".format(
+                    sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                               run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                               case_or_control='control'), 
+                    sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                                    run_dictionary=run_dict,
+                                                                    run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                    case_or_control="control",
+                                                                    column="PE_or_SE",
+                                                                    unique=True),
+                    nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                                   run_dictionary=run_dict,
+                                                                   run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                                   case_or_control="control",
+                                                                   column="nucleotide",
+                                                                   unique=True) )
+    output: 
+        stats="{outdir}/{start_date}_{run_id}/main_page_stats_case_control.tsv"
+    shell: 
+        """
+        raw_read_count=$(echo $(grep "^[0-9]" {input.case_raw_read_count})+$(grep "^[0-9]" {input.control_raw_read_count})|bc)
+        trimmed_read_count=$(echo $(grep "^[0-9]" {input.case_trimmed_read_count})+$(grep "^[0-9]" {input.control_trimmed_read_count})|bc)
+        classified_read_count=$(echo $(grep "^[0-9]" {input.case_classified_read_count})+$(grep "^[0-9]" {input.control_classified_read_count})|bc)
+        unclassified_read_count=$(echo $(grep "^[0-9]" {input.case_unclassified_read_count})+$(grep "^[0-9]" {input.control_unclassified_read_count})|bc)
         
+        echo -e "name\traw_reads\ttrimmed_reads\tclassified_reads\tunclassified_reads" > {output.stats}
+        echo -e "{wildcards.start_date}_{wildcards.run_id}\t$raw_read_count\t$trimmed_read_count\t$classified_read_count\t$unclassified_read_count" >> {output.stats}
+        """
 
 ##STAGE 1
 include:
@@ -186,3 +456,7 @@ include:
 ##STAGE 8
 include:
     "workflows/snakemake_rules/stage8_format_results/format_results.smk"
+include:
+    "workflows/snakemake_rules/stage8_format_results/krona_plot.smk"
+include:
+    "workflows/snakemake_rules/stage8_format_results/generate_files_for_download.smk"

@@ -177,7 +177,7 @@ rule bbduk_trimming_PE_merged_rKtrim:
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/merged_reads_trimmed.txt"
     shell:
         """
-        adapter={params.adapters}; 
+        adapter={params.adapters};
         if [[ -z ${{adapter//NA/}} ]] || [[ ${{adapter//NA/}} == "," ]]; then
             bbduk.sh \
                 in={input} \
@@ -291,6 +291,18 @@ rule reformat_unmerged_PE:
 
         with open(output['reads'], 'w') as printresults:
             printresults.writelines("%s" % line for line in reformatted)
+
+rule total_trimmed_reads_PE:
+    input:
+        trimmed_read_count_unmerged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_unmerged_reads_trimmed_raw.txt",
+        trimmed_read_count_merged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_trimmed.txt" 
+    output:
+        trimmed_read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt" 
+    shell:
+        """
+        echo count > {output.trimmed_read_count};
+        echo $(grep "^[0-9]" {input.trimmed_read_count_unmerged})+$(grep "^[0-9]" {input.trimmed_read_count_merged})|bc >> {output.trimmed_read_count};
+        """ 
 
 # rule count_trimmed_reads_PE:
 #     input: 

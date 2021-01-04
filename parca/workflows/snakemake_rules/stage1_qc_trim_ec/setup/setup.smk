@@ -16,22 +16,22 @@ rule unzip_rename_SE:
         read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/count_raw_reads.txt"
     threads: 4
     #conda: config['bbmap_environment']
-    params:
-        run_outdir='{outdir}/{start_date}_{run_id}'
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage1/unzip_rename_SE.log"
+    # params:
+    #     run_outdir='{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/samples',
+    #     stats_outdir='{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples'
     shell:
         """
-        if [[ ! -d {params.run_outdir} ]]; then mkdir {params.run_outdir}; fi;
         if [[ {input} =~ .*\.fastq\.gz$ || {input} =~ .*\.fq\.gz$ ]]; then \
-            pigz -p {threads} -dc {input} > {output.reads}; \
+            pigz -p {threads} -dc {input} > {output.reads} 2> {log}; \
         elif [[ {input} =~ .*\.fastq$ || {input} =~ .*\.fq$ ]]; then \
-            ln -s {input} {output.reads}; \
+            ln -s {input} {output.reads} 2> {log}; \
         else \
-            echo "Unsupported file extension: Input should have extension .fastq or .fq or .gz"; \
+            echo "Unsupported file extension: Input should have extension .fastq or .fq or .gz" > {log}; \
         fi;  
         echo count > {output.read_count};
-        echo $(cat {output.reads}|wc -l)/4|bc  >> {output.read_count};
+        echo $(cat {output.reads}|wc -l)/4|bc  >> {output.read_count} 2> {log};
         """
-
         # """
         # if [[ {input} =~ .*\.gz$ ]]; then \
         #     pigz -p {threads} -dc {input} > {output.reads}; \
@@ -62,29 +62,26 @@ rule unzip_rename_PE:
         #read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/count_raw_reads.txt"
     threads: 4
     #conda: config['bbmap_environment']
-    params:
-        run_outdir='{outdir}/{start_date}_{run_id}'
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/unzip_rename_PE.log"
     shell:
         """
-        if [[ ! -d {params.run_outdir} ]]; then mkdir {params.run_outdir}; fi;
         if [[ {input.fwd} =~ .*\.fastq\.gz$ || {input.fwd} =~ .*\.fq\.gz$ ]]; then \
-            pigz -p {threads} -dc {input.fwd} > {output.fwd}; \
+            pigz -p {threads} -dc {input.fwd} > {output.fwd} 2> {log}; \
         elif [[ {input.fwd} =~ .*\.fastq$ || {input.fwd} =~ .*\.fq$ ]]; then \
-            ln -s {input.fwd} {output.fwd}; \
+            ln -s {input.fwd} {output.fwd} 2> {log}; \
         else \
             echo "Unsupported file extension: Input should have extension .fastq or .fq or .gz"; \
         fi;  
 
 
         if [[ {input.rev} =~ .*\.fastq\.gz$ || {input.rev} =~ .*\.fq\.gz$ ]]; then \
-            pigz -p {threads} -dc {input.rev} > {output.rev}; \
+            pigz -p {threads} -dc {input.rev} > {output.rev} 2>> {log}; \
         elif [[ {input.rev} =~ .*\.fastq$ || {input.rev} =~ .*\.fq$ ]]; then \
-            ln -s {input.rev} {output.rev}; \
+            ln -s {input.rev} {output.rev} 2>> {log}; \
         else \
             echo "Unsupported file extension: Input should have extension .fastq or .fq or .gz"; \
         fi; 
         """
-        
         # """
         # if [[ {input.fwd} =~ .*\.gz$ ]]; then \
         #     pigz -p {threads} -dc {input.fwd} > {output.fwd}; \

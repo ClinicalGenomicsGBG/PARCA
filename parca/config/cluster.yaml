@@ -1,6 +1,6 @@
 
 __default__:
-  threads: 1
+  threads: 4
   queue: cgg_short.q
 
 # Stage 1

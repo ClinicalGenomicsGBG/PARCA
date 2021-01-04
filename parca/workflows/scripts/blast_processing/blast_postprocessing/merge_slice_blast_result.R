@@ -50,7 +50,7 @@ df_bitscore_best <-
   df_bitscore %>% 
   group_by(qseqid) %>% 
   arrange(desc(score)) %>%
-  slice(1)
+  dplyr::slice(1)
 
 write_tsv(df_bitscore_best,best_blast)
 
