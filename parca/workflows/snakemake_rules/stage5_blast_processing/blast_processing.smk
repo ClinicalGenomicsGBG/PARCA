@@ -49,7 +49,7 @@ rule all_downloaded_slices:
     input: 
         downloaded_dir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices"
     output: 
-        all_downloaded=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices.txt")
+        all_downloaded="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices.txt"
     conda: "../../conda/R_env.yaml" #config['conda_environment']
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/download_slices_merged.txt"
     script: "../../scripts/blast_processing/blast_preprocessing/merge_downloaded_slices.R" 
@@ -74,7 +74,7 @@ checkpoint all_gislices:
         created_slice_dir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices_acc",
         existing_slices="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/existing_slices"
     output: 
-        all_slices=temp(directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/all_gislices"))
+        all_slices=directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/all_gislices")
     params: 
         splitaccdump_dir=config['splitaccdump_dir'] #config['splitaccdump_dir']
     shell: 
@@ -95,7 +95,7 @@ rule create_blastdb_alias:
     input:
         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/all_gislices/{gi_slice}"
     output:
-        temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}.nal")
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}.nal"
     params: 
         nt_db_dir=config['nt_db_dir'], #config['nt_db_dir'],
         out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}"
@@ -123,7 +123,7 @@ rule call_create_blastdb_alias:
     input:
         aggregate_blast_slices
     output:
-        temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/alias_done")
+        "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/alias_done"
     shell:
         "touch {output}"
 

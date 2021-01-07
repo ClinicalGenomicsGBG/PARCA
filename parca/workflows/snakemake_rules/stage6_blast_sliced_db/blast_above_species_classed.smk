@@ -5,8 +5,8 @@ checkpoint prepare_blast_input:
         higher="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/above_species_classed.txt",
         alias_done="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/alias_done"
     output: 
-        blast_infiles=temp(directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/sliceblastin")),
-        read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_printedfiles_assembledreadlengths.txt")
+        blast_infiles=directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/sliceblastin"),
+        read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_printedfiles_assembledreadlengths.txt"
     params: 
         chunk_size=6000
     conda: "../../conda/biopython_env.yaml" #config['conda_environment'] 
@@ -19,7 +19,7 @@ rule blast_slices:
         infile_slice="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/sliceblastin/{gi_slice}__{sliceiter}",
         db_slice="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}.nal"
     output:
-        blast_out=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/sliceblastout/{gi_slice}__{sliceiter}")
+        blast_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/sliceblastout/{gi_slice}__{sliceiter}"
     params:
         blast_out_fmt="6 qseqid stitle evalue length nident sseqid bitscore staxids",
         e_val="1e-3",
@@ -69,7 +69,7 @@ rule merge_slice_blast_result:
     input: 
         blast_output=aggregate_sliceblast_input
     output: 
-        best_blast=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast.txt")
+        best_blast="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast.txt"
     conda: "../../conda/R_env.yaml" #config['conda_environment'] 
     script:
         "../../scripts/blast_processing/blast_postprocessing/merge_slice_blast_result.R"
@@ -89,7 +89,7 @@ rule taxonomic_lineage_best_blast:
     input: 
         best_blast="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast.txt"
     output:
-        tax_id_lineage=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_tax_id_lineage.txt")
+        tax_id_lineage="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_tax_id_lineage.txt"
     conda: "../../conda/taxonkit_env.yaml" #config['conda_environment']
     params:
         dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
@@ -127,8 +127,8 @@ rule reformat_blast_taxids:
         best_blast="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast.txt",
         tax_id_lineage="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_tax_id_lineage.txt"
     output: 
-        species_and_above=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_species_and_above.txt"),
-        count_reads_tax_ids=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_reads_taxid_SubsetBLAST.txt")
+        species_and_above="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_species_and_above.txt",
+        count_reads_tax_ids="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_reads_taxid_SubsetBLAST.txt"
     conda: "../../conda/R_env.yaml" #config['conda_environment'] 
     params:
         blast_type="SubsetBLAST",
@@ -141,8 +141,8 @@ rule merge_kmer_classed_and_blast_classed:
         species="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/species_classed.txt",
         species_and_above="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_species_and_above.txt"
     output: 
-        kmer_blast=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/kmer_species_subsetblast_classed.txt"),
-        count_kmer_blast=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_kmer_SubsetBLAST.txt")
+        kmer_blast="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/kmer_species_subsetblast_classed.txt",
+        count_kmer_blast="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_kmer_SubsetBLAST.txt"
     shell: 
         """
         cat {input.species}  > {output.kmer_blast};
