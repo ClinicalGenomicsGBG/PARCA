@@ -26,7 +26,7 @@ rule filter_fastq_organism_SE:
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq"
     params:
         SE_or_PE="SE",
-        negate_query="FALSE"  # The string should be in uppercase letters for R to interpret this.
+        negate_query=False
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -39,7 +39,7 @@ rule filter_fastq_organism_PE:
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq"
     params:
         SE_or_PE="PE",
-        negate_query="FALSE"  # The string should be in uppercase letters for R to interpret this.
+        negate_query=False
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -52,7 +52,7 @@ rule filter_fastq_kingdom_SE:
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq"
     params:
         SE_or_PE="SE",
-        negate_query="FALSE"  # The string should be in uppercase letters for R to interpret this.
+        negate_query=False
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -65,7 +65,7 @@ rule filter_fastq_kingdom_PE:
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq"
     params:
         SE_or_PE="PE",
-        negate_query="FALSE"  # The string should be in uppercase letters for R to interpret this.
+        negate_query=False
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -77,7 +77,7 @@ rule filter_fastq_unclassified_SE:
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq"
     params:
         SE_or_PE="SE",
-        negate_query="TRUE"  # The string should be in uppercase letters for R to interpret this.
+        negate_query=True
     conda: "../../conda/R_env.yaml"
     threads: 10
     script: "../../scripts/reformat_results/filter_fastq.R"
@@ -91,7 +91,7 @@ rule filter_fastq_unclassified_PE:
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq"
     params:
         SE_or_PE="PE",
-        negate_query="TRUE"  # The string should be in uppercase letters for R to interpret this.
+        negate_query=True
     conda: "../../conda/R_env.yaml"
     threads: 8
     script: "../../scripts/reformat_results/filter_fastq.R"
@@ -290,8 +290,6 @@ rule tableview_case_control:
         case_control="{outdir}/{start_date}_{run_id}/tableview/case_control_readcount_tableview.tsv"
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/tableview_case_control.R"   
-
-#####
 
 
 rule detailed_stats_case:
@@ -523,7 +521,7 @@ rule detailed_stats_case:
     output: 
         detailed_stats_out="{outdir}/{start_date}_{run_id}/tableview/case_detailed_stats.tsv"
     params: 
-        case_control="FALSE"
+        case_control=False
     conda: "../../conda/R_env.yaml"
     script:  "../../scripts/reformat_results/detailed_stats.R"  
 
@@ -983,7 +981,7 @@ rule detailed_stats_case_control:
     output: 
         detailed_stats_out="{outdir}/{start_date}_{run_id}/tableview/case_control_detailed_stats.tsv"
     params: 
-        case_control="TRUE" 
+        case_control=True
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/detailed_stats.R"   
 
