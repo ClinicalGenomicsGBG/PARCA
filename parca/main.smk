@@ -56,6 +56,11 @@ rule call_case:
             start_date=wildcards.start_date,
             run_id=wildcards.run_id
             ),
+        detailed_stats=lambda wildcards: "{webinterface}/{start_date}_{run_id}_web/tableview/case_detailed_stats.tsv".format(
+            webinterface=config['webinterface'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id
+            ),
         fastqs=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
@@ -92,6 +97,11 @@ rule call_case_control:
             run_id=wildcards.run_id
             ),
         main_page_stats=lambda wildcards: "{webinterface}/{start_date}_{run_id}_web/main_page_stats_case_control.tsv".format(
+            webinterface=config['webinterface'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id
+            ),
+        detailed_stats=lambda wildcards: "{webinterface}/{start_date}_{run_id}_web/tableview/case_control_detailed_stats.tsv".format(
             webinterface=config['webinterface'],
             start_date=wildcards.start_date,
             run_id=wildcards.run_id
@@ -151,16 +161,23 @@ rule link_case_webinterface:
             outdir=config['outdir'],
             start_date=wildcards.start_date,
             run_id=wildcards.run_id 
+            ),
+         detailed_stats_out=lambda wildcards: "{outdir}/{start_date}_{run_id}/tableview/case_detailed_stats.tsv".format(
+            outdir=config['outdir'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id 
             )
     output: 
         main_page_stats= "{webinterface}/{start_date}_{run_id}_web/main_page_stats_case.tsv",
         tableview= "{webinterface}/{start_date}_{run_id}_web/tableview/case_readcount_tableview.tsv",
-        krona_html= "{webinterface}/{start_date}_{run_id}_web/krona/case.krona.html"
+        krona_html= "{webinterface}/{start_date}_{run_id}_web/krona/case.krona.html",
+        detailed_stats="{webinterface}/{start_date}_{run_id}_web/tableview/case_detailed_stats.tsv"
     shell:
         """
         ln -s {input.main_page_stats} {output.main_page_stats}
         ln -s {input.tableview} {output.tableview}
         ln -s {input.krona_html} {output.krona_html}
+        ln -s {input.detailed_stats} {output.detailed_stats}
         """
 
 rule link_case_control_webinterface:
@@ -179,16 +196,23 @@ rule link_case_control_webinterface:
             outdir=config['outdir'],
             start_date=wildcards.start_date,
             run_id=wildcards.run_id 
+            ),
+        detailed_stats_out=lambda wildcards: "{outdir}/{start_date}_{run_id}/tableview/case_control_detailed_stats.tsv".format(
+            outdir=config['outdir'],
+            start_date=wildcards.start_date,
+            run_id=wildcards.run_id 
             )
     output: 
         main_page_stats= "{webinterface}/{start_date}_{run_id}_web/main_page_stats_case_control.tsv",
         tableview= "{webinterface}/{start_date}_{run_id}_web/tableview/case_control_readcount_tableview.tsv",
-        krona_html= "{webinterface}/{start_date}_{run_id}_web/krona/case_control.krona.html"
+        krona_html= "{webinterface}/{start_date}_{run_id}_web/krona/case_control.krona.html",
+        detailed_stats= "{webinterface}/{start_date}_{run_id}_web/tableview/case_control_detailed_stats.tsv"
     shell:
         """
         ln -s {input.main_page_stats} {output.main_page_stats}
         ln -s {input.tableview} {output.tableview}
         ln -s {input.krona_html} {output.krona_html}
+        ln -s {input.detailed_stats} {output.detailed_stats}
         """
 rule create_main_page_stats_case:
     input: 
