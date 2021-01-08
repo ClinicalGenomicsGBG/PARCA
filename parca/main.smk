@@ -79,8 +79,11 @@ rule call_case:
                                                                    unique=True) )
     output: 
         case="{outdir}/{start_date}_{run_id}/call_case_done"
+    params: 
+        main_page_stats="{webinterface}/main_page/main_page_stats_all.tsv".format(webinterface=config['webinterface'])
     shell: 
         """
+        grep -v "name" {input.main_page_stats} >> {params.main_page_stats}
         touch {output.case}
         """
 
@@ -140,8 +143,11 @@ rule call_case_control:
                                                                    unique=True) )
     output:
         case_control="{outdir}/{start_date}_{run_id}/call_case_control_done"
+    params: 
+        main_page_stats="{webinterface}/main_page/main_page_stats_all.tsv".format(webinterface=config['webinterface'])
     shell: 
         """
+        grep -v "name" {input.main_page_stats} >> {params.main_page_stats}
         touch {output.case_control}
         """
 
