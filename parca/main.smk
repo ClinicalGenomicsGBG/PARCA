@@ -162,7 +162,7 @@ rule link_case_webinterface:
             start_date=wildcards.start_date,
             run_id=wildcards.run_id 
             ),
-         detailed_stats_out=lambda wildcards: "{outdir}/{start_date}_{run_id}/tableview/case_detailed_stats.tsv".format(
+         detailed_stats=lambda wildcards: "{outdir}/{start_date}_{run_id}/tableview/case_detailed_stats.tsv".format(
             outdir=config['outdir'],
             start_date=wildcards.start_date,
             run_id=wildcards.run_id 
@@ -197,7 +197,7 @@ rule link_case_control_webinterface:
             start_date=wildcards.start_date,
             run_id=wildcards.run_id 
             ),
-        detailed_stats_out=lambda wildcards: "{outdir}/{start_date}_{run_id}/tableview/case_control_detailed_stats.tsv".format(
+        detailed_stats=lambda wildcards: "{outdir}/{start_date}_{run_id}/tableview/case_control_detailed_stats.tsv".format(
             outdir=config['outdir'],
             start_date=wildcards.start_date,
             run_id=wildcards.run_id 
