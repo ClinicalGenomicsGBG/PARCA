@@ -26,7 +26,7 @@ rule filter_fastq_organism_SE:
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq"
     params:
         SE_or_PE="SE",
-        negate_query="FALSE"  # The string should be in uppercase letters for R to interpret this.
+        negate_query=False
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -39,7 +39,7 @@ rule filter_fastq_organism_PE:
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq"
     params:
         SE_or_PE="PE",
-        negate_query="FALSE"  # The string should be in uppercase letters for R to interpret this.
+        negate_query=False
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -52,7 +52,7 @@ rule filter_fastq_kingdom_SE:
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq"
     params:
         SE_or_PE="SE",
-        negate_query="FALSE"  # The string should be in uppercase letters for R to interpret this.
+        negate_query=False
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -65,7 +65,7 @@ rule filter_fastq_kingdom_PE:
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq"
     params:
         SE_or_PE="PE",
-        negate_query="FALSE"  # The string should be in uppercase letters for R to interpret this.
+        negate_query=False
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -77,7 +77,7 @@ rule filter_fastq_unclassified_SE:
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq"
     params:
         SE_or_PE="SE",
-        negate_query="TRUE"  # The string should be in uppercase letters for R to interpret this.
+        negate_query=True
     conda: "../../conda/R_env.yaml"
     threads: 10
     script: "../../scripts/reformat_results/filter_fastq.R"
@@ -91,7 +91,7 @@ rule filter_fastq_unclassified_PE:
         fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq"
     params:
         SE_or_PE="PE",
-        negate_query="TRUE"  # The string should be in uppercase letters for R to interpret this.
+        negate_query=True
     conda: "../../conda/R_env.yaml"
     threads: 8
     script: "../../scripts/reformat_results/filter_fastq.R"
@@ -291,12 +291,10 @@ rule tableview_case_control:
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/tableview_case_control.R"   
 
-#####
-
 
 rule detailed_stats_case:
     input: 
-        raw_reads_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt".format(
+        raw_reads_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -312,7 +310,7 @@ rule detailed_stats_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        trimmed_reads_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt".format(
+        trimmed_reads_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -328,7 +326,7 @@ rule detailed_stats_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        kmer_input_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage2/kmer_input/count_kmer_input.txt".format(
+        kmer_input_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage2/kmer_input/count_kmer_input.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -344,7 +342,7 @@ rule detailed_stats_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        kraken_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage3/kraken/count_kraken_filtered_classified.txt".format(
+        kraken_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage3/kraken/count_kraken_filtered_classified.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -360,7 +358,7 @@ rule detailed_stats_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        kaiju_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage3/kaiju/count_kaiju_filtered_classified.txt".format(
+        kaiju_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage3/kaiju/count_kaiju_filtered_classified.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -376,7 +374,7 @@ rule detailed_stats_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        species_genus_higher_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_species_genus_higher.txt".format(
+        species_genus_higher_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_species_genus_higher.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -392,7 +390,7 @@ rule detailed_stats_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        kmer_doublets_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_doublets.txt".format(
+        kmer_doublets_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_doublets.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -408,7 +406,7 @@ rule detailed_stats_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        kmer_singletons_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_singletons.txt".format(
+        kmer_singletons_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_singletons.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -424,7 +422,7 @@ rule detailed_stats_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        detected_and_missing_slices_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_detected_missing_slices.txt".format(
+        detected_and_missing_slices_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_detected_missing_slices.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -440,7 +438,7 @@ rule detailed_stats_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        subset_blast_reads_taxids_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_reads_taxid_SubsetBLAST.txt".format(
+        subset_blast_reads_taxids_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_reads_taxid_SubsetBLAST.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -456,7 +454,7 @@ rule detailed_stats_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        kmer_subset_blast_reads_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_kmer_SubsetBLAST.txt".format(
+        kmer_subset_blast_reads_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_kmer_SubsetBLAST.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -472,7 +470,7 @@ rule detailed_stats_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        nt_blast_reads_taxids_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_reads_taxid_BLASTnt.txt".format(
+        nt_blast_reads_taxids_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_reads_taxid_BLASTnt.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -488,7 +486,7 @@ rule detailed_stats_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        kmer_subset_blast_nt_blast_reads_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_kmer_SubsetBLAST_BLASTnt.txt".format(
+        kmer_subset_blast_nt_blast_reads_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_kmer_SubsetBLAST_BLASTnt.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='case'), 
@@ -504,7 +502,7 @@ rule detailed_stats_case:
                                                                    case_or_control="case",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        classified_reads_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/classified_reads_mincount.tsv".format(
+        classified_reads_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/classified_reads_mincount.tsv".format(
                 sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                             run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                             case_or_control='case'), 
@@ -523,14 +521,14 @@ rule detailed_stats_case:
     output: 
         detailed_stats_out="{outdir}/{start_date}_{run_id}/tableview/case_detailed_stats.tsv"
     params: 
-        case_control="FALSE"
+        case_control=False
     conda: "../../conda/R_env.yaml"
     script:  "../../scripts/reformat_results/detailed_stats.R"  
 
 rule detailed_stats_case_control:
     input: 
         # Case
-        raw_reads_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt".format(
+        raw_reads_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='case'), 
@@ -546,7 +544,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="case",
                                                             column="nucleotide",
                                                             unique=True) ),
-        trimmed_reads_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt".format(
+        trimmed_reads_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='case'), 
@@ -562,7 +560,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="case",
                                                             column="nucleotide",
                                                             unique=True) ),
-        kmer_input_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage2/kmer_input/count_kmer_input.txt".format(
+        kmer_input_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage2/kmer_input/count_kmer_input.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='case'), 
@@ -578,7 +576,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="case",
                                                             column="nucleotide",
                                                             unique=True) ),
-        kraken_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage3/kraken/count_kraken_filtered_classified.txt".format(
+        kraken_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage3/kraken/count_kraken_filtered_classified.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='case'), 
@@ -594,7 +592,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="case",
                                                             column="nucleotide",
                                                             unique=True) ),
-        kaiju_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage3/kaiju/count_kaiju_filtered_classified.txt".format(
+        kaiju_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage3/kaiju/count_kaiju_filtered_classified.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='case'), 
@@ -610,7 +608,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="case",
                                                             column="nucleotide",
                                                             unique=True) ),
-        species_genus_higher_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_species_genus_higher.txt".format(
+        species_genus_higher_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_species_genus_higher.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='case'), 
@@ -626,7 +624,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="case",
                                                             column="nucleotide",
                                                             unique=True) ),
-        kmer_doublets_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_doublets.txt".format(
+        kmer_doublets_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_doublets.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='case'), 
@@ -642,7 +640,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="case",
                                                             column="nucleotide",
                                                             unique=True) ),
-        kmer_singletons_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_singletons.txt".format(
+        kmer_singletons_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_singletons.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='case'), 
@@ -658,7 +656,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="case",
                                                             column="nucleotide",
                                                             unique=True) ),
-        detected_and_missing_slices_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_detected_missing_slices.txt".format(
+        detected_and_missing_slices_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_detected_missing_slices.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='case'), 
@@ -674,7 +672,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="case",
                                                             column="nucleotide",
                                                             unique=True) ),
-        subset_blast_reads_taxids_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_reads_taxid_SubsetBLAST.txt".format(
+        subset_blast_reads_taxids_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_reads_taxid_SubsetBLAST.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='case'), 
@@ -690,7 +688,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="case",
                                                             column="nucleotide",
                                                             unique=True) ),
-        kmer_subset_blast_reads_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_kmer_SubsetBLAST.txt".format(
+        kmer_subset_blast_reads_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_kmer_SubsetBLAST.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='case'), 
@@ -706,7 +704,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="case",
                                                             column="nucleotide",
                                                             unique=True) ),
-        nt_blast_reads_taxids_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_reads_taxid_BLASTnt.txt".format(
+        nt_blast_reads_taxids_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_reads_taxid_BLASTnt.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='case'), 
@@ -722,7 +720,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="case",
                                                             column="nucleotide",
                                                             unique=True) ),
-        kmer_subset_blast_nt_blast_reads_case="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_kmer_SubsetBLAST_BLASTnt.txt".format(
+        kmer_subset_blast_nt_blast_reads_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_kmer_SubsetBLAST_BLASTnt.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='case'), 
@@ -756,7 +754,7 @@ rule detailed_stats_case_control:
                                                             unique=True) ),
 
         # Control
-        raw_reads_control="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt".format(
+        raw_reads_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/samples/count_raw_reads.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='control'), 
@@ -772,7 +770,7 @@ rule detailed_stats_case_control:
                                                                    case_or_control="control",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        trimmed_reads_control="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt".format(
+        trimmed_reads_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt".format(
                     sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                                run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                                case_or_control='control'), 
@@ -788,7 +786,7 @@ rule detailed_stats_case_control:
                                                                    case_or_control="control",
                                                                    column="nucleotide",
                                                                    unique=True) ),
-        kmer_input_control="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage2/kmer_input/count_kmer_input.txt".format(
+        kmer_input_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage2/kmer_input/count_kmer_input.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='control'), 
@@ -804,7 +802,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="control",
                                                             column="nucleotide",
                                                             unique=True) ),
-        kraken_control="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage3/kraken/count_kraken_filtered_classified.txt".format(
+        kraken_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage3/kraken/count_kraken_filtered_classified.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='control'), 
@@ -820,7 +818,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="control",
                                                             column="nucleotide",
                                                             unique=True) ),
-        kaiju_control="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage3/kaiju/count_kaiju_filtered_classified.txt".format(
+        kaiju_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage3/kaiju/count_kaiju_filtered_classified.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='control'), 
@@ -836,7 +834,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="control",
                                                             column="nucleotide",
                                                             unique=True) ),
-        species_genus_higher_control="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_species_genus_higher.txt".format(
+        species_genus_higher_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_species_genus_higher.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='control'), 
@@ -852,7 +850,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="control",
                                                             column="nucleotide",
                                                             unique=True) ),
-        kmer_doublets_control="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_doublets.txt".format(
+        kmer_doublets_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_doublets.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='control'), 
@@ -868,7 +866,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="control",
                                                             column="nucleotide",
                                                             unique=True) ),
-        kmer_singletons_control="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_singletons.txt".format(
+        kmer_singletons_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_singletons.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='control'), 
@@ -884,7 +882,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="control",
                                                             column="nucleotide",
                                                             unique=True) ),
-        detected_and_missing_slices_control="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_detected_missing_slices.txt".format(
+        detected_and_missing_slices_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_detected_missing_slices.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='control'), 
@@ -900,7 +898,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="control",
                                                             column="nucleotide",
                                                             unique=True) ),
-        subset_blast_reads_taxids_control="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_reads_taxid_SubsetBLAST.txt".format(
+        subset_blast_reads_taxids_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_reads_taxid_SubsetBLAST.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='control'), 
@@ -916,7 +914,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="control",
                                                             column="nucleotide",
                                                             unique=True) ),
-        kmer_subset_blast_reads_control="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_kmer_SubsetBLAST.txt".format(
+        kmer_subset_blast_reads_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_kmer_SubsetBLAST.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='control'), 
@@ -932,7 +930,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="control",
                                                             column="nucleotide",
                                                             unique=True) ),
-        nt_blast_reads_taxids_control="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_reads_taxid_BLASTnt.txt".format(
+        nt_blast_reads_taxids_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_reads_taxid_BLASTnt.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='control'), 
@@ -948,7 +946,7 @@ rule detailed_stats_case_control:
                                                             case_or_control="control",
                                                             column="nucleotide",
                                                             unique=True) ),
-        kmer_subset_blast_nt_blast_reads_control="{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_kmer_SubsetBLAST_BLASTnt.txt".format(
+        kmer_subset_blast_nt_blast_reads_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_kmer_SubsetBLAST_BLASTnt.txt".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
                                                         case_or_control='control'), 
@@ -983,7 +981,7 @@ rule detailed_stats_case_control:
     output: 
         detailed_stats_out="{outdir}/{start_date}_{run_id}/tableview/case_control_detailed_stats.tsv"
     params: 
-        case_control="TRUE" 
+        case_control=True
     conda: "../../conda/R_env.yaml"
     script: "../../scripts/reformat_results/detailed_stats.R"   
 
