@@ -81,6 +81,7 @@ merged_df_singletons %>%
   summarize("count"=sum(count))  %>% 
   mutate(kmer_counter="Total") %>% 
   bind_rows(merged_df_singletons,.) %>% 
+  dplyr::rename(type="kmer_counter") %>%
   #print() %>% 
   write_tsv(path = singletons_count_file)
 
