@@ -65,13 +65,14 @@ kmer_subset_blast_reads_case <- snakemake@input[['kmer_subset_blast_reads_case']
 nt_blast_reads_taxids_case <- snakemake@input[['nt_blast_reads_taxids_case']]
 kmer_subset_blast_nt_blast_reads_case <- snakemake@input[['kmer_subset_blast_nt_blast_reads_case']]
 classified_reads_case <- snakemake@input[['classified_reads_case']]
+unclassified_reads_case <- snakemake@input[['unclassified_reads_case']]
   
 stats_list_case <- c(raw_reads_case, trimmed_reads_case, kmer_input_case, 
                      kraken_case, kaiju_case, species_genus_higher_case, kmer_doublets_case,
                      kmer_singletons_case, detected_and_missing_slices_case, 
                      subset_blast_reads_taxids_case, kmer_subset_blast_reads_case,
                      nt_blast_reads_taxids_case, kmer_subset_blast_nt_blast_reads_case,
-                     classified_reads_case)
+                     classified_reads_case, unclassified_reads_case)
 
 stats_df_case <- stats_list_case %>% map_dfr(~read_stats(.x))
 
@@ -111,13 +112,14 @@ if (case_control == TRUE){
   nt_blast_reads_taxids_control <- snakemake@input[['nt_blast_reads_taxids_control']]
   kmer_subset_blast_nt_blast_reads_control <- snakemake@input[['kmer_subset_blast_nt_blast_reads_control']]
   classified_reads_control <- snakemake@input[['classified_reads_control']]
+  unclassified_reads_control <- snakemake@input[['unclassified_reads_control']]
 
   stats_list_control <- c(raw_reads_control, trimmed_reads_control, kmer_input_control, 
     kraken_control, kaiju_control, species_genus_higher_control, kmer_doublets_control,
     kmer_singletons_control, detected_and_missing_slices_control,
     subset_blast_reads_taxids_control, kmer_subset_blast_reads_control,
     nt_blast_reads_taxids_control, kmer_subset_blast_nt_blast_reads_control,
-    classified_reads_control)
+    classified_reads_control, unclassified_reads_control)
   
   stats_df_control <- stats_list_control %>% map_dfr(~read_stats(.x))
   
