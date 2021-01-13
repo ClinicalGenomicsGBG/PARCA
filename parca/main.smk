@@ -80,10 +80,13 @@ rule call_case:
     output: 
         case="{outdir}/{start_date}_{run_id}/call_case_done"
     params: 
-        main_page_stats="{webinterface}/main_page/main_page_stats_all.tsv".format(webinterface=config['webinterface'])
+        main_page_stats="{webinterface}/main_page/main_page_stats_all.tsv".format(webinterface=config['webinterface']),
+        main_page_stats_dir="{webinterface}/main_page".format(webinterface=config['webinterface'])
     shell: 
         """
-        grep -v "name" {input.main_page_stats} >> {params.main_page_stats}
+        if [ ! -d {params.main_page_stats_dir} ]; then mkdir {params.main_page_stats_dir}; fi;
+        if [ ! -f {params.main_page_stats} ]; then grep "run_id" {input.main_page_stats} > {params.main_page_stats}; fi;
+        grep -v "run_id" {input.main_page_stats} >> {params.main_page_stats}
         touch {output.case}
         """
 
@@ -144,10 +147,13 @@ rule call_case_control:
     output:
         case_control="{outdir}/{start_date}_{run_id}/call_case_control_done"
     params: 
-        main_page_stats="{webinterface}/main_page/main_page_stats_all.tsv".format(webinterface=config['webinterface'])
+        main_page_stats="{webinterface}/main_page/main_page_stats_all.tsv".format(webinterface=config['webinterface']),
+        main_page_stats_dir="{webinterface}/main_page".format(webinterface=config['webinterface'])
     shell: 
         """
-        grep -v "name" {input.main_page_stats} >> {params.main_page_stats}
+        if [ ! -d {params.main_page_stats_dir} ]; then mkdir {params.main_page_stats_dir}; fi;
+        if [ ! -f {params.main_page_stats} ]; then grep "run_id" {input.main_page_stats} > {params.main_page_stats}; fi;
+        grep -v "run_id" {input.main_page_stats} >> {params.main_page_stats}
         touch {output.case_control}
         """
 
@@ -290,7 +296,7 @@ rule create_main_page_stats_case:
         stats="{outdir}/{start_date}_{run_id}/main_page_stats_case.tsv"
     shell: 
         """
-        echo -e "name\traw_reads\ttrimmed_reads\tclassified_reads\tunclassified_reads" > {output.stats}
+        echo -e "run_id\traw_reads\ttrimmed_reads\tclassified_reads\tunclassified_reads" > {output.stats}
         echo -e "{wildcards.start_date}_{wildcards.run_id}\t$(grep "^[0-9]" {input.raw_read_count})\t$(grep "^[0-9]" {input.trimmed_read_count})\t$(grep "^[0-9]" {input.classified_read_count})\t$(grep "^[0-9]" {input.unclassified_read_count})" >> {output.stats}
         """
 
@@ -434,7 +440,7 @@ rule create_main_page_stats_case_control:
         classified_read_count=$(echo $(grep "^[0-9]" {input.case_classified_read_count})+$(grep "^[0-9]" {input.control_classified_read_count})|bc)
         unclassified_read_count=$(echo $(grep "^[0-9]" {input.case_unclassified_read_count})+$(grep "^[0-9]" {input.control_unclassified_read_count})|bc)
         
-        echo -e "name\traw_reads\ttrimmed_reads\tclassified_reads\tunclassified_reads" > {output.stats}
+        echo -e "run_id\traw_reads\ttrimmed_reads\tclassified_reads\tunclassified_reads" > {output.stats}
         echo -e "{wildcards.start_date}_{wildcards.run_id}\t$raw_read_count\t$trimmed_read_count\t$classified_read_count\t$unclassified_read_count" >> {output.stats}
         """
 
