@@ -21,4 +21,5 @@ df_control <- data.table::fread(input = tableview_control, fill = TRUE, sep="\t"
 df_case %>% full_join(df_control,
                       by=c("superkingdom", "organism", "tax_id"),
                       suffix = c("_case","_control")) %>% 
+  mutate(across(!matches(c("superkingdom", "organism", "tax_id")), ~replace_na(., 0) )) %>% 
   write_tsv(tableview_case_control_out, col_names = TRUE)
