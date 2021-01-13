@@ -139,5 +139,3 @@ if __name__ == '__main__':
 # snakemake --dag -s main.smk| dot -Tpng > dag.png
 
 # python3 parca_cli.py run -m /apps/bio/dev_repos/parca/demo/runinfo/metadata.csv -r /apps/bio/dev_repos/parca/demo/runinfo/runinfo.csv -o /medstore/logs/pipeline_logfiles/parca -w /medstore/logs/pipeline_logfiles/parca/webinterface --dryrun
-
-# python3 parca_cli.py run -m /apps/bio/dev_repos/parca/demo/runinfo/metadata.csv -r /apps/bio/dev_repos/parca/demo/runinfo/runinfo.csv -o /medstore/logs/pipeline_logfiles/parca/test -w /medstore/logs/pipeline_logfiles/parca/test/webinterface --dryrun
