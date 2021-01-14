@@ -13,7 +13,8 @@ rule unzip_rename_SE:
         #lambda wildcards: settings_dict[wildcards.sample][0][0]
     output:
         reads=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/samples/{sample}.fastq"),
-        read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/count_raw_reads.txt")
+        read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/count_raw_reads.txt"),
+        read_rawpath=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/paths_raw_reads.txt")
     threads: 4
     #conda: config['bbmap_environment']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage1/unzip_rename_SE.log"
@@ -31,6 +32,9 @@ rule unzip_rename_SE:
         fi;  
         echo count > {output.read_count};
         echo $(cat {output.reads}|wc -l)/4|bc  >> {output.read_count} 2> {log};
+        
+        echo type > {output.read_rawpath};
+        echo {input} >> {output.read_rawpath};
         """
         # """
         # if [[ {input} =~ .*\.gz$ ]]; then \
@@ -59,6 +63,8 @@ rule unzip_rename_PE:
     output:
         fwd = temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R1.fastq"),
         rev = temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_R2.fastq"),
+        ,
+        read_rawpath=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/samples/paths_raw_reads.txt")
         #read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples/count_raw_reads.txt"
     threads: 4
     #conda: config['bbmap_environment']
@@ -81,6 +87,10 @@ rule unzip_rename_PE:
         else \
             echo "Unsupported file extension: Input should have extension .fastq or .fq or .gz"; \
         fi; 
+
+        echo type > {output.read_rawpath};
+        echo {input.fwd} >> {output.read_rawpath};
+        echo {input.rev} >> {output.read_rawpath};
         """
         # """
         # if [[ {input.fwd} =~ .*\.gz$ ]]; then \
