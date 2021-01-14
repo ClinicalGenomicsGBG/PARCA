@@ -7,6 +7,8 @@
 
 ---
 ## Info
+**This pipeline is under development, a first version will be released at the end of January 2021**
+
 A snakemake pipeline to further develop the previous inhouse perl pipeline [Pathfinder](https://github.com/ClinicalGenomicsGBG/pathfinder_43b_perl) used for classifying metagenomic samples.
 
 ## Usage
