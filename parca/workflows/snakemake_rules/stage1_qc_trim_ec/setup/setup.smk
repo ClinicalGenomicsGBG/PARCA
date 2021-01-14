@@ -34,7 +34,7 @@ rule unzip_rename_SE:
         echo $(cat {output.reads}|wc -l)/4|bc  >> {output.read_count} 2> {log};
         
         echo type > {output.read_rawpath};
-        echo {input} >> {output.read_rawpath};
+        echo $(basename {input}) >> {output.read_rawpath};
         """
         # """
         # if [[ {input} =~ .*\.gz$ ]]; then \
@@ -89,8 +89,8 @@ rule unzip_rename_PE:
         fi; 
 
         echo type > {output.read_rawpath};
-        echo {input.fwd} >> {output.read_rawpath};
-        echo {input.rev} >> {output.read_rawpath};
+        echo $(basename {input.fwd}) >> {output.read_rawpath};
+        echo $(basename {input.rev}) >> {output.read_rawpath};
         """
         # """
         # if [[ {input.fwd} =~ .*\.gz$ ]]; then \
