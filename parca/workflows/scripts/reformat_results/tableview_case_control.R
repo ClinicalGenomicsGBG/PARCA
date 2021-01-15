@@ -22,4 +22,5 @@ df_case %>% full_join(df_control,
                       by=c("superkingdom", "organism", "tax_id"),
                       suffix = c("_case","_control")) %>% 
   mutate(across(where(is.numeric), ~replace_na(., 0) )) %>% 
+  mutate(across(where(is.character), ~replace_na(., "NA") )) %>% 
   write_tsv(tableview_case_control_out, col_names = TRUE)
