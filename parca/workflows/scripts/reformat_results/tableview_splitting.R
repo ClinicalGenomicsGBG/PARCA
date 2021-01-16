@@ -53,7 +53,7 @@ tableview <-
   mutate(across(where(is.character), ~replace_na(., "NA") )) %>% 
   group_by(superkingdom, organism, tax_id) %>% 
   summarize(read_count=sum(read_count, na.rm = TRUE), .groups = "drop")  %>% 
-  mutate(percent=(read_count/read_total)*100, .before=read_count) %>% 
+  mutate(percent=round((read_count/read_total)*100, digits=3), .before=read_count) %>% 
   filter(read_count>mincount) 
 
 if(nrow(tableview)==0){
