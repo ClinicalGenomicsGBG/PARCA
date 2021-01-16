@@ -28,8 +28,9 @@ read_stats <- function(input_file,
 case_control <- snakemake@params[['case_control']]
 detailed_stats_out <- snakemake@output[['detailed_stats_out']]
 
-stats_case <- snakemake@input['stats_case']
-table_case <- snakemake@input['table_case']
+stats_case <- snakemake@input[['stats_case']]
+table_case <- snakemake@input[['table_case']]
+
 stats_list_case <- c(stats_case, table_case)
 
 stats_df_case <- stats_list_case %>% map_dfr(~read_stats(.x)) 
@@ -42,8 +43,8 @@ sample_info <- tibble(processing_step=c("case_sample"),
 
 if (case_control == TRUE){
   
-  stats_control <- snakemake@input['stats_control']
-  table_control <- snakemake@input['table_control']
+  stats_control <- snakemake@input[['stats_control']]
+  table_control <- snakemake@input[['table_control']]
   stats_list_control <- c(stats_control, table_control)
   
   stats_df_control <- stats_list_control %>% map_dfr(~read_stats(.x))
