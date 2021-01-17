@@ -310,7 +310,7 @@ rule detailed_stats_case:
                                                             case_or_control="case",
                                                             column="nucleotide",
                                                             unique=True),
-            stats = ["stage1/samples/paths_raw_reads.txt", "stage1/samples/count_raw_reads.txt", "stage1/trimming/count_bbduk_trimmed_reads.txt", 
+            stats = ["stage1/samples/count_raw_reads.txt", "stage1/trimming/count_bbduk_trimmed_reads.txt", 
                     "stage2/kmer_input/count_kmer_input.txt", 
                     "stage3/kraken/count_kraken_filtered_classified.txt", "stage3/kaiju/count_kaiju_filtered_classified.txt",
                     "stage4/count_species_genus_higher.txt", "stage4/count_doublets.txt", "stage4/count_singletons.txt", 
@@ -318,6 +318,24 @@ rule detailed_stats_case:
                     "stage6/count_reads_taxid_SubsetBLAST.txt", "stage6/count_kmer_SubsetBLAST.txt", 
                     "stage7/count_reads_taxid_BLASTnt.txt", "stage7/count_kmer_SubsetBLAST_BLASTnt.txt", 
                     "stage8/tableview/count_unclassified_reads.txt"]
+            ),
+        rawpath_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/{stats}".format(
+            sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                        run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                        case_or_control='case'), 
+            sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                            run_dictionary=run_dict,
+                                                            run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                            case_or_control="case",
+                                                            column="PE_or_SE",
+                                                            unique=True),
+            nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                            run_dictionary=run_dict,
+                                                            run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                            case_or_control="case",
+                                                            column="nucleotide",
+                                                            unique=True),
+            stats = "stage1/samples/paths_raw_reads.txt"
             ),
         table_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/{table}".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
@@ -372,6 +390,24 @@ rule detailed_stats_case_control:
                     "stage7/count_reads_taxid_BLASTnt.txt", "stage7/count_kmer_SubsetBLAST_BLASTnt.txt", 
                     "stage8/tableview/count_unclassified_reads.txt"]
             ),
+        rawpath_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/{stats}".format(
+            sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                        run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                        case_or_control='case'), 
+            sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                            run_dictionary=run_dict,
+                                                            run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                            case_or_control="case",
+                                                            column="PE_or_SE",
+                                                            unique=True),
+            nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                            run_dictionary=run_dict,
+                                                            run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                            case_or_control="case",
+                                                            column="nucleotide",
+                                                            unique=True),
+            stats = "stage1/samples/paths_raw_reads.txt"
+            ),
         table_case=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/{table}".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
                                                         run_id=f'{wildcards.start_date}_{wildcards.run_id}',
@@ -416,6 +452,24 @@ rule detailed_stats_case_control:
                      "stage6/count_reads_taxid_SubsetBLAST.txt", "stage6/count_kmer_SubsetBLAST.txt",
                      "stage7/count_reads_taxid_BLASTnt.txt", "stage7/count_kmer_SubsetBLAST_BLASTnt.txt",
                      "stage8/tableview/count_unclassified_reads.txt"]
+            ),
+        rawpath_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/{stats}".format(
+            sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,
+                                                        run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                        case_or_control='control'), 
+            sample_type = ProcessRuninfoMetadata.get_column(df=metadata_df, 
+                                                            run_dictionary=run_dict,
+                                                            run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                            case_or_control="control",
+                                                            column="PE_or_SE",
+                                                            unique=True),
+            nucleotide = ProcessRuninfoMetadata.get_column(df=metadata_df,
+                                                            run_dictionary=run_dict,
+                                                            run_id=f'{wildcards.start_date}_{wildcards.run_id}',
+                                                            case_or_control="control",
+                                                            column="nucleotide",
+                                                            unique=True),
+            stats = "stage1/samples/paths_raw_reads.txt"
             ),
         table_control=lambda wildcards: "{{outdir}}/{{start_date}}_{{run_id}}/snakemake_results_{sample}/{sample_type}_{nucleotide}/{table}".format(
             sample = ProcessRuninfoMetadata.get_sample(run_dictionary=run_dict,

@@ -29,7 +29,9 @@ case_control <- snakemake@params[['case_control']]
 detailed_stats_out <- snakemake@output[['detailed_stats_out']]
 
 stats_case <- snakemake@input[['stats_case']]
+rawpath_case <- snakemake@input[['rawpath_case']]
 table_case <- snakemake@input[['table_case']]
+
 
 stats_list_case <- c(stats_case, table_case)
 
@@ -38,12 +40,12 @@ stats_df_case <- stats_list_case %>% map_dfr(~read_stats(.x))
 detailed_stats <- stats_df_case %>% relocate(processing_step, type, count, .before=1)
 
 case_name <- table_case %>% str_extract("snakemake_results.+/.{2}_.{3}")
-sample_info <- tibble(processing_step=c("case_sample"),
-                      type=c(case_name))
+sample_info <- read_tsv(rawpath_case, col_names=TRUE) %>% bind_rows(tibble(type=c(case_name))) %>% mutate(processing_step="case_sample")
 
 if (case_control == TRUE){
   
   stats_control <- snakemake@input[['stats_control']]
+  rawpath_control <- snakemake@input[['rawpath_control']]
   table_control <- snakemake@input[['table_control']]
   stats_list_control <- c(stats_control, table_control)
   
@@ -56,8 +58,8 @@ if (case_control == TRUE){
     relocate(processing_step, type, .before=1)
   
   control_name <- table_control %>% str_extract("snakemake_results.+/.{2}_.{3}")
-  sample_info %<>%  bind_rows(tibble(processing_step=c("control_sample"),
-                        type=c(control_name)))
+  sample_info_control <- read_tsv(rawpath_control, col_names=TRUE) %>% bind_rows(tibble(type=c(control_name))) %>% mutate(processing_step="control_sample")
+  sample_info %<>% bind_rows(sample_info_control)
 
 }
 
@@ -73,73 +75,44 @@ write_tsv(detailed_stats, detailed_stats_out, col_names = TRUE)
 # case_control <- TRUE
 # detailed_stats_out <- "/Users/pernillaericsson/Desktop/parca_tests/detailed_stats.tsv"
 
-# stats_list_case <- c(
-# raw_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage1/samples/count_raw_reads.txt",
-# trimmed_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage1/trimming/count_bbduk_trimmed_reads.txt",
-# kmer_input_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage2/kmer_input/count_kmer_input.txt",
-# kraken_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage3/kraken/count_kraken_filtered_classified.txt",
-# kaiju_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage3/kaiju/count_kaiju_filtered_classified.txt",
-# species_genus_higher_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage4/count_species_genus_higher.txt",
-# kmer_doublets_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage4/count_doublets.txt",
-# kmer_singletons_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage4/count_singletons.txt",
-# detected_and_missing_slices_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage5/count_detected_missing_slices.txt",
-# subset_blast_reads_taxids_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage6/count_reads_taxid_SubsetBLAST.txt",
-# kmer_subset_blast_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage6/count_kmer_SubsetBLAST.txt",
-# nt_blast_reads_taxids_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage7/count_reads_taxid_BLASTnt.txt",
-# kmer_subset_blast_nt_blast_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage7/count_kmer_SubsetBLAST_BLASTnt.txt",
-# classified_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/PE_RNA/stage8/tableview/classified_reads_mincount.tsv")
-# unclassified_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/PE_RNA/stage8/tableview/unclassified_reads_mincount.tsv" )
+# stats_case <- c(
+#   raw_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage1/samples/count_raw_reads.txt",
+#   trimmed_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage1/trimming/count_bbduk_trimmed_reads.txt",
+#   kmer_input_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage2/kmer_input/count_kmer_input.txt",
+#   kraken_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage3/kraken/count_kraken_filtered_classified.txt",
+#   kaiju_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage3/kaiju/count_kaiju_filtered_classified.txt",
+#   species_genus_higher_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage4/count_species_genus_higher.txt",
+#   kmer_doublets_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage4/count_doublets.txt",
+#   kmer_singletons_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage4/count_singletons.txt",
+#   detected_and_missing_slices_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage5/count_detected_missing_slices.txt",
+#   subset_blast_reads_taxids_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage6/count_reads_taxid_SubsetBLAST.txt",
+#   kmer_subset_blast_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage6/count_kmer_SubsetBLAST.txt",
+#   nt_blast_reads_taxids_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage7/count_reads_taxid_BLASTnt.txt",
+#   kmer_subset_blast_nt_blast_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage7/count_kmer_SubsetBLAST_BLASTnt.txt",
+#   classified_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/PE_RNA/stage8/tableview/classified_reads_mincount.tsv")
+# 
+# rawpath_case <- "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage1/rawpath.tsv"
+# 
+# table_case <- "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/PE_RNA/stage8/tableview/classified_reads_mincount.tsv"
 
-# stats_list_case <- c(
-#   read_rawpath_case = snakemake@input[['read_rawpath_case']],
-#   raw_reads_case = snakemake@input[['raw_reads_case']],
-#   trimmed_reads_case = snakemake@input[['trimmed_reads_case']],
-#   kmer_input_case = snakemake@input[['kmer_input_case']],
-#   kraken_case = snakemake@input[['kraken_case']],
-#   kaiju_case = snakemake@input[['kaiju_case']],
-#   species_genus_higher_case = snakemake@input[['species_genus_higher_case']],
-#   kmer_doublets_case = snakemake@input[['kmer_doublets_case']],
-#   kmer_singletons_case = snakemake@input[['kmer_singletons_case']],
-#   detected_and_missing_slices_case = snakemake@input[['detected_and_missing_slices_case']],
-#   subset_blast_reads_taxids_case = snakemake@input[['subset_blast_reads_taxids_case']],
-#   kmer_subset_blast_reads_case = snakemake@input[['kmer_subset_blast_reads_case']],
-#   nt_blast_reads_taxids_case = snakemake@input[['nt_blast_reads_taxids_case']],
-#   kmer_subset_blast_nt_blast_reads_case = snakemake@input[['kmer_subset_blast_nt_blast_reads_case']],
-#   classified_reads_case = snakemake@input[['classified_reads_case']],
-#   unclassified_reads_case = snakemake@input[['unclassified_reads_case']] 
-# )
 
-# stats_list_control <- c(
-#   raw_reads_control = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage1/samples/count_raw_reads.txt",
-#   trimmed_reads_control = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage1/trimming/count_bbduk_trimmed_reads.txt",
-#   kmer_input_control = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage2/kmer_input/count_kmer_input.txt",
-#   kraken_control = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage3/kraken/count_kraken_filtered_classified.txt",
-#   kaiju_control = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage3/kaiju/count_kaiju_filtered_classified.txt",
-#   species_genus_higher_control = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage4/count_species_genus_higher.txt",
-#   kmer_doublets_control = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage4/count_doublets.txt",
-#   kmer_singletons_control = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage4/count_singletons.txt",
-#   detected_and_missing_slices_control = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage5/count_detected_missing_slices.txt",
-#   subset_blast_reads_taxids_control = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage6/count_reads_taxid_SubsetBLAST.txt",
-#   kmer_subset_blast_reads_control = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage6/count_kmer_SubsetBLAST.txt",
-#   nt_blast_reads_taxids_control = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage7/count_reads_taxid_BLASTnt.txt",
-#   kmer_subset_blast_nt_blast_reads_control = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage7/count_kmer_SubsetBLAST_BLASTnt.txt",
-#   classified_reads_control = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/PE_RNA/stage8/tableview/classified_reads_mincount.tsv" )
-
-# stats_list_control <- c(
-#   read_rawpath_control = snakemake@input[['read_rawpath_control']],
-#   raw_reads_control = snakemake@input[['raw_reads_control']],
-#   trimmed_reads_control = snakemake@input[['trimmed_reads_control']],
-#   kmer_input_control = snakemake@input[['kmer_input_control']],
-#   kraken_control = snakemake@input[['kraken_control']],
-#   kaiju_control = snakemake@input[['kaiju_control']],
-#   species_genus_higher_control = snakemake@input[['species_genus_higher_control']],
-#   kmer_doublets_control = snakemake@input[['kmer_doublets_control']],
-#   kmer_singletons_control = snakemake@input[['kmer_singletons_control']],
-#   detected_and_missing_slices_control = snakemake@input[['detected_and_missing_slices_control']],
-#   subset_blast_reads_taxids_control = snakemake@input[['subset_blast_reads_taxids_control']],
-#   kmer_subset_blast_reads_control = snakemake@input[['kmer_subset_blast_reads_control']],
-#   nt_blast_reads_taxids_control = snakemake@input[['nt_blast_reads_taxids_control']],
-#   kmer_subset_blast_nt_blast_reads_control = snakemake@input[['kmer_subset_blast_nt_blast_reads_control']],
-#   classified_reads_control = snakemake@input[['classified_reads_control']],
-#   unclassified_reads_control = snakemake@input[['unclassified_reads_control']]
-# )
+# 
+# stats_control <- c(
+#   raw_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage1/samples/count_raw_reads.txt",
+#   trimmed_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage1/trimming/count_bbduk_trimmed_reads.txt",
+#   kmer_input_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage2/kmer_input/count_kmer_input.txt",
+#   kraken_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage3/kraken/count_kraken_filtered_classified.txt",
+#   kaiju_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage3/kaiju/count_kaiju_filtered_classified.txt",
+#   species_genus_higher_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage4/count_species_genus_higher.txt",
+#   kmer_doublets_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage4/count_doublets.txt",
+#   kmer_singletons_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage4/count_singletons.txt",
+#   detected_and_missing_slices_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage5/count_detected_missing_slices.txt",
+#   subset_blast_reads_taxids_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage6/count_reads_taxid_SubsetBLAST.txt",
+#   kmer_subset_blast_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage6/count_kmer_SubsetBLAST.txt",
+#   nt_blast_reads_taxids_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage7/count_reads_taxid_BLASTnt.txt",
+#   kmer_subset_blast_nt_blast_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage7/count_kmer_SubsetBLAST_BLASTnt.txt",
+#   classified_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/PE_RNA/stage8/tableview/classified_reads_mincount.tsv")
+# 
+# rawpath_control <- "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage1/rawpath.tsv"
+# 
+# table_control <- "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/PE_RNA/stage8/tableview/classified_reads_mincount.tsv"
