@@ -24,10 +24,10 @@ kraken_path:
 kraken_db_base_path: "/medstore/External_References/krakdb_hll"
 
 krakendb_RNA: ["viruses", "bacteria_progenomes_cds_total"]  # "eukaryotes_cds"
-krakendblimits_RNA: ["0.15", "0.05", "0.05"]
+krakendblimits_RNA: ["0.15", "0.05"] #, "0.05"]
 
 krakendb_DNA: ["viruses", "bacteria_progenomes_total_768"]  # "eukaryotes_768"
-krakendblimits_DNA: ["0.15", "0.05", "0.05"]
+krakendblimits_DNA: ["0.15", "0.05"] #, "0.05"]
 
 ## Kraken2 settings
 kraken2_db_base_path: "/medstore/Development/Metagenomics/kraken_dbs"
