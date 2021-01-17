@@ -5,20 +5,6 @@ suppressPackageStartupMessages({
   library(tidyverse);library(magrittr); library(ShortRead) #library(data.table)
 } )
 
-# trimmed_reads_merged <- "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1/snakemake_results_sample_1/PE_RNA/stage1/trimming/unmerged_reads.fastq"
-# trimmed_reads_unmerged <- "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1/snakemake_results_sample_1/PE_RNA/stage1/trimming/merged_reads.fastq"
-# 
-# organism_tableview <- "/Users/pernillaericsson/Desktop/parca_tests/organism_dir/taxid_7962_kingdom_Eukaryota.tsv" # "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1/snakemake_results_sample_1/PE_RNA/stage8/readcount.tsv"
-# 
-# SE_or_PE <- "PE"
-# negate_query <- "FALSE"
-# 
-# fastq_out <- "/Users/pernillaericsson/Desktop/parca_tests/taxid_test.fastq"
-
-trimmed_reads <- "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_2/SE_DNA/stage1/trimming/trimmed_reads.fq"
-organism_tableview <- "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_2/SE_DNA/stage8/tableview/organism_dir/organism_100272.tsv"
-
-
 organism_tableview <- snakemake@input[['organism_tableview']]
 
 SE_or_PE <- snakemake@params[['SE_or_PE']]
@@ -54,3 +40,17 @@ classified_df <-data.table::fread(file = organism_tableview, fill=TRUE, sep = "\
 read_ids <- classified_df %>% pull(seq_id)
 
 fastqs %>% map(~append_to_fastq(fastq_path=.x, ids=read_ids, outputFile = fastq_out, negate_choice = negate_query))
+
+
+# trimmed_reads_merged <- "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1/snakemake_results_sample_1/PE_RNA/stage1/trimming/unmerged_reads.fastq"
+# trimmed_reads_unmerged <- "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1/snakemake_results_sample_1/PE_RNA/stage1/trimming/merged_reads.fastq"
+# 
+# organism_tableview <- "/Users/pernillaericsson/Desktop/parca_tests/organism_dir/taxid_7962_kingdom_Eukaryota.tsv" # "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1/snakemake_results_sample_1/PE_RNA/stage8/readcount.tsv"
+# 
+# SE_or_PE <- "PE"
+# negate_query <- "FALSE"
+# 
+# fastq_out <- "/Users/pernillaericsson/Desktop/parca_tests/taxid_test.fastq"
+
+# trimmed_reads <- "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_2/SE_DNA/stage1/trimming/trimmed_reads.fq"
+# organism_tableview <- "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_2/SE_DNA/stage8/tableview/organism_dir/organism_100272.tsv"
