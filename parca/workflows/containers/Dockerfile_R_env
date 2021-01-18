@@ -1,0 +1,40 @@
+
+FROM continuumio/miniconda3:4.9.2
+
+MAINTAINER "Pernilla Ericsson" "pernilla.ericsson@gu.se, clinicalgenomics@gu.se"
+
+ENV LC_ALL C.UTF-8
+ENV LC_LANG C.UTF-8
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get -qq -y update && apt-get -qq -y upgrade
+
+RUN conda config --set channel_priority false \
+	&& conda config --add channels \
+		conda-forge \
+		bioconda \
+	&& conda update --quiet conda \
+	&& conda install --yes --quiet \
+		r-base=4.0.2 \
+		r-openxlsx=4.1.5 \
+		r-magrittr=1.5 \
+		r-tidyverse=1.3.0 \
+		r-dplyr=1.0.2 \
+		r-data.table=1.12.8 \
+		r-xml=3.99_0.3 \
+		bioconductor-shortread=1.48.0 \
+	&& conda clean --all --yes --quiet
+
+#RUN apt-get install -qq -y \
+#    pandoc \
+#    pandoc-citeproc \
+#    libcurl4-gnutls-dev \   
+#    libcairo2-dev \
+#    libxt-dev \
+#    libssl-dev \
+#    libssh2-1-dev \
+#    libmpfr-dev \
+#    libssl1.1
+
+CMD /bin/bash 
