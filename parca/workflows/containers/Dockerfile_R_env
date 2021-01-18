@@ -25,15 +25,4 @@ RUN conda config --add channels conda-forge \
 		bioconductor-shortread=1.48.0 \
 	&& conda clean --all --yes --quiet
 
-#RUN apt-get install -qq -y \
-#    pandoc \
-#    pandoc-citeproc \
-#    libcurl4-gnutls-dev \   
-#    libcairo2-dev \
-#    libxt-dev \
-#    libssl-dev \
-#    libssh2-1-dev \
-#    libmpfr-dev \
-#    libssl1.1
-
 CMD /bin/bash 
