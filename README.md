@@ -101,7 +101,7 @@ singularity pull docker://pericsson/biopython_env:latest
 singularity pull docker://pericsson/blast_env:latest
 singularity pull docker://pericsson/kaiju_env:latest
 singularity pull docker://pericsson/krona_env:latest
-singularity pull docker://pericsson/R_env:latest
+singularity pull docker://pericsson/r_env:latest
 singularity pull docker://pericsson/taxonkit_env:latest
 ```
 
