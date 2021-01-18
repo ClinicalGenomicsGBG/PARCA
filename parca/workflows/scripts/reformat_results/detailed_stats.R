@@ -40,7 +40,7 @@ stats_df_case <- stats_list_case %>% map_dfr(~read_stats(.x))
 detailed_stats <- stats_df_case %>% relocate(processing_step, type, count, .before=1)
 
 case_name <- table_case %>% str_extract("snakemake_results.+/.{2}_.{3}")
-sample_info <- read_tsv(rawpath_case, col_names=TRUE) %>% bind_rows(tibble(type=c(case_name))) %>% mutate(processing_step="case_sample")
+sample_info <- read_tsv(rawpath_case, col_names=TRUE) %>% mutate(processing_step="case_sample_rawpath") %>% bind_rows(tibble(type=case_name, processing_step="case_sample")) 
 
 if (case_control == TRUE){
   
@@ -58,8 +58,11 @@ if (case_control == TRUE){
     relocate(processing_step, type, .before=1)
   
   control_name <- table_control %>% str_extract("snakemake_results.+/.{2}_.{3}")
-  sample_info_control <- read_tsv(rawpath_control, col_names=TRUE) %>% bind_rows(tibble(type=c(control_name))) %>% mutate(processing_step="control_sample")
+  sample_info_control <- read_tsv(rawpath_control, col_names=TRUE) %>% mutate(processing_step="control_sample_rawpath") %>% bind_rows(tibble(type=control_name, processing_step="control_sample")) 
+  
   sample_info %<>% bind_rows(sample_info_control)
+  
+
 
 }
 
@@ -74,7 +77,7 @@ write_tsv(detailed_stats, detailed_stats_out, col_names = TRUE)
 
 # case_control <- TRUE
 # detailed_stats_out <- "/Users/pernillaericsson/Desktop/parca_tests/detailed_stats.tsv"
-
+# 
 # stats_case <- c(
 #   raw_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage1/samples/count_raw_reads.txt",
 #   trimmed_reads_case = "/Users/pernillaericsson/Documents/medair1/medstore/logs/pipeline_logfiles/parca/20201202_run_1_v2_all/snakemake_results_sample_1/stats_PE_RNA/stage1/trimming/count_bbduk_trimmed_reads.txt",
