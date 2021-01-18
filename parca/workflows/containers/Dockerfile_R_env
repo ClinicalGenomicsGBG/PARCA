@@ -1,7 +1,7 @@
 
 FROM continuumio/miniconda3:4.9.2
 
-MAINTAINER "Pernilla Ericsson" "pernilla.ericsson@gu.se, clinicalgenomics@gu.se"
+MAINTAINER "pericsson"
 
 ENV LC_ALL C.UTF-8
 ENV LC_LANG C.UTF-8
