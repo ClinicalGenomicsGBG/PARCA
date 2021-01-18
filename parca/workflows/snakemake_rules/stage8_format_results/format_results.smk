@@ -14,7 +14,8 @@ rule format_all_classified:
     output: 
         all_classed_read_taxid="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid.txt",
         type_summary="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/type_summary.txt"
-    conda: "../../conda/R_env.yaml" #config['conda_environment'] 
+    #conda: "../../conda/R_env.yaml" #config['conda_environment'] 
+    singularity: config['singularity_R_env']
     script:
          "../../scripts/reformat_results/reformat_all_classed.R"
 
@@ -23,7 +24,8 @@ rule add_taxon_names_all_classed:
         all_classed_read_taxid="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid.txt"
     output: 
         all_classed_read_taxid_names="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/all_classed_read_taxid_names.txt"
-    conda: "../../conda/kaiju_env.yaml" #config['conda_environment'] 
+    #conda: "../../conda/kaiju_env.yaml" #config['conda_environment'] 
+    singularity: config['singularity_kaiju_env']
     params: 
         names_nodes_dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
     shell:

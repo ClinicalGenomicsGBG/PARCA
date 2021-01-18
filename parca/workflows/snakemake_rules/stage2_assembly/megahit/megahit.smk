@@ -29,7 +29,8 @@ rule megahit_SE_RNA:
         out_prefix="RNA",
         outdir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/megahit",
         min_contig_length=100
-    conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage2/megahit.txt"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage2/megahit.txt"
     threads: 110
@@ -77,7 +78,8 @@ rule megahit_PE_RNA:
         outdir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/megahit",
         #sub_outdir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2",
         min_contig_length=100
-    conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_RNA/stage2/megahit.txt"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_RNA/stage2/megahit.txt"
     threads: 110

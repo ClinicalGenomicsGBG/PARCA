@@ -151,7 +151,8 @@ rule convert_fasta_to_fastq_PE_DNA:
         fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage1/trimming/merged_reads_trimmed.fq"
     output:
         fasta=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/merged_reads_trimmed.fa")
-    conda: "../../../conda/bbmap_env.yaml"
+    #conda: "../../../conda/bbmap_env.yaml"
+    singularity: config['singularity_bbmap_env']
     shell: 
         """
         reformat.sh \

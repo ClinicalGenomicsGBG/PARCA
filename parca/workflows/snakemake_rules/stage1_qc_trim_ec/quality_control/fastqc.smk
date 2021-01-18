@@ -9,7 +9,8 @@ rule quality_control_raw_SE:
     params:
         dir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/qc_raw/"
     threads: 4
-    conda: "../../../conda/bbmap_env.yaml"
+    # conda: "../../../conda/bbmap_env.yaml"
+    singularity: config['singularity_bbmap_env']
     shell:
         """
         fastqc -o {params.dir} \
@@ -29,7 +30,8 @@ rule quality_control_raw_PE:
     params:
         dir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/qc_raw/"
     threads: 4
-    conda: "../../../conda/bbmap_env.yaml"
+    # conda: "../../../conda/bbmap_env.yaml"
+    singularity: config['singularity_bbmap_env']
     shell:
         """
         fastqc -o {params.dir} \

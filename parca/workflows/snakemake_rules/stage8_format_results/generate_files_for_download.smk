@@ -15,7 +15,8 @@ checkpoint tableview:
     params:
         # SE_or_PE="SE",
         mincount=config['tableview_min_count']
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/tableview_splitting.R"
 
 rule filter_fastq_organism_SE:
@@ -27,7 +28,8 @@ rule filter_fastq_organism_SE:
     params:
         SE_or_PE="SE",
         negate_query=False
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
 rule filter_fastq_organism_PE:
@@ -40,7 +42,8 @@ rule filter_fastq_organism_PE:
     params:
         SE_or_PE="PE",
         negate_query=False
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
 
@@ -53,7 +56,8 @@ rule filter_fastq_kingdom_SE:
     params:
         SE_or_PE="SE",
         negate_query=False
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
 rule filter_fastq_kingdom_PE:
@@ -66,7 +70,8 @@ rule filter_fastq_kingdom_PE:
     params:
         SE_or_PE="PE",
         negate_query=False
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
 rule filter_fastq_unclassified_SE:
@@ -78,7 +83,8 @@ rule filter_fastq_unclassified_SE:
     params:
         SE_or_PE="SE",
         negate_query=True
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     threads: 10
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -92,7 +98,8 @@ rule filter_fastq_unclassified_PE:
     params:
         SE_or_PE="PE",
         negate_query=True
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     threads: 8
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -288,7 +295,8 @@ rule tableview_case_control:
 
     output: 
         case_control="{outdir}/{start_date}_{run_id}/tableview/case_control_readcount_tableview.tsv"
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/tableview_case_control.R"   
 
 
@@ -359,7 +367,8 @@ rule detailed_stats_case:
         detailed_stats_out="{outdir}/{start_date}_{run_id}/tableview/case_detailed_stats.tsv"
     params: 
         case_control=False
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script:  "../../scripts/reformat_results/detailed_stats.R"  
 
 rule detailed_stats_case_control:
@@ -493,7 +502,8 @@ rule detailed_stats_case_control:
         detailed_stats_out="{outdir}/{start_date}_{run_id}/tableview/case_control_detailed_stats.tsv"
     params: 
         case_control=True
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/detailed_stats.R"   
 
 

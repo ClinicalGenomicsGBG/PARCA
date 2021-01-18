@@ -12,7 +12,8 @@ rule readcount_RNA:
     params: 
         mincount=config['krona_plot_min_count'],
         DNA_or_RNA="RNA"
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/readcount_formatting.R" 
 
 rule readcount_DNA:
@@ -24,7 +25,8 @@ rule readcount_DNA:
     params: 
         mincount=config['krona_plot_min_count'],
         DNA_or_RNA="DNA"
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/readcount_formatting.R" 
 
 
@@ -48,7 +50,8 @@ rule generate_krona_plot_case:
                                                                    unique=True) )
     output:
         krona_html="{outdir}/{start_date}_{run_id}/krona/case.krona.html"
-    conda: "../../conda/krona.yaml"
+    #conda: "../../conda/krona.yaml"
+    singularity: config['singularity_krona_env']
     shell:
         """
         ktImportText {input.readcount_krona},"case" -o {output.krona_html};
@@ -91,7 +94,8 @@ rule generate_krona_plot_case_control:
 
     output:
         krona_html="{outdir}/{start_date}_{run_id}/krona/case_control.krona.html"
-    conda: "../../conda/krona.yaml"
+    #conda: "../../conda/krona.yaml"
+    singularity: config['singularity_krona_env']
     shell:
         """
         ktImportText {input.readcount_krona_case},"case" {input.readcount_krona_control},"control" -o {output.krona_html};
