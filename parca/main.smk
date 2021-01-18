@@ -6,7 +6,7 @@ from workflows.utils.process_runinfo_metadata import ProcessRuninfoMetadata
 
 configfile: "config/config.yaml"
 
-singularity: config['singularity_image']
+#singularity: config['singularity_image']
 
 wildcard_constraints:
     start_date="[\d-]+"
