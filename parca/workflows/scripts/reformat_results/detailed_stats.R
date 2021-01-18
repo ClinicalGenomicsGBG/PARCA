@@ -37,7 +37,7 @@ stats_list_case <- c(stats_case, table_case)
 
 stats_df_case <- stats_list_case %>% map_dfr(~read_stats(.x)) 
 
-detailed_stats <- stats_df_case %>% relocate(processing_step, type, count, .before=1)
+detailed_stats <- stats_df_case
 
 case_name <- table_case %>% str_extract("snakemake_results.+/.{2}_.{3}")
 sample_info <- read_tsv(rawpath_case, col_names=TRUE) %>% mutate(processing_step="case_sample_rawpath") %>% bind_rows(tibble(type=case_name, processing_step="case_sample")) 
@@ -54,23 +54,21 @@ if (case_control == TRUE){
   detailed_stats <- 
     full_join(stats_df_case, stats_df_control, by=c("processing_step", "type"), 
             suffix = c("_case","_control") ) %>% 
-    replace_na(list(type="NA", count_case=0, count_control=0)) %>% 
-    relocate(processing_step, type, .before=1)
+    replace_na(list(type="NA", count_case=0, count_control=0)) 
   
   control_name <- table_control %>% str_extract("snakemake_results.+/.{2}_.{3}")
   sample_info_control <- read_tsv(rawpath_control, col_names=TRUE) %>% mutate(processing_step="control_sample_rawpath") %>% bind_rows(tibble(type=control_name, processing_step="control_sample")) 
   
   sample_info %<>% bind_rows(sample_info_control)
   
-
-
 }
 
 detailed_stats <- 
   sample_info %>% 
   bind_rows(detailed_stats) %>% 
   mutate(across(!matches("count"), ~as.character(.) )) %>% 
-  mutate(across(!matches("count"), ~replace_na(., "NA") ))
+  mutate(across(!matches("count"), ~replace_na(., "NA") )) %>% 
+  dplyr::relocate(processing_step, type, .before=1)
 
 write_tsv(detailed_stats, detailed_stats_out, col_names = TRUE)
 
