@@ -11,9 +11,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get -qq -y update && apt-get -qq -y upgrade
 
 RUN conda config --set channel_priority false \
-	&& conda config --add channels \
-		conda-forge \
-		bioconda \
+	&& conda config --add channels conda-forge \
+	&& conda config --add channels bioconda \
 	&& conda update --quiet conda \
 	&& conda install --yes --quiet \
 		r-base=4.0.2 \
