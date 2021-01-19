@@ -93,7 +93,7 @@ rule generate_krona_plot_case_control:
                                                                    unique=True) )
 
     output:
-        krona_html="{outdir}/{start_date}_{run_id}/krona/case_control.krona.html"
+        krona_html=temp("{outdir}/{start_date}_{run_id}/krona/case_control.krona.html")
     #conda: "../../conda/krona.yaml"
     singularity: config['singularity_krona_env']
     shell:
