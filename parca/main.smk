@@ -6,7 +6,7 @@ from workflows.utils.process_runinfo_metadata import ProcessRuninfoMetadata
 
 configfile: "config/config.yaml"
 
-singularity: config['singularity_image']
+#singularity: config['singularity_image']
 
 wildcard_constraints:
     start_date="[\d-]+"
@@ -186,10 +186,10 @@ rule link_case_webinterface:
         detailed_stats="{webinterface}/{start_date}_{run_id}_web/tableview/case_detailed_stats.tsv"
     shell:
         """
-        ln -s {input.main_page_stats} {output.main_page_stats}
-        ln -s {input.tableview} {output.tableview}
-        ln -s {input.krona_html} {output.krona_html}
-        ln -s {input.detailed_stats} {output.detailed_stats}
+        cp {input.main_page_stats} {output.main_page_stats}
+        cp {input.tableview} {output.tableview}
+        cp {input.krona_html} {output.krona_html}
+        cp {input.detailed_stats} {output.detailed_stats}
         """
 
 rule link_case_control_webinterface:
@@ -221,10 +221,10 @@ rule link_case_control_webinterface:
         detailed_stats= "{webinterface}/{start_date}_{run_id}_web/tableview/case_control_detailed_stats.tsv"
     shell:
         """
-        ln -s {input.main_page_stats} {output.main_page_stats}
-        ln -s {input.tableview} {output.tableview}
-        ln -s {input.krona_html} {output.krona_html}
-        ln -s {input.detailed_stats} {output.detailed_stats}
+        cp {input.main_page_stats} {output.main_page_stats}
+        cp {input.tableview} {output.tableview}
+        cp {input.krona_html} {output.krona_html}
+        cp {input.detailed_stats} {output.detailed_stats}
         """
 rule create_main_page_stats_case:
     input: 

@@ -21,19 +21,10 @@ RUN apt-get -qq -y update \
 		tzdata \
 	&& apt-get clean
 
-#RUN conda config --set channel_priority false \
-RUN conda config --add channels conda-forge \
-	&& conda config --add channels bioconda \
+RUN conda config --add channels bioconda \
 	&& conda update --quiet conda \
 	&& conda install --yes --quiet \
-		r-base=4.0.2 \
-		r-openxlsx=4.1.5 \
-		r-magrittr=1.5 \
-		r-tidyverse=1.3.0 \
-		r-dplyr=1.0.2 \
-		r-data.table=1.12.8 \
-		r-xml=3.99_0.3 \
-		bioconductor-shortread=1.48.0 \
+		taxonkit=0.6.0 \
 	&& conda clean --all --yes --quiet
 
 CMD /bin/bash 

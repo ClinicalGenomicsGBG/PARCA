@@ -22,7 +22,8 @@ rule bbduk_trimming_SE:
         adapters=','.join(list(metadata_df.loc[metadata_df['sample_id'] == '{sample}']['adapters'])),
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t"
     #threads: 23
-    conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    #conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage1/trimming.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_{nucleotide}/stage1/trimming.txt"
     shell:
@@ -76,7 +77,8 @@ rule bbduk_merging_PE:
         unmerged=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads.fastq")
     params:     
         mininsert=17
-    conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/bbduk_merging.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/bbduk_merging.txt"
     shell:
@@ -111,7 +113,8 @@ rule bbduk_trimming_PE_merged_lKtrim:
     params:     
         adapters=','.join(list(metadata_df.loc[metadata_df['sample_id'] == '{sample}']['adapters'])),
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t"
-    conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/merged_reads_lKtrim.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/merged_reads_lKtrim.txt"
     shell:
@@ -172,7 +175,8 @@ rule bbduk_trimming_PE_merged_rKtrim:
     params:     
         adapters=','.join(list(metadata_df.loc[metadata_df['sample_id'] == '{sample}']['adapters'])),
         adaptertrimcommand="ktrim=r k=16 mink=11 hdist=1 rcomp=t" 
-    conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/merged_reads_trimmed.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/merged_reads_trimmed.txt"
     shell:
@@ -224,7 +228,8 @@ rule bbduk_trimming_PE_unmerged:
     params:     
         adapters=','.join(list(metadata_df.loc[metadata_df['sample_id'] == '{sample}']['adapters'])),
         adaptertrimcommand="ktrim=l k=16 mink=11 hdist=1 rcomp=t" 
-    conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/unmerged_reads_trimmed_raw.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/unmerged_reads_trimmed_raw.txt"
     shell:

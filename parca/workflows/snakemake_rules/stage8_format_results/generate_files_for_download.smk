@@ -15,7 +15,8 @@ checkpoint tableview:
     params:
         # SE_or_PE="SE",
         mincount=config['tableview_min_count']
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/tableview_splitting.R"
 
 rule filter_fastq_organism_SE:
@@ -23,11 +24,12 @@ rule filter_fastq_organism_SE:
         organism_tableview="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/organism_dir/organism_{taxid}.tsv",
         trimmed_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/trimming/trimmed_reads.fq"
     output: 
-        fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq"
+        fastq_out=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq")
     params:
         SE_or_PE="SE",
         negate_query=False
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
 rule filter_fastq_organism_PE:
@@ -36,11 +38,12 @@ rule filter_fastq_organism_PE:
         trimmed_reads_unmerged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.fq",
         trimmed_reads_merged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_trimmed.fq"
     output: 
-        fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq"
+        fastq_out=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq")
     params:
         SE_or_PE="PE",
         negate_query=False
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
 
@@ -49,11 +52,12 @@ rule filter_fastq_kingdom_SE:
         organism_tableview="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/kingdom_dir/kingdom_{kingdom}.tsv",
         trimmed_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/trimming/trimmed_reads.fq"
     output: 
-        fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq"
+        fastq_out=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq")
     params:
         SE_or_PE="SE",
         negate_query=False
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
 rule filter_fastq_kingdom_PE:
@@ -62,11 +66,12 @@ rule filter_fastq_kingdom_PE:
         trimmed_reads_unmerged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.fq",
         trimmed_reads_merged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_trimmed.fq"
     output: 
-        fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq"
+        fastq_out=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq")
     params:
         SE_or_PE="PE",
         negate_query=False
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
 rule filter_fastq_unclassified_SE:
@@ -74,11 +79,12 @@ rule filter_fastq_unclassified_SE:
         organism_tableview="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/classified_reads_mincount.tsv",
         trimmed_reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/trimming/trimmed_reads.fq"
     output: 
-        fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq"
+        fastq_out=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq")
     params:
         SE_or_PE="SE",
         negate_query=True
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     threads: 10
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -88,11 +94,12 @@ rule filter_fastq_unclassified_PE:
         trimmed_reads_unmerged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.fq",
         trimmed_reads_merged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/merged_reads_trimmed.fq"
     output: 
-        fastq_out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq"
+        fastq_out=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq")
     params:
         SE_or_PE="PE",
         negate_query=True
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     threads: 8
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -100,7 +107,7 @@ rule zip_filtered_fastq_organism:
     input: 
         fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq"
     output: 
-        fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq.gz"
+        fastq=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq.gz")
     threads: 4
     shell:
         """
@@ -111,7 +118,7 @@ rule zip_filtered_fastq_kingdom:
     input: 
         fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq"
     output: 
-        fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq.gz"
+        fastq=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq.gz")
     threads: 4
     shell:
         """
@@ -122,7 +129,7 @@ rule zip_filtered_fastq_unclassified:
     input: 
         fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq"
     output: 
-        fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq.gz",
+        fastq=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq.gz"),
         read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt"
     threads: 8
     shell:
@@ -147,7 +154,7 @@ rule link_filtered_fastq_organism:
         fastq="{webinterface}/{start_date}_{run_id}_web/snakemake_results_{sample}/{sample_type}_{nucleotide}/organism_fastq/{taxid}.fastq.gz"
     shell:
         """
-        ln -s {input.fastq} {output.fastq}
+        cp {input.fastq} {output.fastq}
         """ 
 
 rule link_filtered_fastq_kingdom:
@@ -165,7 +172,7 @@ rule link_filtered_fastq_kingdom:
         fastq="{webinterface}/{start_date}_{run_id}_web/snakemake_results_{sample}/{sample_type}_{nucleotide}/kingdom_fastq/{kingdom}.fastq.gz"
     shell:
         """
-        ln -s {input.fastq} {output.fastq}
+        cp {input.fastq} {output.fastq}
         """ 
 
 rule link_filtered_fastq_unclassified:
@@ -182,7 +189,7 @@ rule link_filtered_fastq_unclassified:
         fastq="{webinterface}/{start_date}_{run_id}_web/snakemake_results_{sample}/{sample_type}_{nucleotide}/unclassified_fastq/unclassified.fastq.gz"
     shell:
         """
-        ln -s {input.fastq} {output.fastq}
+        cp {input.fastq} {output.fastq}
         """ 
 
 
@@ -288,7 +295,8 @@ rule tableview_case_control:
 
     output: 
         case_control="{outdir}/{start_date}_{run_id}/tableview/case_control_readcount_tableview.tsv"
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/tableview_case_control.R"   
 
 
@@ -359,7 +367,8 @@ rule detailed_stats_case:
         detailed_stats_out="{outdir}/{start_date}_{run_id}/tableview/case_detailed_stats.tsv"
     params: 
         case_control=False
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script:  "../../scripts/reformat_results/detailed_stats.R"  
 
 rule detailed_stats_case_control:
@@ -493,7 +502,8 @@ rule detailed_stats_case_control:
         detailed_stats_out="{outdir}/{start_date}_{run_id}/tableview/case_control_detailed_stats.tsv"
     params: 
         case_control=True
-    conda: "../../conda/R_env.yaml"
+    #conda: "../../conda/R_env.yaml"
+    singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/detailed_stats.R"   
 
 

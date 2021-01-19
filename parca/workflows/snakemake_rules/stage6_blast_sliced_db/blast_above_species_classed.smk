@@ -9,7 +9,8 @@ checkpoint prepare_blast_input:
         read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage5/count_printedfiles_assembledreadlengths.txt"
     params: 
         chunk_size=6000
-    conda: "../../conda/biopython_env.yaml" #config['conda_environment'] 
+    #conda: "../../conda/biopython_env.yaml" #config['conda_environment'] 
+    singularity: config['singularity_biopython_env']
     script:
         "../../scripts/blast_processing/blast_preprocessing/create_sliceblast_input.py"
 
@@ -25,7 +26,8 @@ rule blast_slices:
         e_val="1e-3",
         max_seqs="10",
         db_dir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}"
-    conda: "../../conda/blast_env.yaml" #config['conda_environment'] 
+    #conda: "../../conda/blast_env.yaml" #config['conda_environment'] 
+    singularity: config['singularity_blast_env']
     threads: 10
     shell:
         """
@@ -70,7 +72,8 @@ rule merge_slice_blast_result:
         blast_output=aggregate_sliceblast_input
     output: 
         best_blast="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast.txt"
-    conda: "../../conda/R_env.yaml" #config['conda_environment'] 
+    #conda: "../../conda/R_env.yaml" #config['conda_environment'] 
+    singularity: config['singularity_R_env']
     script:
         "../../scripts/blast_processing/blast_postprocessing/merge_slice_blast_result.R"
 
@@ -90,7 +93,8 @@ rule taxonomic_lineage_best_blast:
         best_blast="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast.txt"
     output:
         tax_id_lineage="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_tax_id_lineage.txt"
-    conda: "../../conda/taxonkit_env.yaml" #config['conda_environment']
+    #conda: "../../conda/taxonkit_env.yaml" #config['conda_environment']
+    singularity: config['singularity_taxonkit_env']
     params:
         dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
     shell:
@@ -129,7 +133,8 @@ rule reformat_blast_taxids:
     output: 
         species_and_above="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage6/best_blast_species_and_above.txt",
         count_reads_tax_ids="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage6/count_reads_taxid_SubsetBLAST.txt"
-    conda: "../../conda/R_env.yaml" #config['conda_environment'] 
+    #conda: "../../conda/R_env.yaml" #config['conda_environment'] 
+    singularity: config['singularity_R_env']
     params:
         blast_type="SubsetBLAST",
         primates_file=config['primates_file']

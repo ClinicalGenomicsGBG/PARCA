@@ -18,7 +18,8 @@ rule bbwrap_alignment_SE_RNA:
         unmapped=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/bbwrap_alignment/unmapped_reads.fasta"),
         scafstats=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_RNA/stage2/bbwrap_alignment/bbmap_scafstats.txt"),
         stats=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_RNA/stage2/bbwrap_alignment/bbmap_stats.txt")
-    conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    #conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage2/bbwrap_alignment.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage2/bbwrap.txt"
     threads: 110
@@ -52,7 +53,8 @@ rule pileup_SE_RNA:
         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/bbwrap_alignment/aln.sam.gz"
     output:
         temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/pileup/bbmap_cov.txt")
-    conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage2/pileup.log"
     shell:
         """
@@ -82,7 +84,8 @@ rule bbwrap_alignment_PE_RNA:
         unmapped=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/{group}_reads_unmapped.fasta"),
         scafstats=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_RNA/stage2/bbwrap_alignment/{group}_bbmap_scafstats.txt"),
         stats=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_RNA/stage2/bbwrap_alignment/{group}_bbmap_stats.txt")
-    conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_RNA/stage2/{group}_bbwrap_alignment.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_RNA/stage2/{group}_bbwrap.txt"
     wildcard_constraints:
@@ -119,7 +122,8 @@ rule pileup_PE_RNA:
         aln="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/{group}_aln.sam.gz"
     output:
         cov=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/pileup/{group}_bbmap_cov.txt")
-    conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    #conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
+    singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_RNA/stage2/{group}_pileup.log"
     wildcard_constraints:
         group="unmerged|merged"

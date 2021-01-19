@@ -9,7 +9,8 @@ rule existing_slices_split:
     params: 
         existing_slice_path=config['existing_slice_path'], #config['existing_slice_path'],
         min_tax_id_count=2
-    conda: "../../conda/R_env.yaml" #config['conda_environment']
+    #conda: "../../conda/R_env.yaml" #config['conda_environment']
+    singularity: config['singularity_R_env']
     script: "../../scripts/blast_processing/blast_preprocessing/existing_slices_split.R" 
 
 def create_file_list(file_name):
@@ -50,7 +51,8 @@ rule all_downloaded_slices:
         downloaded_dir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices"
     output: 
         all_downloaded="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices.txt"
-    conda: "../../conda/R_env.yaml" #config['conda_environment']
+    #conda: "../../conda/R_env.yaml" #config['conda_environment']
+    singularity: config['singularity_R_env']
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/download_slices_merged.txt"
     script: "../../scripts/blast_processing/blast_preprocessing/merge_downloaded_slices.R" 
 
@@ -65,7 +67,8 @@ rule create_tax_id_accession_slice_files:
         created_slice_dir=temp(directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices_acc"))
     params:
         splitaccdump_dir=config['splitaccdump_dir'] #config['splitaccdump_dir']
-    conda: "../../conda/R_env.yaml" #config['conda_environment'] 
+    #conda: "../../conda/R_env.yaml" #config['conda_environment'] 
+    singularity: config['singularity_R_env']
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/downloaded_slices_acc.txt"
     script:  "../../scripts/blast_processing/blast_preprocessing/create_slice_files_downloaded.R"
 
@@ -99,7 +102,8 @@ rule create_blastdb_alias:
     params: 
         nt_db_dir=config['nt_db_dir'], #config['nt_db_dir'],
         out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}"
-    conda: "../../conda/blast_env.yaml" #config['conda_environment'] 
+    #conda: "../../conda/blast_env.yaml" #config['conda_environment'] 
+    singularity: config['singularity_blast_env']
     shell:
         """
         blastdb_aliastool -dbtype nucl -seqidlist {input} -db {params.nt_db_dir}/nt -out {params.out} >/dev/null;

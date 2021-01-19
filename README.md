@@ -94,6 +94,17 @@ Note:
 * Pollux and Fiona are not available from conda and has to be manually downloaded
 * The workflow uses the singularity definition file in workflows/containers/parca_v1.def which should be built prior to running the pipeline.
 
+## Installation
+```
+singularity pull docker://pericsson/bbmap_env:latest
+singularity pull docker://pericsson/biopython_env:latest
+singularity pull docker://pericsson/blast_env:latest
+singularity pull docker://pericsson/kaiju_env:latest
+singularity pull docker://pericsson/krona_env:latest
+singularity pull docker://pericsson/r_env:latest
+singularity pull docker://pericsson/taxonkit_env:latest
+```
+
 ### To-Do
 * Comments on what to add to future updates are added to the previous section "The pipeline" with specifications for certain rules and snakemake files. All documented things to add to a future update can be found on [jira](https://clinicalgenomics.atlassian.net/secure/RapidBoard.jspa?rapidView=83&projectKey=PR&view=planning.nodetail&selectedIssue=PR-3&issueLimit=100&assignee=5d19d97386b1040ce2815bc6) (issues in jira are to the most part replicated on the github issues and github projects but the most updated issues are on Jira)
 

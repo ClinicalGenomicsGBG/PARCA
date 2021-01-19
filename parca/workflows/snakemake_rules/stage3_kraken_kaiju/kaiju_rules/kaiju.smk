@@ -17,7 +17,8 @@ rule kaiju:
         kaiju_db_base_path=config['kaiju_db_base_path'], #config['kaiju_db_base_path'],
         kaijunames=config['kaiju_names'] #config['kaiju_names']
     threads: 110
-    conda: "../../../conda/kaiju_env.yaml" #config['conda_environment']
+    #conda: "../../../conda/kaiju_env.yaml" #config['conda_environment']
+    singularity: config['singularity_kaiju_env']
     shell:
         """
         kaiju \
@@ -54,7 +55,8 @@ rule kaiju_filter_classified_RNA:
         read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_RNA/stage3/kaiju/count_kaiju_filtered_classified.txt")
     params:
         program="kaiju"
-    conda: "../../../conda/R_env.yaml" #config['conda_environment']
+    #conda: "../../../conda/R_env.yaml" #config['conda_environment']
+    singularity: config['singularity_R_env']
     script:
             "../../../scripts/kmer_processing/filter_classified.R"
 
@@ -80,7 +82,8 @@ rule kaiju_filter_classified_DNA:
         read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_DNA/stage3/kaiju/count_kaiju_filtered_classified.txt")
     params:
         program="kaiju"
-    conda: "../../../conda/R_env.yaml" #config['conda_environment']
+    #conda: "../../../conda/R_env.yaml" #config['conda_environment']
+    singularity: config['singularity_R_env']
     script:
             "../../../scripts/kmer_processing/filter_classified.R"
 

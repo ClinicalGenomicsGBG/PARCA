@@ -124,7 +124,8 @@ rule interleave_PE:
         read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/samples/count_raw_reads.txt")
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/{sample}_interleaved.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/{sample}_interleaved.txt"
-    conda: "../../../conda/bbmap_env.yaml"
+    # conda: "../../../conda/bbmap_env.yaml"
+    singularity: config['singularity_bbmap_env']
     shell:
         """
         reformat.sh in={input.fwd} in2={input.rev} out={output.interleaved} &> {log}
