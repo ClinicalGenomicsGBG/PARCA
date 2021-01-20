@@ -30,31 +30,29 @@ kraken_path:
   "/apps/CLC_ExternalApps/kraken2" # Seems to be kraken1 even though referred to as kraken2
 kraken_db_base_path: "/medstore/External_References/krakdb_hll"
 
-krakendb_RNA: ["viruses", "bacteria_progenomes_cds_total"]  # "eukaryotes_cds"
-krakendblimits_RNA: ["0.15", "0.05"] #, "0.05"]
+krakendb_RNA: ["viruses", "bacteria_progenomes_cds_total"]  # ["eukaryotes_cds", "viruses", "bacteria_progenomes_cds_total"]
+krakendblimits_RNA: ["0.15", "0.05"] # ["0.15", "0.05", "0.05"]
 
-krakendb_DNA: ["viruses", "bacteria_progenomes_total_768"]  # "eukaryotes_768"
-krakendblimits_DNA: ["0.15", "0.05"] #, "0.05"]
+krakendb_DNA: ["viruses", "bacteria_progenomes_total_768"]  # ["eukaryotes_768","viruses","bacteria_progenomes_total_768"]
+krakendblimits_DNA: ["0.15", "0.05"] # ["0.15","0.05","0.05"]
 
 ## Kraken2 settings
-kraken2_db_base_path: "/medstore/Development/Metagenomics/kraken_dbs"
+# kraken2_db_base_path: "/medstore/Development/Metagenomics/kraken_dbs"
 
-kraken2_mini_db: "viruses" #"minikraken_8GB_20200312"
-kraken2_limits: "0.05" #["0.15"]
+# kraken2_mini_db: "viruses" #"minikraken_8GB_20200312"
+# kraken2_limits: "0.05" #["0.15"]
 
 ## Kaiju settings
 kaiju_db_base_path: "/medstore/Development/Metagenomics/PathFinder43b/databases" #"/tmp/pathfinder_dbs" #cp -r /medstore/Development/Metagenomics/PathFinder43b/databases/* /tmp/pathfinder_dbs 
 kaiju_names: "/medstore/Development/Metagenomics/PathFinder43b/databases/nodes.dmp" #"/tmp/pathfinder_dbs/nodes.dmp"
 
-kaijudb_RNA: ["progenomes_complete", "genbank_viruses_171017_kaiju_db"]  # "genbank_eukaryotes_171014_kaiju_db"
-kaijuscore_RNA: ["80", "85","75"] #["85","75"]
-kaijumatches_RNA: ["18","20","15"] #["20","15"]
-#kaijuerrors_RNA: ["2","2","3"]
+kaijudb_RNA: ["progenomes_complete", "genbank_viruses_171017_kaiju_db"]  # ["progenomes_complete","genbank_eukaryotes_171014_kaiju_db","genbank_viruses_171017_kaiju_db"]
+kaijuscore_RNA: ["80", "85","75"] # ["80", "85","75"]
+kaijumatches_RNA: ["18","20","15"] #["18","20","15"]
 
-kaijudb_DNA: ["progenomes_complete", "genbank_viruses_171017_kaiju_db"]  # "genbank_eukaryotes_171014_kaiju_db"
-kaijuscore_DNA: ["80", "85","75"]
-kaijumatches_DNA: ["18","20","15"]
-#kaijuerrors_DNA: ["2","2","3"]
+kaijudb_DNA: ["progenomes_complete", "genbank_viruses_171017_kaiju_db"]  # ["progenomes_complete","genbank_eukaryotes_171014_kaiju_db","genbank_viruses_171017_kaiju_db"]
+kaijuscore_DNA: ["80", "85","75"] # ["80", "85","75"]
+kaijumatches_DNA: ["18","20","15"] # ["18","20","15"]
 
 ## Nodes and names file
 #nodes: "/medstore/Development/Metagenomics/PathFinder43b/databases/nodes.dmp"
