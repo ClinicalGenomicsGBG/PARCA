@@ -33,6 +33,7 @@ rule filter_fastq_organism_SE:
     #conda: "../../conda/R_env.yaml"
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.log"
+    threads: 4
     singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -49,6 +50,7 @@ rule filter_fastq_organism_PE:
     #conda: "../../conda/R_env.yaml"
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.log"
+    threads: 4
     singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -65,6 +67,7 @@ rule filter_fastq_kingdom_SE:
     #conda: "../../conda/R_env.yaml"
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.log"
+    threads: 4
     singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -81,6 +84,7 @@ rule filter_fastq_kingdom_PE:
     #conda: "../../conda/R_env.yaml"
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.log"
+    threads: 4
     singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -97,7 +101,7 @@ rule filter_fastq_unclassified_SE:
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.log"
     benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.log"
     singularity: config['singularity_R_env']
-    threads: 10
+    threads: 8
     script: "../../scripts/reformat_results/filter_fastq.R"
 
 rule filter_fastq_unclassified_PE:
