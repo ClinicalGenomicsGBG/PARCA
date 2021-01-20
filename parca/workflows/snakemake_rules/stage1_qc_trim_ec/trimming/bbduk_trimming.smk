@@ -25,7 +25,7 @@ rule bbduk_trimming_SE:
     #conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage1/trimming.log"
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_{nucleotide}/stage1/trimming.txt"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_{nucleotide}/stage1/trimming.log"
     shell:
         """
         adapter={params.adapters};
@@ -80,7 +80,7 @@ rule bbduk_merging_PE:
     # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/bbduk_merging.log"
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/bbduk_merging.txt"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/bbduk_merging.log"
     shell:
         """
         bbmerge.sh \
@@ -116,7 +116,7 @@ rule bbduk_trimming_PE_merged_lKtrim:
     # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/merged_reads_lKtrim.log"
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/merged_reads_lKtrim.txt"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/merged_reads_lKtrim.log"
     shell:
         """
         adapter={params.adapters};
@@ -178,7 +178,7 @@ rule bbduk_trimming_PE_merged_rKtrim:
     # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/merged_reads_trimmed.log"
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/merged_reads_trimmed.txt"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/merged_reads_trimmed.log"
     shell:
         """
         adapter={params.adapters};
@@ -231,7 +231,7 @@ rule bbduk_trimming_PE_unmerged:
     # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/unmerged_reads_trimmed_raw.log"
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/unmerged_reads_trimmed_raw.txt"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/unmerged_reads_trimmed_raw.log"
     shell:
         """
         adapter={params.adapters};
@@ -274,6 +274,8 @@ rule reformat_unmerged_PE:
         reads="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed_raw.fq"
     output: 
         reads=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.fq")
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/trimming/unmerged_reads_trimmed.log"
     run: 
         reformatted=[]
         with open(input['reads'], 'r') as filehandle:
@@ -303,10 +305,12 @@ rule total_trimmed_reads_PE:
         trimmed_read_count_merged="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_merged_reads_trimmed.txt" 
     output:
         trimmed_read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.txt") 
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/trimming/count_bbduk_trimmed_reads.log"
     shell:
         """
-        echo count > {output.trimmed_read_count};
-        echo $(grep "^[0-9]" {input.trimmed_read_count_unmerged})+$(grep "^[0-9]" {input.trimmed_read_count_merged})|bc >> {output.trimmed_read_count};
+        echo count > {output.trimmed_read_count} 2>> {log};
+        echo $(grep "^[0-9]" {input.trimmed_read_count_unmerged})+$(grep "^[0-9]" {input.trimmed_read_count_merged})|bc >> {output.trimmed_read_count} 2>> {log};
         """ 
 
  

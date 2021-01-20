@@ -16,6 +16,8 @@ checkpoint tableview:
         # SE_or_PE="SE",
         mincount=config['tableview_min_count']
     #conda: "../../conda/R_env.yaml"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage8/tableview/tableview.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage8/tableview/tableview.log"
     singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/tableview_splitting.R"
 
@@ -29,6 +31,8 @@ rule filter_fastq_organism_SE:
         SE_or_PE="SE",
         negate_query=False
     #conda: "../../conda/R_env.yaml"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.log"
     singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -43,6 +47,8 @@ rule filter_fastq_organism_PE:
         SE_or_PE="PE",
         negate_query=False
     #conda: "../../conda/R_env.yaml"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.log"
     singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -57,6 +63,8 @@ rule filter_fastq_kingdom_SE:
         SE_or_PE="SE",
         negate_query=False
     #conda: "../../conda/R_env.yaml"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.log"
     singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -71,6 +79,8 @@ rule filter_fastq_kingdom_PE:
         SE_or_PE="PE",
         negate_query=False
     #conda: "../../conda/R_env.yaml"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.log"
     singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/filter_fastq.R"
 
@@ -84,6 +94,8 @@ rule filter_fastq_unclassified_SE:
         SE_or_PE="SE",
         negate_query=True
     #conda: "../../conda/R_env.yaml"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.log"
     singularity: config['singularity_R_env']
     threads: 10
     script: "../../scripts/reformat_results/filter_fastq.R"
@@ -99,6 +111,8 @@ rule filter_fastq_unclassified_PE:
         SE_or_PE="PE",
         negate_query=True
     #conda: "../../conda/R_env.yaml"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.log"
     singularity: config['singularity_R_env']
     threads: 8
     script: "../../scripts/reformat_results/filter_fastq.R"
@@ -109,9 +123,11 @@ rule zip_filtered_fastq_organism:
     output: 
         fastq=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/organism_fastq/{taxid}.fastq.gz")
     threads: 4
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage8/tableview/organism_fastq/{taxid}_zip.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage8/tableview/organism_fastq/{taxid}_zip.log"
     shell:
         """
-        pigz -p {threads} -k {input.fastq};
+        pigz -p {threads} -k {input.fastq} 2> {log};
         """ 
 
 rule zip_filtered_fastq_kingdom:
@@ -120,9 +136,11 @@ rule zip_filtered_fastq_kingdom:
     output: 
         fastq=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}.fastq.gz")
     threads: 4
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}_zip.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage8/tableview/kingdom_fastq/{kingdom}_zip.log"
     shell:
         """
-        pigz -p {threads} -k {input.fastq};
+        pigz -p {threads} -k {input.fastq} 2> {log};
         """ 
 
 rule zip_filtered_fastq_unclassified:
@@ -132,11 +150,13 @@ rule zip_filtered_fastq_unclassified:
         fastq=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/unclassified_fastq/unclassified.fastq.gz"),
         read_count="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage8/tableview/count_unclassified_reads.txt"
     threads: 8
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage8/tableview/zip_filtered_fastq_unclassified.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage8/tableview/zip_filtered_fastq_unclassified.log"
     shell:
         """
         echo count > {output.read_count};
         echo $(cat {input.fastq}|wc -l)/4|bc  >> {output.read_count};
-        pigz -p {threads} -k {input.fastq};
+        pigz -p {threads} -k {input.fastq} 2> {log};
         """ 
 
 rule link_filtered_fastq_organism:
@@ -230,8 +250,10 @@ rule call_filter_fastqs:
         )
     output:
         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage8/tableview/fastq_filtering_done.log"
     shell:
-        "touch {output}"
+        "touch {output} 2> {log}"
 
 rule tableview_case:
     input: 
@@ -253,9 +275,10 @@ rule tableview_case:
                                                                    unique=True) )
     output: 
         case="{outdir}/{start_date}_{run_id}/tableview/case_readcount_tableview.tsv"
+    log: "{outdir}/{start_date}_{run_id}/run_log/tableview/case_readcount_tableview.log"
     shell: 
         """
-        cp {input.case} {output.case}
+        cp {input.case} {output.case} 2> {log}
         """  
 
 rule tableview_case_control:
@@ -296,6 +319,7 @@ rule tableview_case_control:
     output: 
         case_control="{outdir}/{start_date}_{run_id}/tableview/case_control_readcount_tableview.tsv"
     #conda: "../../conda/R_env.yaml"
+    log: "{outdir}/{start_date}_{run_id}/run_log/tableview/case_control_readcount_tableview.log"
     singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/tableview_case_control.R"   
 
@@ -368,6 +392,7 @@ rule detailed_stats_case:
     params: 
         case_control=False
     #conda: "../../conda/R_env.yaml"
+    log: "{outdir}/{start_date}_{run_id}/run_log/tableview/case_detailed_stats.log"
     singularity: config['singularity_R_env']
     script:  "../../scripts/reformat_results/detailed_stats.R"  
 
@@ -503,6 +528,7 @@ rule detailed_stats_case_control:
     params: 
         case_control=True
     #conda: "../../conda/R_env.yaml"
+    log: "{outdir}/{start_date}_{run_id}/run_log/tableview/case_control_detailed_stats.log"
     singularity: config['singularity_R_env']
     script: "../../scripts/reformat_results/detailed_stats.R"   
 

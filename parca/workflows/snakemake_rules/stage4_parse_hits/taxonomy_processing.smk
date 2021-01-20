@@ -26,6 +26,8 @@ rule add_taxon_names_doublets:
         #nodes=config['nodes'],
         #names=config['names']
     #conda: "../../conda/kaiju_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju_names_unfiltered.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage4/comparison/combined_kraken_kaiju_names_unfiltered.log"
     singularity: config['singularity_kaiju_env']
     shell:
         """
@@ -34,7 +36,7 @@ rule add_taxon_names_doublets:
             -n {params.names_nodes_dmp_dir}/names.dmp \
             -i {input.combined} \
             -o {output.named} \
-            -r superkingdom,class,order,family,genus,species;
+            -r superkingdom,class,order,family,genus,species 2> {log};
         """
 
 
@@ -62,6 +64,8 @@ rule filter_SGF_empty:
         combined_SGF_empty_filter=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_kraken_kaiju_names.txt"),
         singletons_added_SGF_empty=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_added_SGF_empty.txt")
     #conda: "../../conda/R_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage4/taxonomy_processing/filter_SGF_empty.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage4/taxonomy_processing/filter_SGF_empty.log"
     singularity: config['singularity_R_env']
     script:
         "../../scripts/taxonomy_processing/filter_SGF_empty.R" 
@@ -81,6 +85,8 @@ rule get_taxonomic_lineage_singletons:
     output:
         tax_id_lineage=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_tax_id_lineage.txt")
     #conda: "../../conda/taxonkit_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_tax_id_lineage.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_tax_id_lineage.log"
     singularity: config['singularity_taxonkit_env']
     params:
         dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
@@ -95,7 +101,7 @@ rule get_taxonomic_lineage_singletons:
         taxonkit reformat \
             --data-dir {params.dmp_dir} \
             --show-lineage-taxids | \
-        cut -f 1,3,5 > {output.tax_id_lineage};
+        cut -f 1,3,5 > {output.tax_id_lineage} 2> {log};
         """ 
 
 rule singletons_species_to_genus:
@@ -114,6 +120,8 @@ rule singletons_species_to_genus:
         singletons_genus=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus.txt"),
         read_count_singletons_genus = temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_singletons_genus.txt")
     #conda: "../../conda/R_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus.log"
     singularity: config['singularity_R_env']
     script: 
         "../../scripts/taxonomy_processing/filter_taxonomy.R" 
@@ -134,6 +142,8 @@ rule add_taxon_names_singletons:
         #nodes=config['nodes'],
         #names=config['names']
     #conda: "../../conda/kaiju_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names.log"
     singularity: config['singularity_kaiju_env']
     shell:
         """
@@ -142,7 +152,7 @@ rule add_taxon_names_singletons:
         -n {params.names_nodes_dmp_dir}/names.dmp \
         -i {input.singletons_genus} \
         -o {output.singletons_genus_names} \
-        -r superkingdom,class,order,family,genus,species;
+        -r superkingdom,class,order,family,genus,species 2> {log};
         """
 
 rule reformat_singletons:
@@ -157,6 +167,8 @@ rule reformat_singletons:
     output: 
         singletons_genus_names_reformat=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names_reformat.txt")
     #conda: "../../conda/R_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names_reformat.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage4/taxonomy_processing/singletons_genus_names_reformat.log"
     singularity: config['singularity_R_env']
     script:
         "../../scripts/taxonomy_processing/reformat_taxonomy.R"  
@@ -173,6 +185,8 @@ rule merge_combined_with_singletons:
         combined_SGF_empty_filter="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_kraken_kaiju_names.txt"
     output: 
         combined_doublets_singletons=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.txt")
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage4/taxonomy_processing/combined_doublets_singletons.log"
     shell: 
         """
         cat {input.singletons_genus_names_reformat} > {output.combined_doublets_singletons};
@@ -193,5 +207,7 @@ rule genus_species_split:
         higher=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/genusspeciessplit/above_species_classed.txt"),
         read_count = temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_species_genus_higher.txt")
     #conda: "../../conda/R_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage4/genus_species_split.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage4/genus_species_split.log"
     singularity: config['singularity_R_env']
     script: "../../scripts/taxonomy_processing/genus_species_split.R" 

@@ -21,6 +21,7 @@ rule kraken:
     threads: 110
     #conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
     log:"{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.log"
+    benchmark:"{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage3/kraken/kraken_log_{kraken_db}.log"
     shell:
         """
         {params.kraken_path}/kraken \
@@ -59,13 +60,15 @@ rule kraken_filter_score:
         kraken_path=config['kraken_path'],
         kraken_db_base_path=config['kraken_db_base_path'] #config['kraken_db_base_path']
     #conda: "../../../conda/kraken_kaiju_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage3/kraken/kraken_{kraken_db}_filter_{db_limits}.log"
     shell:
         """
         {params.kraken_path}/kraken-filter \
             --db {params.kraken_db_base_path}/{wildcards.kraken_db} \
             --threshold {wildcards.db_limits} \
             {input.kraken} \
-            > {output.filtered};
+            > {output.filtered} 2> {log};
         """
         # """
         # kraken-filter \
@@ -97,6 +100,8 @@ rule kraken_filter_classified_RNA:
     params:
         program="kraken"
     #conda: "../../../conda/R_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_RNA/stage3/kraken/count_kraken_filtered_classified.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_RNA/stage3/kraken/count_kraken_filtered_classified.log"
     singularity: config['singularity_R_env']
     script:
         "../../../scripts/kmer_processing/filter_classified.R"
@@ -123,6 +128,8 @@ rule kraken_filter_classified_DNA:
     params:
         program="kraken"
     #conda: "../../../conda/R_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_DNA/stage3/kraken/count_kraken_filtered_classified.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_DNA/stage3/kraken/count_kraken_filtered_classified.log"
     singularity: config['singularity_R_env']
     script:
         "../../../scripts/kmer_processing/filter_classified.R"
