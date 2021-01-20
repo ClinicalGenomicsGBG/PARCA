@@ -1,4 +1,4 @@
-
+# Maintainer Pernilla Ericsson
 
 rule compare_kmer_results:
     """ 

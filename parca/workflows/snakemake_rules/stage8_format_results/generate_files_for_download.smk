@@ -1,4 +1,8 @@
+
+# Maintainer Pernilla Ericsson
+
 # from ...utils.process_runinfo_metadata import ProcessRuninfoMetadata
+
 import sys
 sys.path.append("../..") 
 

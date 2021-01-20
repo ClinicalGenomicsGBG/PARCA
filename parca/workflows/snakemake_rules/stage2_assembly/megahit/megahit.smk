@@ -1,9 +1,5 @@
+# Maintainer Pernilla Ericsson
 
-# done
-# intermediate_contigs
-# opts.txt
-# RNA.contigs.fa
-# RNA.log
 rule megahit_SE_RNA:
     """ 
     Rule for running Megahit metagenomic assembler on single end RNA.

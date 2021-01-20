@@ -1,3 +1,4 @@
+# Maintainer Pernilla Ericsson
 
 rule bbduk_trimming_SE:
     """ 

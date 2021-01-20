@@ -1,12 +1,9 @@
 name: main_env
 channels:
-  - anaconda
+  - conda-forge
   - bioconda
 dependencies:
-  - click=v7.0
-  - subprocess
-  - pandas
-  - bioconductor-shortread=1.48.0
-  - snakemake
-  
-#  - snakemake
+  - python=3.8.3
+  - click=7.1.2 
+  - pandas=1.0.4 
+  - snakemake=5.26.1

@@ -1,3 +1,4 @@
+# Maintainer Pernilla Ericsson
 
 rule existing_slices_split:
     input: 

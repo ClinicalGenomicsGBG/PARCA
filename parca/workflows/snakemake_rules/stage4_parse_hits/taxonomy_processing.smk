@@ -1,12 +1,5 @@
-# rule create_taxonomy_db:
-#     input:
-#         names_dmp=config['names'],
-#         nodes_dmp=config['nodes']
-#     output:
-#         sql_db="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage4/fiter_combined/accessionTaxa.sql"
-#     conda: config['conda_environment']
-#     script:
-#         "../../scripts/taxonomy_processing/create_taxonomy_db.R"
+# Maintainer Pernilla Ericsson
+
 rule add_taxon_names_doublets:
     """ 
     Rule for adding lineage to taxonomic IDs.

@@ -1,3 +1,5 @@
+# Maintainer Pernilla Ericsson
+
 rule rename_classified:
     input: 
         kmer_blast_nt="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage7/kmer_species_subsetblast_blastnt_classed.txt",

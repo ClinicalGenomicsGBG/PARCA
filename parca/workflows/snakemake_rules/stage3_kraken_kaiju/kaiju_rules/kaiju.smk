@@ -1,3 +1,5 @@
+# Maintainer Pernilla Ericsson
+
 rule kaiju:
     """ 
     Rule for running metagenomic classifier Kaiju.

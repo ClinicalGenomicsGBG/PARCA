@@ -1,3 +1,5 @@
+# Maintainer Pernilla Ericsson
+
 import pandas as pd 
 
 rule unzip_rename_SE:

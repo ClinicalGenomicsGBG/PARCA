@@ -1,3 +1,4 @@
+# Maintainer Pernilla Ericsson
 
 rule fiona_SE_RNA:
     """ 

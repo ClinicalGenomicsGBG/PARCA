@@ -1,4 +1,4 @@
-
+# Maintainer Pernilla Ericsson
 
 rule quality_control_raw_SE:
     input:

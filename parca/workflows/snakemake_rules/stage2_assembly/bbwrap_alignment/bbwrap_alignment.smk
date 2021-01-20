@@ -1,3 +1,5 @@
+# Maintainer Pernilla Ericsson
+
 rule bbwrap_alignment_SE_RNA:
     """ 
     Rule for aligning the reads back to the generated contigs.

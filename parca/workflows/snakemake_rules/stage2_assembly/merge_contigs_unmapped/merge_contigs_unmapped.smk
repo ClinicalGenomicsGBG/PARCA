@@ -1,3 +1,5 @@
+# Maintainer Pernilla Ericsson
+
 import re
 
 rule create_kmer_classifier_input_SE_RNA:

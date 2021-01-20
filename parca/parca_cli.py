@@ -1,4 +1,4 @@
-
+# Maintainer Pernilla Ericsson
 import os
 import click
 import shutil

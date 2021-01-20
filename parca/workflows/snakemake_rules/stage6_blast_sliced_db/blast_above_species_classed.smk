@@ -1,3 +1,4 @@
+# Maintainer Pernilla Ericsson
 
 checkpoint prepare_blast_input:
     input: 

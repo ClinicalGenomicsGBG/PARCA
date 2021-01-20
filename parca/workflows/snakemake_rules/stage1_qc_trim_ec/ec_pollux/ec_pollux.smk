@@ -1,3 +1,4 @@
+# Maintainer Pernilla Ericsson
 
 rule pollux_SE_RNA:
     """ 

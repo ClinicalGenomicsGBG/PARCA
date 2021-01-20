@@ -1,4 +1,4 @@
-
+# Maintainer Pernilla Ericsson
 
 checkpoint prepare_nt_blast_input:
     """
