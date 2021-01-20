@@ -58,6 +58,7 @@ def run(metadata, runinfo, dryrun, outdir, webinterface, complete_log):
     cluster_settings = "".join(["qsub ",
                                 "-S /bin/bash ",
                                 "-pe mpi {cluster.threads} ",
+                                "{cluster.excl}"
                                 "-q {cluster.queue} ",
                                 "-S /bin/bash ",
                                 "-N parca-{rule}-{wildcards.run_id} ",
