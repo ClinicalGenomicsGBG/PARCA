@@ -1,4 +1,4 @@
-
+# Maintainer Pernilla Ericsson
 
 rule quality_control_raw_SE:
     input:
@@ -10,12 +10,14 @@ rule quality_control_raw_SE:
         dir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/stage1/qc_raw/"
     threads: 4
     # conda: "../../../conda/bbmap_env.yaml"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage1/qc_raw/{sample}_fastqc.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_{nucleotide}/stage1/qc_raw/{sample}_fastqc.log"
     singularity: config['singularity_bbmap_env']
     shell:
         """
         fastqc -o {params.dir} \
                -t {threads} \
-               {input.fastq};
+               {input.fastq} &>> {log};
         """
 
 rule quality_control_raw_PE:
@@ -31,10 +33,12 @@ rule quality_control_raw_PE:
         dir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/stage1/qc_raw/"
     threads: 4
     # conda: "../../../conda/bbmap_env.yaml"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/qc_raw/{sample}_fastqc.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/qc_raw/{sample}_fastqc.log"
     singularity: config['singularity_bbmap_env']
     shell:
         """
         fastqc -o {params.dir} \
                -t {threads} \
-               {input};
+               {input} &>> {log};
         """

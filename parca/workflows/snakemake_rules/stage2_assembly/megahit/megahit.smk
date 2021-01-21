@@ -1,9 +1,5 @@
+# Maintainer Pernilla Ericsson
 
-# done
-# intermediate_contigs
-# opts.txt
-# RNA.contigs.fa
-# RNA.log
 rule megahit_SE_RNA:
     """ 
     Rule for running Megahit metagenomic assembler on single end RNA.
@@ -31,8 +27,8 @@ rule megahit_SE_RNA:
         min_contig_length=100
     # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     singularity: config['singularity_bbmap_env']
-    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage2/megahit.txt"
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage2/megahit.txt"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage2/megahit.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage2/megahit.log"
     threads: 110
     shell: 
         """
@@ -80,8 +76,8 @@ rule megahit_PE_RNA:
         min_contig_length=100
     # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     singularity: config['singularity_bbmap_env']
-    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_RNA/stage2/megahit.txt"
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_RNA/stage2/megahit.txt"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_RNA/stage2/megahit.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_RNA/stage2/megahit.log"
     threads: 110
     shell: 
         """

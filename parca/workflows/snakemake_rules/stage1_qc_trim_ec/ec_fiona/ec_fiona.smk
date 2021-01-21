@@ -1,3 +1,4 @@
+# Maintainer Pernilla Ericsson
 
 rule fiona_SE_RNA:
     """ 
@@ -16,7 +17,7 @@ rule fiona_SE_RNA:
     params:
         fiona=config['fiona_path'] #config['fiona_path']
     log:  "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage1/fiona.log"
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage1/fiona.txt"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage1/fiona.log"
     threads: 110
     shell:
         """
@@ -44,7 +45,7 @@ rule fiona_SE_DNA:
     params:
         fiona=config['fiona_path'] #config['fiona_path']
     log:  "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_DNA/stage1/fiona.log"
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_DNA/stage1/fiona.txt"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_DNA/stage1/fiona.log"
     threads: 110
     shell:
         """

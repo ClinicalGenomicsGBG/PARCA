@@ -1,3 +1,5 @@
+# Maintainer Pernilla Ericsson
+
 import re
 
 rule create_kmer_classifier_input_SE_RNA:
@@ -16,12 +18,14 @@ rule create_kmer_classifier_input_SE_RNA:
     output:
         kmer_input=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage2/kmer_input/kmer_input.fasta"),
         read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_RNA/stage2/kmer_input/count_kmer_input.txt")
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage2/kmer_input/count_kmer_input.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage2/kmer_input/count_kmer_input.log"
     shell:
         """
-        cat {input.contigs} {input.unmapped_reads} > {output.kmer_input};
+        cat {input.contigs} {input.unmapped_reads} > {output.kmer_input} 2>> {log};
         
         echo count > {output.read_count};
-        echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count};
+        echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count} 2>> {log};
         """
         #echo $(cat {output.kmer_input}|wc -l)/4|bc  >> {output.read_count};
 
@@ -39,12 +43,14 @@ rule create_kmer_classifier_input_SE_DNA:
     output:
         kmer_input=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_DNA/stage2/kmer_input/kmer_input.fasta"),
         read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_DNA/stage2/kmer_input/count_kmer_input.txt")
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_DNA/stage2/kmer_input/count_kmer_input.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_DNA/stage2/kmer_input/count_kmer_input.log"
     shell:
         """
-        cp {input.fasta} {output.kmer_input};
+        cp {input.fasta} {output.kmer_input} 2>> {log};
         
         echo count > {output.read_count};
-        echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count};
+        echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count} 2>> {log};
         """
 
 rule join_unmerged_PE_RNA:
@@ -57,6 +63,8 @@ rule join_unmerged_PE_RNA:
         fasta="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/unmerged_reads_unmapped.fasta"
     output:
         fasta=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/bbwrap_alignment/unmerged_reads_unmapped_joined.fasta")
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_RNA/stage2/bbwrap_alignment/unmerged_reads_unmapped_joined.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_RNA/stage2/bbwrap_alignment/unmerged_reads_unmapped_joined.log"
     run:
         reformatted=[]
         with open(input['fasta'], 'r') as filehandle:
@@ -96,12 +104,14 @@ rule create_kmer_classifier_input_PE_RNA:
     output: 
         kmer_input=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/kmer_input/kmer_input.fasta"),
         read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_RNA/stage2/kmer_input/count_kmer_input.txt")
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_RNA/stage2/kmer_input/count_kmer_input.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_RNA/stage2/kmer_input/count_kmer_input.log"
     shell:
         """
-        cat {input} > {output.kmer_input};
+        cat {input} > {output.kmer_input} 2>> {log};
 
         echo count > {output.read_count};
-        echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count};
+        echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count} 2>> {log};
         """ 
 
 rule join_unmerged_PE_DNA:
@@ -114,6 +124,8 @@ rule join_unmerged_PE_DNA:
         fastq="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage1/trimming/unmerged_reads_trimmed.fq"
     output:
         fasta=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/unmerged_reads_joined.fasta")
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_DNA/stage2/kmer_input/unmerged_reads_joined.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_DNA/stage2/kmer_input/unmerged_reads_joined.log"
     run:
         reformatted=[]
         with open(input['fastq'], 'r') as filehandle:
@@ -153,12 +165,14 @@ rule convert_fasta_to_fastq_PE_DNA:
         fasta=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/merged_reads_trimmed.fa")
     #conda: "../../../conda/bbmap_env.yaml"
     singularity: config['singularity_bbmap_env']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_DNA/stage2/kmer_input/merged_reads_trimmed.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_DNA/stage2/kmer_input/merged_reads_trimmed.log"
     shell: 
         """
         reformat.sh \
             in={input.fastq} \
             out={output.fasta} \
-            fastawrap=100000;
+            fastawrap=100000 2>> {log};
         """
 
 rule create_kmer_classifier_input_PE_DNA:
@@ -177,10 +191,12 @@ rule create_kmer_classifier_input_PE_DNA:
     output: 
         kmer_input=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_DNA/stage2/kmer_input/kmer_input.fasta"),
         read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_DNA/stage2/kmer_input/count_kmer_input.txt")
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_DNA/stage2/kmer_input/kmer_input.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_DNA/stage2/kmer_input/kmer_input.log"
     shell:
         """
-        cat {input} > {output.kmer_input};
+        cat {input} > {output.kmer_input} 2>> {log};
 
         echo count > {output.read_count};
-        echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count};
+        echo $(grep ">" {output.kmer_input}|wc -l) >> {output.read_count} 2>> {log};
         """ 

@@ -1,3 +1,4 @@
+# Maintainer Pernilla Ericsson
 
 rule pollux_SE_RNA:
     """ 
@@ -20,7 +21,7 @@ rule pollux_SE_RNA:
         outdir="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/pollux",
         corrected="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_RNA/stage1/pollux/trimmed_reads.fq.corrected"
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage1/pollux.log"
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage1/pollux.txt"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage1/pollux.log"
     shell:
         """
         {params.pollux} \

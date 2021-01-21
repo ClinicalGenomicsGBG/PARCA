@@ -1,4 +1,4 @@
-
+# Maintainer Pernilla Ericsson
 
 rule compare_kmer_results:
     """ 
@@ -25,6 +25,8 @@ rule compare_kmer_results:
         read_count_doublet=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_doublets.txt"),
         read_count_singletons=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage4/count_singletons.txt")
     #conda: "../../conda/R_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage4/compare_kmer_results.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage4/compare_kmer_results.log"
     singularity: config['singularity_R_env']
     script:
         "../../scripts/kmer_processing/compare_outputs.R"
@@ -50,6 +52,7 @@ rule merge_doublets:
     #conda: "../../conda/kaiju_env.yaml" #config['conda_environment']
     singularity: config['singularity_kaiju_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage4/mergeOutputs.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage4/mergeOutputs.log"
     shell:
         """
         kaiju-mergeOutputs \

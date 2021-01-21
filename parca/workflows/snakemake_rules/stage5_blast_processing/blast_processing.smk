@@ -1,3 +1,4 @@
+# Maintainer Pernilla Ericsson
 
 rule existing_slices_split:
     input: 
@@ -10,6 +11,8 @@ rule existing_slices_split:
         existing_slice_path=config['existing_slice_path'], #config['existing_slice_path'],
         min_tax_id_count=2
     #conda: "../../conda/R_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage5/existing_slices_split.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/existing_slices_split.log"
     singularity: config['singularity_R_env']
     script: "../../scripts/blast_processing/blast_preprocessing/existing_slices_split.R" 
 
@@ -24,7 +27,8 @@ rule copy_detected_slices:
     output: temp(directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/existing_slices"))
     params: 
         existing_slice_path=config['existing_slice_path'] #config['existing_slice_path']
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/existing_slices_copy.txt"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage5/existing_slices_copy.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/existing_slices_copy.log"
     run: 
         detected_list=create_file_list(input.detected)
         shell("if [ ! -d {output} ]; then \mkdir {output};fi;")
@@ -38,7 +42,8 @@ rule download_missing_slices:
     output: temp(directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices"))
     params: 
         existing_slice_path=config['existing_slice_path'] #config['existing_slice_path']
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/download_slices.txt"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage5/download_slices.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/download_slices.log"
     run: 
         missing_list=create_file_list(input.missing)
         shell("if [ ! -d {output} ]; then \mkdir {output};fi;")
@@ -53,7 +58,8 @@ rule all_downloaded_slices:
         all_downloaded="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/downloaded_slices.txt"
     #conda: "../../conda/R_env.yaml" #config['conda_environment']
     singularity: config['singularity_R_env']
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/download_slices_merged.txt"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage5/download_slices_merged.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/download_slices_merged.log"
     script: "../../scripts/blast_processing/blast_preprocessing/merge_downloaded_slices.R" 
 
 rule create_tax_id_accession_slice_files:
@@ -69,7 +75,8 @@ rule create_tax_id_accession_slice_files:
         splitaccdump_dir=config['splitaccdump_dir'] #config['splitaccdump_dir']
     #conda: "../../conda/R_env.yaml" #config['conda_environment'] 
     singularity: config['singularity_R_env']
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/downloaded_slices_acc.txt"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage5/downloaded_slices_acc.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/downloaded_slices_acc.log"
     script:  "../../scripts/blast_processing/blast_preprocessing/create_slice_files_downloaded.R"
 
 checkpoint all_gislices:
@@ -80,17 +87,19 @@ checkpoint all_gislices:
         all_slices=directory("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/downloadblastslices/all_gislices")
     params: 
         splitaccdump_dir=config['splitaccdump_dir'] #config['splitaccdump_dir']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage5/downloadblastslices/all_gislices.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/downloadblastslices/all_gislices.log"
     shell: 
         """
         if [ ! -d {output.all_slices} ]; then \mkdir {output.all_slices};fi;
 
         if [ "$(ls {input.created_slice_dir})" ]; then
-            cp {input.created_slice_dir}/* {output.all_slices};
-            cp {input.created_slice_dir}/* {params.splitaccdump_dir};
+            cp {input.created_slice_dir}/* {output.all_slices} 2>> {log};
+            cp {input.created_slice_dir}/* {params.splitaccdump_dir} 2>> {log};
         fi;
 
         if [ "$(ls {input.existing_slices})" ]; then
-            cp {input.existing_slices}/* {output.all_slices};
+            cp {input.existing_slices}/* {output.all_slices} 2>> {log};
         fi;
         """
 
@@ -103,10 +112,12 @@ rule create_blastdb_alias:
         nt_db_dir=config['nt_db_dir'], #config['nt_db_dir'],
         out="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}"
     #conda: "../../conda/blast_env.yaml" #config['conda_environment'] 
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/blastslices/{gi_slice}.log"
     singularity: config['singularity_blast_env']
     shell:
         """
-        blastdb_aliastool -dbtype nucl -seqidlist {input} -db {params.nt_db_dir}/nt -out {params.out} >/dev/null;
+        blastdb_aliastool -dbtype nucl -seqidlist {input} -db {params.nt_db_dir}/nt -out {params.out} >/dev/null 2> {log};
         """
 
 
@@ -128,8 +139,10 @@ rule call_create_blastdb_alias:
         aggregate_blast_slices
     output:
         "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage5/alias_done"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage5/alias_done.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage5/alias_done.log"
     shell:
-        "touch {output}"
+        "touch {output} 2> {log}"
 
 
 # checkpoint prepare_blast_input:

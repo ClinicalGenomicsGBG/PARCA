@@ -1,3 +1,5 @@
+# Maintainer Pernilla Ericsson
+
 rule bbwrap_alignment_SE_RNA:
     """ 
     Rule for aligning the reads back to the generated contigs.
@@ -21,7 +23,7 @@ rule bbwrap_alignment_SE_RNA:
     #conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage2/bbwrap_alignment.log"
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage2/bbwrap.txt"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage2/bbwrap.log"
     threads: 110
     shell: 
         """
@@ -56,6 +58,7 @@ rule pileup_SE_RNA:
     # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_RNA/stage2/pileup.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_RNA/stage2/pileup.log"
     shell:
         """
         pileup.sh \
@@ -87,7 +90,7 @@ rule bbwrap_alignment_PE_RNA:
     # conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_RNA/stage2/{group}_bbwrap_alignment.log"
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_RNA/stage2/{group}_bbwrap.txt"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_RNA/stage2/{group}_bbwrap.log"
     wildcard_constraints:
         group="unmerged|merged"
     threads: 110
@@ -125,6 +128,7 @@ rule pileup_PE_RNA:
     #conda: "../../../conda/bbmap_env.yaml" #config['conda_environment']
     singularity: config['singularity_bbmap_env']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_RNA/stage2/{group}_pileup.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_RNA/stage2/{group}_pileup.log"
     wildcard_constraints:
         group="unmerged|merged"
     shell:
@@ -142,9 +146,11 @@ rule merge_pileup_files_PE_RNA:
         unmerged_cov="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/pileup/unmerged_bbmap_cov.txt"
     output: 
         cov=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_RNA/stage2/pileup/bbmap_cov.txt")
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_RNA/stage2/pileup/bbmap_cov.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_RNA/stage2/pileup/bbmap_cov.log"
     shell: 
         """
-        cat {input.merged_cov} {input.unmerged_cov} > {output.cov}
+        cat {input.merged_cov} {input.unmerged_cov} > {output.cov} 2> {log}
         """
 
 

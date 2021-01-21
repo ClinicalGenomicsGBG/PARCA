@@ -1,3 +1,5 @@
+# Maintainer Pernilla Ericsson
+
 rule kaiju:
     """ 
     Rule for running metagenomic classifier Kaiju.
@@ -18,6 +20,8 @@ rule kaiju:
         kaijunames=config['kaiju_names'] #config['kaiju_names']
     threads: 110
     #conda: "../../../conda/kaiju_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage3/kaiju/kaijuresults_{kaiju_db}_{kaiju_score}_{kaiju_matches}.log"
     singularity: config['singularity_kaiju_env']
     shell:
         """
@@ -31,7 +35,7 @@ rule kaiju:
             -m {wildcards.kaiju_matches} \
             -e 5 \
             -a greedy \
-            -o {output.kaiju};
+            -o {output.kaiju} 2>> {log};
         """
 
 rule kaiju_filter_classified_RNA:
@@ -56,9 +60,11 @@ rule kaiju_filter_classified_RNA:
     params:
         program="kaiju"
     #conda: "../../../conda/R_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_RNA/stage3/kaiju/count_kaiju_filtered_classified.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_RNA/stage3/kaiju/count_kaiju_filtered_classified.log"
     singularity: config['singularity_R_env']
     script:
-            "../../../scripts/kmer_processing/filter_classified.R"
+        "../../../scripts/kmer_processing/filter_classified.R"
 
 
 rule kaiju_filter_classified_DNA:
@@ -83,9 +89,11 @@ rule kaiju_filter_classified_DNA:
     params:
         program="kaiju"
     #conda: "../../../conda/R_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_DNA/stage3/kaiju/count_kaiju_filtered_classified.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_DNA/stage3/kaiju/count_kaiju_filtered_classified.log"
     singularity: config['singularity_R_env']
     script:
-            "../../../scripts/kmer_processing/filter_classified.R"
+        "../../../scripts/kmer_processing/filter_classified.R"
 
 # Kaiju 1.5.0
 # Copyright 2015-2017 Peter Menzel, Anders Krogh

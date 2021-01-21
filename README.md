@@ -96,6 +96,10 @@ Note:
 
 ## Installation
 ```
+conda env create -f parca/workflows/conda/main.yaml
+```
+
+```
 singularity pull docker://pericsson/bbmap_env:latest
 singularity pull docker://pericsson/biopython_env:latest
 singularity pull docker://pericsson/blast_env:latest

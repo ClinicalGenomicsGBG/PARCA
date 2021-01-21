@@ -1,3 +1,5 @@
+# Maintainer Pernilla Ericsson
+
 import pandas as pd 
 
 rule unzip_rename_SE:
@@ -18,6 +20,7 @@ rule unzip_rename_SE:
     threads: 4
     #conda: config['bbmap_environment']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_SE_{nucleotide}/stage1/unzip_rename_SE.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_SE_{nucleotide}/stage1/unzip_rename_SE.log"
     # params:
     #     run_outdir='{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/SE_{nucleotide}/samples',
     #     stats_outdir='{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_SE_{nucleotide}/stage1/samples'
@@ -68,6 +71,7 @@ rule unzip_rename_PE:
     threads: 4
     #conda: config['bbmap_environment']
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/unzip_rename_PE.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/unzip_rename_PE.log"
     shell:
         """
         if [[ {input.fwd} =~ .*\.fastq\.gz$ || {input.fwd} =~ .*\.fq\.gz$ ]]; then \
@@ -123,7 +127,7 @@ rule interleave_PE:
         interleaved=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/PE_{nucleotide}/samples/{sample}_interleaved.fastq"),
         read_count=temp("{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_PE_{nucleotide}/stage1/samples/count_raw_reads.txt")
     log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_PE_{nucleotide}/stage1/{sample}_interleaved.log"
-    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/{sample}_interleaved.txt"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_PE_{nucleotide}/stage1/{sample}_interleaved.log"
     # conda: "../../../conda/bbmap_env.yaml"
     singularity: config['singularity_bbmap_env']
     shell:

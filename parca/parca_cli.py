@@ -1,4 +1,4 @@
-
+# Maintainer Pernilla Ericsson
 import os
 import click
 import shutil
@@ -34,10 +34,13 @@ def main():
               type=click.Path(exists=True),
               default="/medstore/logs/pipeline_logfiles/parca",
               help='Path to a log directory')
+@click.option('-ss', '--singularity_settings', 'singularity_settings',
+              default=" --cleanenv --bind /medstore --bind /apps",
+              help='Arguments to singularity')
 # @click.option('-gs', '--generate_subdir', 'generate_subdir', is_flag=True,
 #               help='Generate a subfolder with date within outdir a given outdir')
 @click.option('-d', '--dryrun', 'dryrun', is_flag=True, help='dryrun')
-def run(metadata, runinfo, dryrun, outdir, webinterface, complete_log):
+def run(metadata, runinfo, dryrun, outdir, webinterface, complete_log, singularity_settings):
     """
     Run the PaRCA pipeline.
     """
@@ -58,12 +61,13 @@ def run(metadata, runinfo, dryrun, outdir, webinterface, complete_log):
     cluster_settings = "".join(["qsub ",
                                 "-S /bin/bash ",
                                 "-pe mpi {cluster.threads} ",
+                                "{cluster.excl}"
                                 "-q {cluster.queue} ",
                                 "-S /bin/bash ",
                                 "-N parca-{rule}-{wildcards.run_id} ",
                                 "-V ",
                                 "-cwd ",
-                                "-j y -o {log}.cluster"])  #-l excl=1
+                                "-j y -o {log}.cluster"]) 
 
     #os.environ['SINGULARITYENV_CONDA_PKGS_DIRS'] = "/medstore/logs/pipeline_logfiles/parca/test"
     #os.environ['CONDA_PKGS_DIRS'] = "/medstore/logs/pipeline_logfiles/parca/test"
@@ -75,19 +79,21 @@ def run(metadata, runinfo, dryrun, outdir, webinterface, complete_log):
                                  latency_wait=60,
                                  printreason=True,
                                  printshellcmds=True,
-                                 # verbose=True,
-                                 cores=40,
+                                 #verbose=True,
+                                 # cores=40,
                                  # conda settings
                                  use_conda=True,
                                  conda_prefix=f'{outdir}/conda',
                                  # conda_create_envs_only=True,
                                  # Singularity settings 
-                                 singularity_args=" --cleanenv ",
-                                 use_singularity=True )
+                                 singularity_args=singularity_settings,
+                                 use_singularity=True,
                                  # cluster settings
-                                 #cluster_config=f'{work_dir}/config/cluster.yaml',
-                                 #cluster=cluster_settings,
-                                 #max_jobs_per_second=99)
+                                 cluster_config=f'{work_dir}/config/cluster.yaml',
+                                 cluster=cluster_settings,
+                                 max_jobs_per_second=99,
+                                 nodes=99)
+                                 #force_incomplete=True)
                                  # conda_cleanup_envs=True,
                                  #  cleanup_shadow=True
 
@@ -139,3 +145,5 @@ if __name__ == '__main__':
 # snakemake --dag -s main.smk| dot -Tpng > dag.png
 
 # python3 parca_cli.py run -m /apps/bio/dev_repos/parca/demo/runinfo/metadata.csv -r /apps/bio/dev_repos/parca/demo/runinfo/runinfo.csv -o /medstore/logs/pipeline_logfiles/parca -w /medstore/logs/pipeline_logfiles/parca/webinterface --dryrun
+
+# python3 parca_cli.py run -m /apps/bio/dev_repos/parca/demo/runinfo/metadata.csv -r /apps/bio/dev_repos/parca/demo/runinfo/runinfo.csv -o /medstore/results/clincal/parca -w /seqstore/webfolders/parca --complete_log /medstore/logs/pipeline_logfiles/parca --dryrun

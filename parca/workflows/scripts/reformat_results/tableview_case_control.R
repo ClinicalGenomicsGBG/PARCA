@@ -1,3 +1,5 @@
+# Author: Pernilla Ericsson
+
 suppressPackageStartupMessages({
   library(tidyverse);library(magrittr);library(data.table);library(ShortRead)
 } )

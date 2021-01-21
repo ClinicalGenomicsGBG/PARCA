@@ -1,4 +1,4 @@
-
+# Maintainer Pernilla Ericsson
 
 checkpoint prepare_nt_blast_input:
     """
@@ -13,6 +13,8 @@ checkpoint prepare_nt_blast_input:
     params: 
         chunk_size=10000
     #conda: "../../conda/biopython_env.yaml" #config['conda_environment'] 
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage7/prepare_nt_blast_input.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage7/prepare_nt_blast_input.log"
     singularity: config['singularity_biopython_env']
     script:
         "../../scripts/blast_processing/blast_preprocessing/create_ntblast_input.py"
@@ -32,6 +34,8 @@ rule blast_remaining_reads_nt:
         qcov_hsp_perc="20",
         nt_db_dir=config['nt_db_dir'] #config['nt_db_dir']
     #conda: "../../conda/blast_env.yaml" #config['conda_environment'] 
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage7/ntblastout/ntblast__{sliceiter}.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage7/ntblastout/ntblast__{sliceiter}.log"
     singularity: config['singularity_blast_env']
     threads: 10
     shell:
@@ -44,7 +48,7 @@ rule blast_remaining_reads_nt:
             -out {output.blast_out} \
             -evalue {params.e_val} \
             -max_target_seqs {params.max_seqs} \
-            -qcov_hsp_perc {params.qcov_hsp_perc};
+            -qcov_hsp_perc {params.qcov_hsp_perc} 2> {log};
         """
 
 
@@ -77,6 +81,8 @@ rule merge_nt_blast_result:
     output: 
         best_blast="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage7/best_nt_blast.txt"
     #conda: "../../conda/R_env.yaml" #config['conda_environment'] 
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage7/best_nt_blast.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage7/best_nt_blast.log"
     singularity: config['singularity_R_env']
     script:
         "../../scripts/blast_processing/blast_postprocessing/merge_slice_blast_result.R"
@@ -98,6 +104,8 @@ rule taxonomic_lineage_best_nt_blast:
     output:
         tax_id_lineage="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage7/best_nt_blast_tax_id_lineage.txt"
     #conda: "../../conda/taxonkit_env.yaml" #config['conda_environment']
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage7/best_nt_blast_tax_id_lineage.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage7/best_nt_blast_tax_id_lineage.log"
     singularity: config['singularity_taxonkit_env']
     params:
         dmp_dir=config['names_nodes_dmp_dir'] #config['names_nodes_dmp_dir']
@@ -112,7 +120,7 @@ rule taxonomic_lineage_best_nt_blast:
         taxonkit reformat \
             --data-dir {params.dmp_dir} \
             --show-lineage-taxids | \
-        cut -f 1,3,5 > {output.tax_id_lineage};
+        cut -f 1,3,5 > {output.tax_id_lineage} 2> {log};
         """ 
 
 rule reformat_nt_blast_taxids:
@@ -138,6 +146,8 @@ rule reformat_nt_blast_taxids:
         species_and_above="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage7/best_nt_blast_species_and_above.txt",
         count_reads_tax_ids="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_reads_taxid_BLASTnt.txt"
     #conda: "../../conda/R_env.yaml" #config['conda_environment'] 
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage7/reformat_nt_blast_taxids.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage7/reformat_nt_blast_taxids.log"
     singularity: config['singularity_R_env']
     params:
         blast_type="BLASTnt",
@@ -152,10 +162,12 @@ rule merge_kmer_blast_nt_classed:
     output: 
         kmer_blast_nt="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/{sample_type}_{nucleotide}/stage7/kmer_species_subsetblast_blastnt_classed.txt",
         count_kmer_blast="{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/stats_{sample_type}_{nucleotide}/stage7/count_kmer_SubsetBLAST_BLASTnt.txt"
+    log: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/logs_{sample_type}_{nucleotide}/stage7/kmer_species_subsetblast_blastnt_classed.log"
+    benchmark: "{outdir}/{start_date}_{run_id}/snakemake_results_{sample}/benchmarks_{sample_type}_{nucleotide}/stage7/kmer_species_subsetblast_blastnt_classed.log"
     shell: 
         """
-        cat {input.kmer_blast}  > {output.kmer_blast_nt};
-        awk '$1!="seq_id"' {input.species_and_above} >> {output.kmer_blast_nt};
-        count=$(awk '$1!="seq_id"' {output.kmer_blast_nt} | wc -l|cut -d " " -f 1);
-        echo "type\tcount\nreads\t$count" > {output.count_kmer_blast};
+        cat {input.kmer_blast}  > {output.kmer_blast_nt} 2> {log};
+        awk '$1!="seq_id"' {input.species_and_above} >> {output.kmer_blast_nt} 2> {log};
+        count=$(awk '$1!="seq_id"' {output.kmer_blast_nt} | wc -l|cut -d " " -f 1) 2> {log};
+        echo "type\tcount\nreads\t$count" > {output.count_kmer_blast} 2> {log};
         """
