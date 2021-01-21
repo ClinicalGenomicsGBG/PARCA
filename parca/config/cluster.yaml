@@ -74,32 +74,32 @@ blast_remaining_reads_nt:
 
 # Stage 8
 filter_fastq_organism_SE:
-  threads: 4
+  #threads: 4
   queue: wgs.q@kuat.medair.lcl
   excl: "-l excl=1 "
 
 filter_fastq_organism_PE:
-  threads: 4
+  #threads: 4
   queue: wgs.q@kuat.medair.lcl
   excl: "-l excl=1 "
 
 filter_fastq_kingdom_SE:
-  threads: 4
+  #threads: 4
   queue: wgs.q@kuat.medair.lcl
   excl: "-l excl=1 "
 
 filter_fastq_kingdom_PE:
-  threads: 4
+  #threads: 4
   queue: wgs.q@kuat.medair.lcl
   excl: "-l excl=1 "
 
 filter_fastq_unclassified_SE:
-  threads: 8
+  #threads: 8
   queue: wgs.q@kuat.medair.lcl
   excl: "-l excl=1 "
 
 filter_fastq_unclassified_PE:
-  threads: 8
+  #threads: 8
   queue: wgs.q@kuat.medair.lcl
   excl: "-l excl=1 "
 
