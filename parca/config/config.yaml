@@ -30,11 +30,11 @@ kraken_path:
   "/apps/CLC_ExternalApps/kraken2" # Seems to be kraken1 even though referred to as kraken2
 kraken_db_base_path: "/medstore/External_References/krakdb_hll"
 
-krakendb_RNA: ["viruses", "bacteria_progenomes_cds_total"]  # ["eukaryotes_cds", "viruses", "bacteria_progenomes_cds_total"]
-krakendblimits_RNA: ["0.15", "0.05"] # ["0.15", "0.05", "0.05"]
+krakendb_RNA: ["eukaryotes_cds", "viruses", "bacteria_progenomes_cds_total"] #["viruses", "bacteria_progenomes_cds_total"]  
+krakendblimits_RNA: ["0.15", "0.05", "0.05"] #["0.15", "0.05"] 
 
-krakendb_DNA: ["viruses", "bacteria_progenomes_total_768"]  # ["eukaryotes_768","viruses","bacteria_progenomes_total_768"]
-krakendblimits_DNA: ["0.15", "0.05"] # ["0.15","0.05","0.05"]
+krakendb_DNA: ["eukaryotes_768","viruses","bacteria_progenomes_total_768"] #["viruses", "bacteria_progenomes_total_768"]
+krakendblimits_DNA: ["0.15","0.05","0.05"] #["0.15", "0.05"]
 
 ## Kraken2 settings
 # kraken2_db_base_path: "/medstore/Development/Metagenomics/kraken_dbs"
