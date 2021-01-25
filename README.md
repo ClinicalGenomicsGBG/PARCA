@@ -26,7 +26,7 @@ The row elements of `start_date` are only allowed to contain integers or `-`.
 This is an example of how a runinfo file should look like if you want to start two different analyses on the pipeline. In this case there are three samples given in the runinfo file, remember to add more columns if you want to include more samples. The first row will create an analysis called `20210126_run_1` where `sample_1` will be used as the case and `sample_2` as control. The second row will create analysis called `20210126_run_2` where `sample_3` will be used as the case sample.
 
 | start_date | run_id | sample_1 | sample_2 | sample_3 |
-|---|---|---|---|---|---|
+|---|---|---|---|---|
 | 20210126 | run_1 | 1 | 0 |  |
 | 20210126 | run_2 |  |  | 1 |
 
@@ -35,7 +35,7 @@ The metadata file should contain information about the short sample names referr
 This is an example of how a metadata file should look like for the corresponding runinfo file above. `sample_1` and `sample_2` are RNA single end samples whereas `sample_2` is a paired end DNA sample and is therefore encoded on two rows, one linking to the forward sample and one linking to the reverse sample.
 
 | sample_id | nucleotide | fwd_or_rev | path_to_file | adapters |
-|---|---|---|---|---|---|
+|---|---|---|---|---|
 | sample_1 | RNA | fwd | /path/to/rna_file.fastq |  |
 | sample_2 | RNA | fwd | /path/to/another_rna_file.fastq |  |
 | sample_3 | DNA | fwd | /path/to/dna_file_fwd.fastq |  |
