@@ -7,31 +7,51 @@
 
 ---
 ## Info
-**This pipeline is under development, a first version will be released at the end of January 2021**
 
 A snakemake pipeline to further develop the previous inhouse perl pipeline [Pathfinder](https://github.com/ClinicalGenomicsGBG/pathfinder_43b_perl) used for classifying metagenomic samples.
 
 ## Usage
+The pipeline is started using the python wrapper `parca/parca_cli.py`. 
+
+Create metadata and runinfo
+<start_date>_<run_id> encoded from the runinfo.
 
 ```
 module load anaconda3;
-source activate /home/xerpey/.conda/envs/pernilla_general/envs/smk_tidy
+source activate parca_v1;
 
 # Dryrun demo
-python3 parca/parca_cli.py run -m /apps/bio/dev_repos/parca/demo/runinfo/metadata.csv -r /apps/bio/dev_repos/parca/demo/runinfo/runinfo.csv -o /medstore/logs/pipeline_logfiles/parca -w /medstore/logs/pipeline_logfiles/parca/webinterface --dryrun
+python3 parca/parca_cli.py run \
+  -m /apps/bio/dev_repos/parca/demo/runinfo/metadata.csv \
+  -r /apps/bio/dev_repos/parca/demo/runinfo/runinfo.csv \
+  -o /medstore/logs/pipeline_logfiles/parca \
+  -w /medstore/logs/pipeline_logfiles/parca/webinterface \
+  --dryrun
 
 
 # Run demo
-python3 parca/parca_cli.py run -m /apps/bio/dev_repos/parca/demo/runinfo/metadata.csv -r /apps/bio/dev_repos/parca/demo/runinfo/runinfo.csv -o /medstore/logs/pipeline_logfiles/parca -w /medstore/logs/pipeline_logfiles/parca/webinterface
+python3 parca/parca_cli.py run \
+  -m /apps/bio/dev_repos/parca/demo/runinfo/metadata.csv \
+  -r /apps/bio/dev_repos/parca/demo/runinfo/runinfo.csv \
+  -o /medstore/logs/pipeline_logfiles/parca \
+  -w /medstore/logs/pipeline_logfiles/parca/webinterface
 ```
+
+# Flask app
+
+# Results
+
+# Logs
+
+
 
 ## **The pipeline**
 The pipeline is made for assigning sequencing reads to taxonomic identifiers.
-It handles four cases, see steps in `parca/dag/dag_all.png`:
-* SE RNA
-* PE RNA
-* SE DNA
-* PE DNA
+It handles four cases SE RNA, PE RNA, SE DNA and PE DNA and can be run with or without a control sample. See an example of a DAG for calling the pipeline with a case and control sample and also using only a case sample in `parca/dag/dag_case_control_case.png`:
+
+### Pipeline wrapper
+Note:
+- the snakemake API could not import a nested dictionary and had to be converted to a list of dictionaries. The pipeline will then convert this list into a nested dictionary where the keys will be <start_date>_<run_id> encoded from the runinfo.
 
 ### Stage 1: Quality control and error correction
 * `workflows/snakemake_rules/stage1_qc_trim_ec/setup/setup.smk`
@@ -89,20 +109,15 @@ It handles four cases, see steps in `parca/dag/dag_all.png`:
 
 
 ### Pipeline overview
-![Parca flow chart](./parca_flow_chart_png.png)
+![Parca flow chart](./docs/parca_flow_chart_png.png)
 
+## Installation
 
-## **Pipeline wrapper**
-
-Note:
-- the snakemake API could not import a nested dictionary and had to be converted to a list of dictionaries. The pipeline will then convert this list into a nested dictionary where the keys will be <start_date>_<run_id> encoded from the runinfo.
-
-## Prerequisites:
+### Prerequisites:
 * Databases for Kraken and Kaiju are currently manually downloaded 
 * Pollux and Fiona are not available from conda and has to be manually downloaded
 * The workflow uses the singularity definition file in workflows/containers/parca_v1.def which should be built prior to running the pipeline.
 
-## Installation
 ```
 conda env create -f parca/workflows/conda/main.yaml
 ```
