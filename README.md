@@ -78,9 +78,8 @@ python3 parca/parca_cli.py run \
 ### Prerequisites:
 * Databases for Kraken and Kaiju are currently manually downloaded 
 * Pollux and Fiona are not available from conda and has to be manually downloaded
-* The workflow uses the singularity definition file in workflows/containers/parca_v1.def which should be built prior to running the pipeline.
 
-### Create the main conda environment
+### Create the parca_v1 conda environment
 ```
 conda env create -f parca/workflows/conda/main.yaml
 ```
