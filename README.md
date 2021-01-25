@@ -10,6 +10,8 @@
 
 A snakemake pipeline to further develop the previous inhouse perl pipeline [Pathfinder](https://github.com/ClinicalGenomicsGBG/pathfinder_43b_perl) used for classifying metagenomic samples.
 
+
+
 ## Usage
 The pipeline is started using the python wrapper `parca/parca_cli.py`. 
 
@@ -40,6 +42,8 @@ python3 parca/parca_cli.py run \
 # Flask app
 
 # Results
+
+[PaRCA App](http://seqstore.sahlgrenska.gu.se:8008/parca/)
 
 # Logs
 
