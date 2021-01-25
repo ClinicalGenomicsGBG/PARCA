@@ -35,7 +35,7 @@ def main():
               default="/medstore/logs/pipeline_logfiles/parca",
               help='Path to a log directory')
 @click.option('-ss', '--singularity_settings', 'singularity_settings',
-              default=" --cleanenv --bind /medstore --bind /apps",
+              default=" --cleanenv --bind /medstore --bind /apps --bind /seqstore",
               help='Arguments to singularity')
 # @click.option('-gs', '--generate_subdir', 'generate_subdir', is_flag=True,
 #               help='Generate a subfolder with date within outdir a given outdir')
