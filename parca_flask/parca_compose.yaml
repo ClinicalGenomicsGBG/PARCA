@@ -1,0 +1,18 @@
+# Maintainer Pernilla Ericsson
+
+version: "3.6"
+
+services:
+
+  parca:
+    image: parca:v1.0
+    container_name: parca_app
+    restart: on-failure
+    volumes:
+      - /home/xerpey/repos/parca_flask:/app
+      - /medstore/logs/pipeline_logfiles/parca/webinterface:/data
+    ports:
+      - 32769:80
+    build:
+      context: .
+      dockerfile: Dockerfile
