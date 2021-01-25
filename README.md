@@ -65,10 +65,18 @@ It handles four cases, see steps in `parca/dag/dag_all.png`:
   
 ### Stage 5: Blast processing
 * `workflows/snakemake_rules/stage5_blast_processing/blast_processing.smk`
+  * creating slices of the nt database
+  * rule create_tax_id_accession_slice_files
+    * checks in dup directioryfor files ending with .dmp
+  * rule create_blastdb_alias
+    * aliasing the nt database from taxid files containing accession.version 
+    * note that gi identifiers are not used even though they are called as such, (accession version is used) https://www.ncbi.nlm.nih.gov/Sitemap/sequenceIDs.html
 
 ### Stage 6: Blast sliced database
 * `workflows/snakemake_rules/stage6_blast_sliced_db/blast_above_species_classed.smk`
-
+  * Rule reformat_blast_taxids
+    * Reclassify primates
+    * check that there are no NAs
 ### Stage 7: Blast remaining reads
 * `workflows/snakemake_rules/stage7_blast_remaining_reads/blast_remaining.smk`
 
