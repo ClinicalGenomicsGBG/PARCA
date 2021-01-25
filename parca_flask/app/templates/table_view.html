@@ -1,0 +1,62 @@
+{% extends "header_layout.html" %}
+<!-- Maintainer Pernilla Ericsson -->
+{% block header_content %}
+    <table id='info-table' style="text-align: left">
+        <tr> <th>Run id: {{run_id}}</th></tr>
+    </table>
+{% endblock header_content %}
+<!-- Begins below -->
+
+
+{% block page_content %}
+    {% for df_list in row_lists%}
+        {% set column_names_no_kings = column_names[1:] %}
+        {% set column_names_no_kings_len = str(len(column_names_no_kings)-1) %}
+        {% set column_names_no_kings_perc = str(100/len(column_names_no_kings)) %}
+
+        <br>
+        <table id='table' class='tablesorter'>
+            <thead>
+                <tr class="header">
+                    <th colspan={{ column_names_no_kings_len }} >{{ df_list[0][0].replace("_", " ").title() }}</th>
+                    <th><span>-</span></th>
+                </tr>
+
+                <tr class="header">
+                    <!-- Prints column headers -->
+                    {% for col_value in column_names_no_kings %}
+                        <th style="width:{{ column_names_no_kings_perc }}%;" >{{ col_value.replace("_", " ").title() }}</th>
+                    {% endfor %}
+                </tr>
+
+            </thead>
+            <tbody>
+                <!-- Now we traverse each row and zip it with coumnnames -->
+                {% for row_list in df_list %}
+                    {% set current_row = namespace(tax_id=0) %}
+                    <tr>
+                        {% set row_list_no_kings = row_list[1:] %}
+                        {% for col_value, row_value in zip(column_names_no_kings, row_list_no_kings) %}
+                            {% if col_value == "tax_id" %}
+                                {% set current_row.tax_id = row_value %}
+                                <td> <a href={{ "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=%s" % current_row.tax_id }} target="_blank">{{ row_value }}</a>  </td>
+                            {% elif col_value == "read_count" %}
+                                <td> <a href="{{ url_for('get_file', file_name = '%s/%s%s' % (case, current_row.tax_id, fastq_suffix) ) }}" target="_blank">{{ row_value }}</a>  </td>
+                            {% elif col_value == "read_count_case" %}
+                                <td> <a href="{{ url_for('get_file', file_name = '%s/%s%s' % (case, current_row.tax_id, fastq_suffix) ) }}" target="_blank">{{ row_value }}</a>  </td>
+                            {% elif col_value == "read_count_control" %}
+                                <td> <a href="{{ url_for('get_file', file_name = '%s/%s%s' % (control, current_row.tax_id, fastq_suffix) ) }}" target="_blank">{{ row_value }}</a>  </td>
+                            {% else %}
+                                <td>{{ row_value }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <script type="text/javascript" src="{{ url_for('static', filename='js/table_sorting_settings.js') }}"></script> 
+        <!-- <script type="text/javascript" src="{{ url_for('static', filename='js2/jquery.tablesorter.js') }}"></script>  -->
+    {% endfor %}
+
+{% endblock page_content %}

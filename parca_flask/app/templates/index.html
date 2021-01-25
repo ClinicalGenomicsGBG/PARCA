@@ -1,0 +1,36 @@
+{% extends "header_layout.html" %}
+<!-- Maintainer Pernilla Ericsson -->
+{% block page_content %}
+  <!-- <table class =  "dataframe mystyle" > -->
+    <table id='table' class='tablesorter'>
+        <thead>
+            <tr class="header">
+            <!-- Prints column headers -->
+                {% for col_value in column_names %}
+                    {% if col_value == "raw_reads" %}
+                        <th data-value='>100'>{{ col_value }}</th>
+                    {% else %}
+                        <th>{{ col_value }}</th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Now we traverse each row and zip it with coumnnames -->
+            {% for row_list in row_lists %}
+                <tr>
+                    {% for col_value, row_value in zip(column_names, row_list) %}
+                        {% if col_value == "database" %}
+                            <td> <a href={{ "https://www.google.com/search?q=%s" % row_value }} target="_blank">{{ row_value }}</a>  </td>
+                        {% elif col_value == "run_id" %}
+                            <td> <a href="{{ url_for('krona', type=row_value)}}">{{ row_value }}</a>  </td>
+                        {% else %}
+                            <td>{{ row_value }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+</table>
+<script type="text/javascript" src="{{ url_for('static', filename='js/table_sorting_settings.js') }}"></script> 
+{% endblock page_content %}

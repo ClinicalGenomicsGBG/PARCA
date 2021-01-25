@@ -1,0 +1,42 @@
+#table {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid  #006298;
+}
+#table td, #table th {
+    font-size: 1em;
+    padding: 3px 7px 2px 7px;
+}
+#table th {
+    font-size: 1.1em;
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 4px;
+    background-color:  #006298;
+    color: #ffffff;
+    text-decoration: none;
+}
+#table tr.alt td {
+    color: #000000;
+    background-color: rgba(0, 159, 227, 0.3);
+}
+#header{
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    width: 100%;
+    border-collapse: collapse;
+     font-size: 1.8em;
+    text-align: left;
+    padding-top: 15px;
+    padding-bottom: 12px;
+    background-color: #006298;
+    color: #ffffff;
+    }
+path {
+  stroke: #fff;
+  fill-rule: evenodd;
+}
+text {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+}

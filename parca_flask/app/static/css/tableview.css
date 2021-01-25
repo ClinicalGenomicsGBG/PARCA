@@ -1,0 +1,124 @@
+.tablesorter .filtered {
+display: none;
+}
+.tablesorter-filter-row td {
+background: #006298;
+line-height: normal;
+text-align: center;
+-webkit-transition: line-height 0.1s ease;
+-moz-transition: line-height 0.1s ease;
+-o-transition: line-height 0.1s ease;
+transition: line-height 0.1s ease;
+}
+.tablesorter-filter-row .disabled {
+opacity: 0.5;
+filter: alpha(opacity=50);
+cursor: not-allowed;
+}
+
+.tablesorter-filter-row.hideme td {
+padding: 2px;
+margin: 0;
+line-height: 0;
+cursor: pointer;
+}
+.tablesorter-filter-row.hideme * {
+height: 1px;
+min-height: 0;
+border: 0;
+padding: 0;
+margin: 0;
+opacity: 0;
+filter: alpha(opacity=0);
+}
+
+.tablesorter-filter {
+width: 95%;
+height: inherit;
+margin: 4px;
+padding: 4px;
+background-color: #fff;
+border: 1px solid #bbb;
+color: #333;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+-webkit-transition: height 0.1s ease;
+-moz-transition: height 0.1s ease;
+-o-transition: height 0.1s ease;
+transition: height 0.1s ease;
+}
+/* tr:hover { */
+    /* Add a grey background color to the table header and on hover */
+    /* background-color: #cccccc; */
+/* } */
+
+table.tablesorter {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid  #006298;
+    border-spacing: 0px;
+}
+
+table.tablesorter tr:hover {
+    background-color: #cccccc; 
+} 
+
+table.tablesorter a:link {
+    color:  #0645AD; 
+} 
+table.tablesorter a:visited {
+    color: #551a8b; 
+} 
+/* 
+table.tablesorter td.even, #table th {
+    font-size: 1em;
+
+    padding: 3px 7px 2px 7px;
+} */
+
+table.tablesorter th {
+    font-size: 1.2em;
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 4px;
+    background-color:  #006298;
+    color: #ffffff;
+}
+header {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1em;
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color:  #006298;
+    color: #ffffff;
+}
+.button {
+    border: none;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    width: 25%;
+    font-size: 1.2em;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color:  #006298;
+    color: #ffffff;
+    text-decoration: none;
+    border-spacing: 0px;
+}
+table.tablesorter tr.odd td {
+    color: #000000;
+    background-color: rgba(0, 159, 227, 0.3);
+}
+
+a:link a:visited a:hover a:active {
+    text-decoration: none;
+    color:inherit;
+}
+tr.header {
+    cursor:pointer;
+}
