@@ -1,4 +1,4 @@
-name: main_env
+name: parca_v1
 channels:
   - conda-forge
   - bioconda
