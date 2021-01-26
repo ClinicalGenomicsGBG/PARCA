@@ -64,12 +64,41 @@ python3 parca/parca_cli.py run \
 
 ## Flask app
 
+The app is started using docker compose.
+A running container of the image is found on medair2.
+```
+ssh medair2
+sudo su
+```
+To list all running containers use:
+```
+docker ps -a
+```
+
+To list all images run:
+```
+docker images
+```
+
+The app is started using docker compose. This was the command used to start the pipeline:
+```
+docker-compose -f parca_flask/parca_compose.yaml up -d
+```
+
+To stop the app run the command:
+```
+docker-compose -f parca_flask/parca_compose.yaml down
+```
+
+
 ## Results
 
 [PaRCA App](http://seqstore.sahlgrenska.gu.se:8008/parca/)
 
 ## Logs
 
+Logs are written to `/medstore/logs/pipeline_logfiles/parca/webfolders`. Currently all results are written to this folder but one could set the result folder to for example `/medstore/results/parca` and the webfolder to for example `/seqstore/webfolders/parca`.
+If you change the path to the webfolder, make sure to mount another directory in the parca compose file.
 
 
 
