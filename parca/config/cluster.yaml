@@ -2,7 +2,7 @@
 __default__:
   threads: 2
   queue: cgg_short.q@yavin.medair.lcl
-  excl: ""
+  excl: "-l excl=1 "
 
 # Stage 1
 unzip_rename_SE:
@@ -20,103 +20,95 @@ quality_control_raw_PE:
 fiona_SE_RNA:
   threads: 110
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 fiona_SE_DNA:
   threads: 110
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 # Stage 2
 megahit_SE_RNA:
   threads: 120
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 megahit_PE_RNA:
   threads: 120
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 bbwrap_alignment_SE_RNA:
   threads: 120
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 bbwrap_alignment_PE_RNA:
   threads: 120
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 # Stage 3
 kaiju:
   threads: 120
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
-
 
 kraken:
   threads: 120
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
+
+kaiju_filter_classified_DNA:
+  threads: 4
+
+kaiju_filter_classified_RNA:
+  threads: 4
+
+kraken_filter_classified_RNA:
+  threads: 4
+
+kraken_filter_classified_DNA:
+  threads: 4
 
 # Stage6
 blast_slices:
   threads: 10
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 # Stage 7
 blast_remaining_reads_nt:
   threads: 10
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 # Stage 8
 filter_fastq_organism_SE:
   #threads: 4
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 filter_fastq_organism_PE:
   #threads: 4
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 filter_fastq_kingdom_SE:
   #threads: 4
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 filter_fastq_kingdom_PE:
   #threads: 4
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 filter_fastq_unclassified_SE:
   #threads: 8
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 filter_fastq_unclassified_PE:
   #threads: 8
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 zip_filtered_fastq_organism:
   threads: 4
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 zip_filtered_fastq_kingdom:
   threads: 4
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 zip_filtered_fastq_unclassified:
   threads: 4
   queue: wgs.q@kuat.medair.lcl
-  excl: "-l excl=1 "
 
 
 #$ -cwd

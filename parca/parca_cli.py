@@ -37,17 +37,11 @@ def main():
 @click.option('-ss', '--singularity_settings', 'singularity_settings',
               default=" --cleanenv --bind /medstore --bind /apps --bind /seqstore",
               help='Arguments to singularity')
-# @click.option('-gs', '--generate_subdir', 'generate_subdir', is_flag=True,
-#               help='Generate a subfolder with date within outdir a given outdir')
 @click.option('-d', '--dryrun', 'dryrun', is_flag=True, help='dryrun')
 def run(metadata, runinfo, dryrun, outdir, webinterface, complete_log, singularity_settings):
     """
     Run the PaRCA pipeline.
     """
-    # if generate_subdir and outdir:
-    #     base_outdir = outdir
-    #     sub_outdir = GenerateOutdir.get_date_and_randomizer()
-    #     outdir = os.path.join(base_outdir, sub_outdir)
 
     run_dict_list = ProcessRuninfoMetadata.generate_runinfo_dict(runinfo)
     metadata_dict = ProcessRuninfoMetadata.generate_metadata_dict(metadata)
