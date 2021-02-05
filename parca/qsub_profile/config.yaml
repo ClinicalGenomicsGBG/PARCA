@@ -1,0 +1,20 @@
+cluster: "qsub -S /bin/bash -pe mpi {cluster.threads} -q {cluster.queue} -S /bin/bash -N {wildcards.sample}_{rule} -V -cwd -l excl=1" #-j y -o cluster_logs/{rule}.log 
+jobs: 999
+latency-wait: 60
+use-conda: True
+use-singularity: True
+cleanup-conda: True
+
+#conda-prefix: "created_conda_envs"
+
+#keep-going: True
+
+
+#snakemake -rp -s main.smk --cluster-config config/cluster.yaml --profile qsub_profile
+#--cleanup-conda
+
+#  snakemake -nrp -s main.smk --use-singularity --use-conda --cores 23 --latency-wait 60
+##snakemake -nrp -s main.smk --use-singularity --use-conda --cluster-config cluster.yaml --drmaa "qsub -S /bin/bash -pe mpi {cluster.cores} -q {cluster.queue} -N {rule} -l excl=1 -S /bin/bash" --jobs 999 --latency-wait 60
+# not necessary with snakemake version 5.5.4: --singularity-args "-H /home/xerpey"
+# snakemake --rulegraph a_b.txt | dot -Tpng > rulegraph.png
+# #shell.prefix('PATH=$PATH;')

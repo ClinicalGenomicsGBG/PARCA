@@ -1,0 +1,5 @@
+name: biopython_env
+channels:
+  - conda-forge
+dependencies:
+  - biopython=1.77

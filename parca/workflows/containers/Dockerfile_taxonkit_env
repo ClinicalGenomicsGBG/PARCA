@@ -1,0 +1,30 @@
+
+FROM continuumio/miniconda3:4.9.2
+
+MAINTAINER "pericsson"
+
+ENV LC_ALL C.UTF-8
+ENV LC_LANG C.UTF-8
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get -qq -y update \
+	&& apt-get -qq -y upgrade \
+	&& apt-get -y install \
+		build-essential \
+		wget \
+		bzip2 \
+		ca-certificates \
+		bc \
+		pbzip2 \
+		pigz \
+		tzdata \
+	&& apt-get clean
+
+RUN conda config --add channels bioconda \
+	&& conda update --quiet conda \
+	&& conda install --yes --quiet \
+		taxonkit=0.6.0 \
+	&& conda clean --all --yes --quiet
+
+CMD /bin/bash 

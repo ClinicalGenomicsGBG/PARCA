@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!-- Maintainer Pernilla Ericsson -->
+<html lang="en">
+    <head>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.tablesorter.js') }}"></script> 
+        <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.tablesorter.widgets.js') }}"></script>
+
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type = "text/css" href="{{ url_for('static', filename = 'css/index.css') }}">
+        <link rel="stylesheet" type = "text/css" href="{{ url_for('static', filename = 'css/tableview.css') }}">
+
+        <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename = 'logo/parca_small.png') }}" >
+        {% set ParcaVersion = 'PaRCA v1.0' %}
+        {% if run_id %}
+            <title> {{ ParcaVersion }} - {{ run_id }}</title>
+         {% else %}
+            <title> {{ ParcaVersion }} </title>
+        {% endif %}
+    </head>
+    <body>
+        <div id="banner">
+            <table id='header-table' style="text-align: left; white-space:nowrap;">
+                <tr>
+                    <th> <a href="{{ url_for('index') }}" title="Home">{{ParcaVersion}}</a></th>
+                    <th align='right'> <a href="https://www.sahlgrenska.se" target="_blank" title="sahlgrenska.se">
+                        <img src="{{ url_for('static', filename = 'logo/VGReg.png') }}"></a></th>
+                    </tr>
+                    <tr>
+                        <th colspan=2>
+                            {% if run_id %}
+                            <ul class="menu_ul">
+                                <li class="menu_li"><a href="{{ url_for('index' )}}">Home</a></li>
+                                <li class="menu_li"><a href="{{ url_for('krona', type=run_id )}}">Krona Plot</a></li>
+                                <li class="menu_li"><a href="{{ url_for('table_view', type=run_id)}}">Table View</a></li>
+                                <li class="menu_li"><a href="{{ url_for('detailed_stats', type=run_id)}}">Detailed Stats</a></li>
+                            </ul>
+                            {% else %}
+                            <ul class="menu_ul">
+                                <li class="menu_li"><a href="{{ url_for('index') }}">Home</a></li>
+                                <li class="menu_li"><a href="{{ url_for('about') }}">About</a></li>
+                            </ul>
+                            {% endif %}
+                        </th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        {% block header_content %}{% endblock header_content%}
+                    </tr>
+                </table>
+                
+            </div>
+            {% block page_content %}{% endblock page_content%}
+
+        </body>
+        </html>
+        

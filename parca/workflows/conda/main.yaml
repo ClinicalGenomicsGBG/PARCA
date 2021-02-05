@@ -1,0 +1,9 @@
+name: parca_v1
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.8.3
+  - click=7.1.2 
+  - pandas=1.0.4 
+  - snakemake=5.26.1

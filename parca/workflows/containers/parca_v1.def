@@ -1,0 +1,60 @@
+BootStrap: library
+From: ubuntu:16.04
+
+%help
+	PaRCA singularity image
+
+%labels
+	DESCRIPTION PaRCA singularity image
+	AUTHOR Pernilla Ericsson
+	VERSION v1.0
+
+# RUN instruction (e.g. download files, install software)
+%post
+	apt-get -y update && apt-get -y upgrade
+	apt-get -y install \
+		build-essential \
+		wget \
+		bzip2 \
+		ca-certificates \
+		bc \
+		pbzip2 \
+		pigz \
+		tzdata
+	apt-get clean
+
+	#install conda
+	wget https://repo.anaconda.com/miniconda/Miniconda3-py38_4.8.2-Linux-x86_64.sh -O Miniconda3-py38_4.8.2-Linux-x86_64.sh
+	bash Miniconda3-py38_4.8.2-Linux-x86_64.sh -bf -p /usr/miniconda3/
+	rm Miniconda3-py38_4.8.2-Linux-x86_64.sh
+
+
+	#wget https://repo.continuum.io/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh -O Miniconda3-4.7.12.1-Linux-x86_64.sh
+	#bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bf -p /usr/miniconda3/
+	#rm Miniconda3-4.7.12.1-Linux-x86_64.sh
+	
+	export PATH=/usr/miniconda3/bin:$PATH 
+	echo $PATH
+
+    conda config --add channels defaults
+	conda config --add channels bioconda
+	conda config --add channels conda-forge
+
+	conda clean --all
+	python3 -m pip install pyyaml
+
+%test
+    export PATH=/usr/miniconda3/bin:$PATH
+	conda --version
+
+#%files
+#	lolcow_latest.sif
+
+# ENVIRONMENT (set environment variables)
+%environment 
+	export LC_ALL=C
+	export PATH=/usr/miniconda3/bin:$PATH
+
+# similar to docker CMD (Default command executed when running the container)
+%runscript
+    $@

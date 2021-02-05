@@ -1,0 +1,118 @@
+
+__default__:
+  threads: 2
+  queue: cgg_short.q@yavin.medair.lcl
+  excl: "-l excl=1 "
+
+# Stage 1
+unzip_rename_SE:
+  threads: 4
+
+unzip_rename_PE:
+  threads: 4
+
+quality_control_raw_SE:
+  threads: 4
+
+quality_control_raw_PE:
+  threads: 4
+
+fiona_SE_RNA:
+  threads: 110
+  queue: wgs.q@kuat.medair.lcl
+
+fiona_SE_DNA:
+  threads: 110
+  queue: wgs.q@kuat.medair.lcl
+
+# Stage 2
+megahit_SE_RNA:
+  threads: 120
+  queue: wgs.q@kuat.medair.lcl
+
+megahit_PE_RNA:
+  threads: 120
+  queue: wgs.q@kuat.medair.lcl
+
+bbwrap_alignment_SE_RNA:
+  threads: 120
+  queue: wgs.q@kuat.medair.lcl
+
+bbwrap_alignment_PE_RNA:
+  threads: 120
+  queue: wgs.q@kuat.medair.lcl
+
+# Stage 3
+kaiju:
+  threads: 120
+  queue: wgs.q@kuat.medair.lcl
+
+kraken:
+  threads: 120
+  queue: wgs.q@kuat.medair.lcl
+
+kaiju_filter_classified_DNA:
+  threads: 4
+
+kaiju_filter_classified_RNA:
+  threads: 4
+
+kraken_filter_classified_RNA:
+  threads: 4
+
+kraken_filter_classified_DNA:
+  threads: 4
+
+# Stage6
+blast_slices:
+  threads: 10
+  queue: wgs.q@kuat.medair.lcl
+
+# Stage 7
+blast_remaining_reads_nt:
+  threads: 10
+  queue: wgs.q@kuat.medair.lcl
+
+# Stage 8
+filter_fastq_organism_SE:
+  #threads: 4
+  queue: wgs.q@kuat.medair.lcl
+
+filter_fastq_organism_PE:
+  #threads: 4
+  queue: wgs.q@kuat.medair.lcl
+
+filter_fastq_kingdom_SE:
+  #threads: 4
+  queue: wgs.q@kuat.medair.lcl
+
+filter_fastq_kingdom_PE:
+  #threads: 4
+  queue: wgs.q@kuat.medair.lcl
+
+filter_fastq_unclassified_SE:
+  #threads: 8
+  queue: wgs.q@kuat.medair.lcl
+
+filter_fastq_unclassified_PE:
+  #threads: 8
+  queue: wgs.q@kuat.medair.lcl
+
+zip_filtered_fastq_organism:
+  threads: 4
+  queue: wgs.q@kuat.medair.lcl
+
+zip_filtered_fastq_kingdom:
+  threads: 4
+  queue: wgs.q@kuat.medair.lcl
+
+zip_filtered_fastq_unclassified:
+  threads: 4
+  queue: wgs.q@kuat.medair.lcl
+
+
+#$ -cwd
+#$ -S /bin/bash
+#$ -pe mpi 120
+#$ -q wgs.q@kuat.medair.lcl
+#$ -l excl=1 (if not short queue)

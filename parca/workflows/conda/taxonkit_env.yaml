@@ -1,0 +1,5 @@
+name: taxonkit_env
+channels:
+  - bioconda
+dependencies:
+  - taxonkit=0.6.0

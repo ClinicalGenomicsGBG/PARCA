@@ -1,0 +1,5 @@
+name: krona_env
+channels:
+  - bioconda
+dependencies:
+  - krona=2.7.1

@@ -1,0 +1,31 @@
+{% extends "header_layout.html" %}
+<!-- Maintainer Pernilla Ericsson -->
+<!-- Begins below -->
+
+{% block header_content %}
+    <table id='info-table' style="text-align: left">
+        <tr>
+            <th>Run id: {{ run_id }} </th>
+            <th>Raw Read Count: {{ record['count_raw_reads'] }}</th>
+            <th>Classified K-mer: {{ record['count_species_genus_higher'] }}</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th>Trimmed Read Count: {{ record['count_bbduk_trimmed_reads'] }}</th>
+            <th>Classified BLAST: {{ record['count_reads_taxid_SubsetBLAST'] +  record['count_reads_taxid_BLASTnt']}}</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th>Assembled Read Count: {{ record['count_kmer_input'] }}</th>
+            <th>Remaining reads: {{ record['count_unclassified_reads'] }}</th>
+        </tr>
+    </table>
+{% endblock header_content %}
+
+{% block page_content %}
+    <div id="main-content">
+        <!-- <iframe id ="krona" src="{{ url_for('static', filename = 'webinterface/%s' % krona_path ) }}" frameborder="0" seamless width=100%> -->
+        <iframe id ="krona" src="{{ url_for('get_file', file_name = krona_path ) }}" frameborder="0" seamless width=100%>
+    </div>
+{% endblock page_content %}
+

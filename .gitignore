@@ -1,1 +1,15 @@
 .snakemake/
+demo/200819_demo
+demo/raw_samples
+demo/ref
+demo/kraken_filtered_viruses.txt
+demo/mapped.sam
+parca/.cache/
+parca/.conda/
+parca/.config/
+parca/.java/
+parca/workflows/__pycache__/
+parca/workflows/containers/*.sif
+parca/workflows/scripts/blast_processing/blast_preprocessing/__pycache__/
+parca/workflows/utils/__pycache__/
+parca/cluster_logs

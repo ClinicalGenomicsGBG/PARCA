@@ -1,0 +1,121 @@
+#banner {
+    position: relative;
+    padding-left: 3000px;
+    margin-left: -3000px;
+    margin-top:-100px;
+    padding-top:100px;
+    margin-right: calc(-50vw + 50%);
+    display: block;
+    background-color: #006298;
+    width: 100%;
+    border: 10px solid #006298;
+ }
+
+#main-content{
+    margin: auto;
+    height: auto;
+    padding-top: 10px;
+    width: 85%;
+}
+
+#header-table{
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    width: 95%;
+    border-collapse: collapse;
+    font-size: 3vw;
+    position:center;
+    background-color:  #006298;
+    color: #ffffff;
+    margin: 5px auto;    
+}
+
+#info-table {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    width: 95%;
+    font-size: 1vw;
+    color: #ffffff;
+    border-collapse: collapse;
+    position:center;
+    margin: 5px auto;
+}
+
+a:link, a:visited, a:hover, a:active {
+    text-decoration: none;
+    color:inherit;
+}
+
+img {
+    width:30%;
+    height: auto;
+    padding-bottom: 10px;
+}
+/* table, th, td {
+    border: 1px solid black;
+    padding: 8px;
+  } */
+.menu_ul {
+    /* white-space:nowrap; */
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    font-size: 1vw;
+    overflow: hidden;
+    /* background-color: #333; */
+}
+
+.menu_li {
+    float: left;
+}
+
+.menu_li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    margin-right: 10px;
+    text-decoration: none;
+    background-color: #188b28;
+    border-radius: 12px;
+}
+
+.menu_li a:hover:not(.active) {
+    background-color: #c0c0c0;
+}
+
+.mystyle {
+    font-size: 11pt; 
+    font-family: Arial;
+    border-collapse: collapse; 
+    border: 1px solid #c0c0c0;
+    width: 100%;
+
+}
+
+.mystyle td, th {
+    padding: 5px;
+}
+.mystyle th {
+    background: #d5d5d5dd;
+}
+
+.mystyle tr:nth-child(even) {
+    background: #c1e2f7;
+}
+
+.mystyle tr:hover {
+    background: silver;
+    cursor: pointer;
+}
+
+#krona {
+	float: left;
+    height:calc(100vh - 50px);
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: rgb(255, 248, 218);
+}
+
+table {
+    margin-top: 10px;
+    text-align: center;
+}
